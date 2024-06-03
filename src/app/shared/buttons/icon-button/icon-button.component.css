@@ -1,0 +1,28 @@
+.mybutton {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 8px;
+
+  /* Bleu électrique */
+  background: #105dfb;
+
+  border-radius: 5px;
+  border-width: 0;
+  color: white;
+}
+
+.mybutton:hover {
+  background: #105dfb;
+  box-shadow: 1px 1px #0f4fd0;
+}
+
+.mybutton:active {
+  background: #0f4fd0;
+}
+
+.myicon {
+  fill: white;
+  margin-right: 1em;
+}
