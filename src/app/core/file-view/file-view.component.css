@@ -4,7 +4,8 @@
 
 .action-buttons {
     display: flex;
-    gap: 5px;
+    column-gap: 5px;
+    align-items: center;
 }
 
 .spacer {

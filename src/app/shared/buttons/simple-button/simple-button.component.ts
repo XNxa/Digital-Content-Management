@@ -10,5 +10,6 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 export class SimpleButtonComponent {
   @Input() title = '';
   @Input() disabled = false;
+  @Input() color: 'blue' | 'white' | 'clearblue' = 'blue';
   @Output() click = new EventEmitter();
 }

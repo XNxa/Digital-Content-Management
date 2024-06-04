@@ -4,12 +4,19 @@ body {
   font-family: "Roboto", Arial, sans-serif;
 }
 
+h2 {
+  color: #0b2866;
+}
+
 /* Declaring color constants */
 :root {
   background-color: #ebf1fd;
 
   --primary: #105dfb;
   --primary-accent: #0f4fd0;
+
+  --secondary: #d7e3fc;
+  --secondary-accent: #99b7f8;
 
   --text-color: #0b2866;
 }

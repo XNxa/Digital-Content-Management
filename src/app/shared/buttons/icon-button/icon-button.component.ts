@@ -11,10 +11,10 @@ import { ButtonIcon } from '../icon-button-type';
 export class IconButtonComponent {
   @Input() icon!: ButtonIcon;
   @Input() disabled = false;
-
+  @Input() color: 'blue' | 'white' | 'clearblue' = 'blue';
   @Output() click = new EventEmitter();
 
   getIconPath() {
-    return 'icons/' + this.icon + '.svg';
+    return 'icons/' + ((this.color == 'blue')?'white/':'blue/') + this.icon + '.svg';
   }
 }
