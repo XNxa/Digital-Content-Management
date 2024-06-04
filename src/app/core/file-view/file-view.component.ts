@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { IconButtonComponent } from '../../shared/buttons/icon-button/icon-button.component';
 import { FilecardComponent } from '../../shared/filecard/filecard.component';
-import { PageSelectorComponent } from '../../page-selector/page-selector.component';
+import { PageSelectorComponent } from '../../shared/page-selector/page-selector.component';
 import { TableComponent } from '../../shared/table/table.component';
 
 @Component({
