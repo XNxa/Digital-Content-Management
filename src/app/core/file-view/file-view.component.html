@@ -1,0 +1,19 @@
+<p>{{viewtitle}}</p>
+
+<div>
+    <app-icon-button icon="update"></app-icon-button>
+    <app-icon-button icon="checkbox"></app-icon-button>
+    <app-icon-button icon="card"></app-icon-button>
+    <app-icon-button icon="list"></app-icon-button>
+</div>
+
+<!-- <div>
+    @for (file of files; track $index) {
+    <app-filecard [filename]="file.name" [filetype]="file.type" [filesize]="file.size"
+        [filedate]="file.date"></app-filecard>
+    }
+</div> -->
+
+<div>
+    <app-page-selector [totalItems]="100" [itemsPerPage]="10" (pageChange)="onPageChange($event)"></app-page-selector>
+</div>

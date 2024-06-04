@@ -2,15 +2,17 @@ import { Component, Input } from '@angular/core';
 import { ButtonIcon } from '../icon-button-type';
 
 @Component({
-  selector: 'app-icon-button',
+  selector: 'app-icon-text-button',
   standalone: true,
   imports: [],
-  templateUrl: './icon-button.component.html',
-  styleUrl: './icon-button.component.css'
+  templateUrl: './icon-text-button.component.html',
+  styleUrl: './icon-text-button.component.css'
 })
-export class IconButtonComponent {
-  @Input() icon!: ButtonIcon;
+export class IconTextButtonComponent {
+  @Input() title = '';
   @Input() disabled = false;
+
+  @Input() icon!: ButtonIcon;
 
   getIconPath() {
     return 'icons/' + this.icon + '.svg';

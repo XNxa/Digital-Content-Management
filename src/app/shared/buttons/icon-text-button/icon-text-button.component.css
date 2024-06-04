@@ -9,9 +9,7 @@
   background: var(--primary);
 
   border-radius: 5px;
-
   border-width: 0;
-
   color: white;
 }
 
@@ -22,4 +20,9 @@
 
 .mybutton:active {
   background: var(--primary-accent);
+}
+
+.myicon {
+  fill: white;
+  margin-right: 1em;
 }

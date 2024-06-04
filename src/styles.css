@@ -1,1 +1,11 @@
 /* You can add global styles to this file, and also import other style files */
+
+body {
+  font-family: "Roboto", Arial, sans-serif;
+}
+
+/* Declaring color constants */
+:root {
+    --primary: #105dfb;
+    --primary-accent: #0f4fd0;
+}
