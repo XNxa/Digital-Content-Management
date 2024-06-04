@@ -1,0 +1,26 @@
+.header {
+    display: flex;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+.spacer {
+    width: 100%;
+}
+
+.file-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.footer {
+    padding: 5px;
+}
+
+.table {
+    width: 100%;
+}

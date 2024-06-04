@@ -1,4 +1,4 @@
-<button class="mybutton" [disabled]="disabled">
+<button class="mybutton" [disabled]="disabled" (click)="click.emit()">
     <img class="myicon" [src]="getIconPath()"/>
     {{title}}
   </button>

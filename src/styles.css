@@ -6,6 +6,10 @@ body {
 
 /* Declaring color constants */
 :root {
-    --primary: #105dfb;
-    --primary-accent: #0f4fd0;
+  background-color: #ebf1fd;
+
+  --primary: #105dfb;
+  --primary-accent: #0f4fd0;
+
+  --text-color: #0b2866;
 }

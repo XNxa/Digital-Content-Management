@@ -1,19 +1,34 @@
-<p>{{viewtitle}}</p>
+<div class="header">
+    <h2>{{viewtitle}}</h2>
 
-<div>
-    <app-icon-button icon="update"></app-icon-button>
-    <app-icon-button icon="checkbox"></app-icon-button>
-    <app-icon-button icon="card"></app-icon-button>
-    <app-icon-button icon="list"></app-icon-button>
+    <span class="spacer"></span>
+
+    <div class="action-buttons">
+        <app-icon-button icon="update"></app-icon-button>
+        <app-icon-button icon="checkbox"></app-icon-button>
+        <app-icon-button icon="card" (click)="onGridClicked()"></app-icon-button>
+        <app-icon-button icon="list" (click)="onListClicked()"></app-icon-button>
+    </div>
 </div>
 
-<!-- <div>
+
+
+<div class="file-grid">
+    @if (gridlayout) {
     @for (file of files; track $index) {
     <app-filecard [filename]="file.name" [filetype]="file.type" [filesize]="file.size"
         [filedate]="file.date"></app-filecard>
     }
-</div> -->
+    } @else {
+    <app-table
+        class="table"
+        [columns]="[{header: 'NAME', field: 'name'}, {header: 'TYPE', field: 'type'}, {header: 'SIZE', field: 'size'}, {header: 'DATE', field: 'date'}]"
+        [data]="files"
+        ></app-table>
+    }
+</div>
 
-<div>
+
+<div class="footer">
     <app-page-selector [totalItems]="100" [itemsPerPage]="10" (pageChange)="onPageChange($event)"></app-page-selector>
 </div>

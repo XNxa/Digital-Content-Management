@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ButtonIcon } from '../icon-button-type';
 
 @Component({
@@ -13,6 +13,8 @@ export class IconTextButtonComponent {
   @Input() disabled = false;
 
   @Input() icon!: ButtonIcon;
+
+  @Output() click = new EventEmitter();
 
   getIconPath() {
     return 'icons/' + this.icon + '.svg';
