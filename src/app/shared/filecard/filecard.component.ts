@@ -8,10 +8,15 @@ import { Component, Input } from '@angular/core';
   styleUrl: './filecard.component.css'
 })
 export class FilecardComponent {
-
+  
   @Input() filename = 'Name';
   @Input() filetype = '.TYP';
   @Input() filesize = '48 Mo';
   @Input() filedate = '25/01/2000';
-
+  
+  isChecked = false;
+  
+  onCardClicked() {
+    this.isChecked = !this.isChecked;
+  }
 }

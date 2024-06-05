@@ -1,6 +1,6 @@
-<div class="file-card">
+<div class="file-card" (click)="onCardClicked()">
     <div class="file-card-header">
-        <input type="checkbox" />
+        <input type="checkbox" [(checked)]="isChecked"/>
     </div>
     <div class="file-card-body">
         <div class="file-icon">

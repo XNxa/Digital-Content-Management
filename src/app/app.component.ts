@@ -4,11 +4,12 @@ import { IconTextButtonComponent } from './shared/buttons/icon-text-button/icon-
 import { FilecardComponent } from './shared/filecard/filecard.component';
 import { IconButtonComponent } from './shared/buttons/icon-button/icon-button.component';
 import { FileViewComponent } from './core/file-view/file-view.component';
+import { HomeComponent } from './core/home/home.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, FileViewComponent],
+  imports: [RouterOutlet, HomeComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

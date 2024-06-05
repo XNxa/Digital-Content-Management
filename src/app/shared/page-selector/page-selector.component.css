@@ -10,7 +10,7 @@ button {
   margin: 0 5px;
   padding: 5px 10px;
   font-size: 16px;
-  color: var(--primary);
+  color: var(--text-color);
 }
 
 button:disabled {
@@ -19,7 +19,7 @@ button:disabled {
 
 button.active {
   font-weight: bold;
-  background-color: var(--primary);
-  color: white;
+  background-color: white;
+  color: var(--text-color);
   border-radius: 5px;
 }

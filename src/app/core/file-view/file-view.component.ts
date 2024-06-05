@@ -12,7 +12,7 @@ import { TableComponent } from '../../shared/table/table.component';
   styleUrl: './file-view.component.css'
 })
 export class FileViewComponent {
-  viewtitle = "Fichier";
+  viewtitle = "Fichiers";
 
   gridlayout = true;
 
