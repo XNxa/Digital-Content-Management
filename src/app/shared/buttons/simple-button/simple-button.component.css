@@ -3,6 +3,7 @@ button {
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  height: 36px;
   padding: 8px;
   border-radius: 5px;
   border-width: 0;

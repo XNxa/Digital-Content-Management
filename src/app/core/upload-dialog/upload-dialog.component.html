@@ -1,0 +1,69 @@
+<div class="dialog-backdrop">
+  <div class="dialog">
+    <div class="dialog-header">
+      <h3>Importer un fichier</h3>
+      <button class="close-button" (click)="close()">
+        <img src="icons/blue/close.svg">
+      </button>
+    </div>
+    <div class="dialog-steps">
+      <div class="step step-left" [class]="currentStep == 1 ? 'active' : ''">
+        Importez le fichier
+      </div>
+      <div class="step step-right" [class]="currentStep > 1 ? 'active' : ''">
+        Ajouter les informations liées au fichier
+      </div>
+    </div>
+    @if (currentStep == 1) {
+    <div class="dialog-body">
+      <div class="file-upload-area">
+        <label for="file-upload" class="upload-label">
+          <div>
+            <img src="icons/file-upload.svg">
+          </div>
+          <div class="upload-text">
+            <span style="text-decoration: underline;">Cliquez pour télécharger</span> ou faites glisser et déposez.<br>
+            <span style="font-size: small;">Taille de fichier maximale 50 Mo.</span>
+          </div>
+          <input id="file-upload" type="file" (change)="onFileSelected($event)" hidden>
+        </label>
+      </div>
+    </div>
+    <div class="dialog-footer">
+      <app-icon-text-button title="Annuler" icon="close" color="white" (click)="cancel()"></app-icon-text-button>
+      <app-icon-text-button title="Suivant" icon="forward" (click)="nextStep()"></app-icon-text-button>
+    </div>
+    } @else {
+    <div class="dialog-body">
+      <form [formGroup]="form">
+        <label>
+          Description :
+          <textarea type="text" id="desc" formControlName="description"></textarea>
+        </label>
+        <div>
+          <label>
+            Version :
+            <select><option>VF</option><option>VA</option></select>
+          </label>
+          <label>
+              Status :
+              <select><option>Publié</option><option>Archivé</option></select>
+          </label>
+        </div>
+        <label>
+          Mots clés (Maximum 20)
+          
+        </label>
+        <div>
+
+        </div>
+      </form>
+    </div>
+    <div class="dialog-footer">
+      <app-icon-text-button title="Annuler" icon="close" color="white" (click)="cancel()"></app-icon-text-button>
+      <app-icon-text-button title="Précédent" icon="back" (click)="previousStep()"></app-icon-text-button>
+      <app-icon-text-button title="Enregistrer" icon="add" (click)="save()"></app-icon-text-button>
+    </div>
+    }
+  </div>
+</div>

@@ -1,15 +1,12 @@
 .header {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .action-buttons {
     display: flex;
     column-gap: 5px;
-    align-items: center;
-}
-
-.spacer {
-    width: 100%;
 }
 
 .file-grid {

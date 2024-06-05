@@ -4,7 +4,9 @@ body {
   font-family: "Roboto", Arial, sans-serif;
 }
 
-h2 {
+h1,
+h2,
+h3 {
   color: #0b2866;
 }
 
