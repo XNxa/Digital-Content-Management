@@ -40,6 +40,7 @@ export class FileViewComponent {
 
   onListClicked() {
     this.gridlayout = false;
+    console.log("list clicked");
   }
 
   onGridClicked() {

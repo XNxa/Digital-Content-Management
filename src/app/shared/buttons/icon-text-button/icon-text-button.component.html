@@ -1,4 +1,4 @@
-<button [class]="color" [disabled]="disabled" (click)="click.emit()">
+<button [class]="color" [disabled]="disabled" (click)="handleClick($event)">
     <img class="myicon" [src]="getIconPath()"/>
     {{title}}
   </button>

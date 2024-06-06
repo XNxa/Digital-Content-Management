@@ -18,4 +18,9 @@ export class IconTextButtonComponent {
   getIconPath() {
     return 'icons/' + ((this.color == 'blue')?'white/':'blue/') + this.icon + '.svg';
   }
+
+  handleClick(event: Event) {
+    event.stopPropagation(); 
+    this.click.emit();
+  }
 }

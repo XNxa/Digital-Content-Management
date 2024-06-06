@@ -1,3 +1,3 @@
-<button [class]="color" [disabled]="disabled" (click)="click.emit()">
+<button [class]="color" [disabled]="disabled" (click)="handleClick($event)">
     <img [class]="color" [src]="getIconPath()"/>
 </button>

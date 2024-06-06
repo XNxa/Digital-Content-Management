@@ -4,6 +4,8 @@ import { LongInputComponent } from '../../shared/form/long-input/long-input.comp
 import { SelectComponent } from '../../shared/form/select/select.component';
 import { ChipsInputComponent } from '../../shared/form/chips-input/chips-input.component';
 import { FileApiService } from '../../file-api.service';
+import { Version } from '../../interfaces/version';
+import { Status } from '../../interfaces/status';
 
 @Component({
   selector: 'app-upload-dialog',
@@ -20,20 +22,25 @@ import { FileApiService } from '../../file-api.service';
 export class UploadDialogComponent {
   title = "Importer un ficher";
   @Output() closeDialog: EventEmitter<void> = new EventEmitter<void>();
-  
-  selectedFile : File | undefined;
+
+  selectedFile: File | undefined;
+  description: string = '';
+  version: Version = 'VF'
+  keywords: string[] = [];
+  status: Status = 'Archivé'
+
   currentStep = 1;
 
-  constructor(private api : FileApiService) { }
+  constructor(private api: FileApiService) { }
 
   close() {
     this.closeDialog.emit();
   }
-  
+
   onDialogClick(event: MouseEvent) {
     event.stopPropagation();
   }
-  
+
   onFileSelected($event: Event) {
     const input = ($event.target as HTMLInputElement);
     if (input.files != null) {
@@ -43,23 +50,36 @@ export class UploadDialogComponent {
       }
     }
   }
-  
+
   nextStep() {
     this.currentStep = this.currentStep + 1;
   }
-  
+
   previousStep() {
     this.selectedFile = undefined;
     this.currentStep = this.currentStep - 1;
   }
-  
+
   save() {
-    this.api.uploadFile(this.selectedFile as File).subscribe({
+    if (!this.selectedFile) {
+      console.error("No file selected!");
+      return;
+    }
+
+    this.api.uploadFile(
+      this.selectedFile as File,
+      this.description, this.version,
+      this.status,
+      this.keywords
+    ).subscribe({
       next: (response) => console.log(response),
-      error: (error) => console.error(error)
+      error: () => console.error()
     });
+
+    this.selectedFile = undefined;
+    this.close();
   }
-  
+
   cancel() {
     this.selectedFile = undefined;
     this.close();

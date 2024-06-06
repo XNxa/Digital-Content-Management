@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -14,6 +14,8 @@ export class ChipsInputComponent {
   @Input() keywords: string[] = [];
   @Input() maxKeywords: number = 20;
 
+  @Output() keywordsChange: EventEmitter<string[]> = new EventEmitter<string[]>();
+
   inputValue: string = '';
 
   add(keyword: string): void {
@@ -21,6 +23,7 @@ export class ChipsInputComponent {
       this.keywords.push(keyword.trim());
     }
     this.inputValue = '';
+    this.keywordsChange.emit(this.keywords);
   }
 
   remove(keyword: string): void {
@@ -29,5 +32,6 @@ export class ChipsInputComponent {
     if (index >= 0) {
       this.keywords.splice(index, 1);
     }
+    this.keywordsChange.emit(this.keywords);
   }
 }
