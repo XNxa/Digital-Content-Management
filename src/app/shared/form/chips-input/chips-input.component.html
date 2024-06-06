@@ -1,0 +1,15 @@
+<div class="chips-input-container">
+    <label>{{ label }}  <span>{{hint}}</span></label>
+    <div class="chips-input-wrapper">
+        @for (keyword of keywords; track $index) {
+        <div class="chip">
+            {{ keyword }}
+            <span class="closebtn" (click)="remove(keyword)">&times;</span>
+        </div>
+        }
+        @if (keywords.length < maxKeywords) {
+            <input placeholder="..." [(ngModel)]="inputValue" (keyup.enter)="add(inputValue)"
+                (blur)="add(inputValue)">
+        }
+    </div>
+</div>

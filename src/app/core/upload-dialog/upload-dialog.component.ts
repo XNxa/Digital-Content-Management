@@ -2,6 +2,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { IconTextButtonComponent } from '../../shared/buttons/icon-text-button/icon-text-button.component';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { LongInputComponent } from '../../shared/form/long-input/long-input.component';
+import { SelectComponent } from '../../shared/form/select/select.component';
 
 @Component({
   selector: 'app-upload-dialog',
@@ -9,6 +10,7 @@ import { LongInputComponent } from '../../shared/form/long-input/long-input.comp
   imports: [
     IconTextButtonComponent,
     LongInputComponent,
+    SelectComponent
   ],
   templateUrl: './upload-dialog.component.html',
   styleUrl: './upload-dialog.component.css'
