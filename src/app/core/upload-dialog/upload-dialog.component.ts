@@ -1,11 +1,15 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { IconTextButtonComponent } from '../../shared/buttons/icon-text-button/icon-text-button.component';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { LongInputComponent } from '../../shared/form/long-input/long-input.component';
 
 @Component({
   selector: 'app-upload-dialog',
   standalone: true,
-  imports: [IconTextButtonComponent, ReactiveFormsModule],
+  imports: [
+    IconTextButtonComponent,
+    LongInputComponent,
+  ],
   templateUrl: './upload-dialog.component.html',
   styleUrl: './upload-dialog.component.css'
 })
