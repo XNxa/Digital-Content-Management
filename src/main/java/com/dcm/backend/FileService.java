@@ -2,6 +2,7 @@ package com.dcm.backend;
 
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
+import io.minio.ObjectWriteResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,9 +13,9 @@ public class FileService {
     @Autowired
     private MinioClient mc;
 
-    public boolean uploadFile(MultipartFile file) {
+    public Boolean uploadFile(MultipartFile file) {
         try {
-            mc.putObject(
+            ObjectWriteResponse response = mc.putObject(
                     PutObjectArgs.builder()
                             .bucket("mybucket") // TODO ? pass bucket in parameters
                             .object(file.getOriginalFilename())
