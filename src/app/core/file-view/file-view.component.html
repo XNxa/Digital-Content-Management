@@ -24,8 +24,8 @@
 <div class="file-grid">
     @if (gridlayout) {
     @for (file of files; track $index) {
-    <app-filecard [filename]="file.name" [filetype]="file.type" [filesize]="file.size"
-        [filedate]="file.date"></app-filecard>
+    <app-filecard [filename]="file.filename" [filetype]="file.type" [filesize]="(file.size / 1_000_000).toString() + ' MB'"
+        [filedate]="file.date" [filestatus]="file.status"></app-filecard>
     }
     } @else {
     <app-table

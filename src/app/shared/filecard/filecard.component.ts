@@ -13,6 +13,7 @@ export class FilecardComponent {
   @Input() filetype = '.TYP';
   @Input() filesize = '48 Mo';
   @Input() filedate = '25/01/2000';
+  @Input() filestatus = 'Archivé';
   
   isChecked = false;
   
