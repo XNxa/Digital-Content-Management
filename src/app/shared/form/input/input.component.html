@@ -1,0 +1,17 @@
+<div class="input-container">
+    <label>{{ label }}</label>
+    <div [class]="border ? 'input-wrapper': 'no-border'">
+    <input 
+        [type]="isPasswordVisible || value.length == 0 ? 'text' : type" 
+        [placeholder]="placeholder" 
+        [value]="value" 
+        (input)="onInput($event)"
+        [attr.aria-label]="label"
+    >
+    @if (type == 'password') {
+        <button (click)="togglePasswordVisibility()" type="button">
+            <img [src]="isPasswordVisible ? 'icons/eye-open.svg' : 'icons/eye-close.svg'">
+        </button>
+    }
+    </div>
+</div>

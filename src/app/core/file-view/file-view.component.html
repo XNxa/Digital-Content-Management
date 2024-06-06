@@ -7,6 +7,10 @@
     <app-upload-dialog (closeDialog)="isDialogOpen = false" (fileSelected)="upload($event)"></app-upload-dialog>
 }
 
+<div> <!-- TODO : Add other fields -->
+    <app-input label="ID du fichier" placeholder="ID 0000" [border]="false"></app-input>
+</div>
+
 <div class="header">
     <h2>{{viewtitle}}</h2>
     <div class="action-buttons">
