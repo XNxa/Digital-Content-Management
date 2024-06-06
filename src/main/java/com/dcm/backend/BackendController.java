@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -49,7 +50,7 @@ public class BackendController {
                     keywordCollection.add(saved);
                 }
             }
-            File f = new File(file.getOriginalFilename(), desc, version, status, keywordCollection);
+            File f = new File(file.getOriginalFilename(), desc, version, status, LocalDateTime.now().toString(), file.getContentType(), file.getSize(), keywordCollection);
             fileRepository.save(f);
             return ResponseEntity.ok("File successfully uploaded");
         } else {
