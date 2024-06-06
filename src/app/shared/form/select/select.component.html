@@ -1,0 +1,12 @@
+<div class="input-container">
+    <label>{{ label }} <span>{{hint}}</span></label>
+    <select [class]="border ? 'input-border' : 'no-border'"
+        [value]="value" 
+        (input)="onInput($event)"
+        [attr.aria-label]="label"
+    >
+    @for (item of options; track $index) {
+        <option>{{item}}</option>
+    }
+    </select>
+</div>
