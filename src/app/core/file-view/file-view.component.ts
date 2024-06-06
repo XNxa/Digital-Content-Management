@@ -5,7 +5,6 @@ import { PageSelectorComponent } from '../../shared/page-selector/page-selector.
 import { TableComponent } from '../../shared/table/table.component';
 import { IconTextButtonComponent } from '../../shared/buttons/icon-text-button/icon-text-button.component';
 import { UploadDialogComponent } from '../upload-dialog/upload-dialog.component';
-import { FileApiService } from '../../file-api.service';
 import { InputComponent } from '../../shared/form/input/input.component';
 
 @Component({
@@ -31,7 +30,7 @@ export class FileViewComponent {
 
   isDialogOpen: boolean = false;
 
-  constructor(private api: FileApiService) { }
+  constructor() { }
 
   files = [{ name: "un", type: "png", date: "25/12/1999", size: "1 Mo" }, { name: "deux", type: "png", date: "25/12/1999", size: "1 Mo" }, { name: "un", type: "png", date: "25/12/1999", size: "1 Mo" }, { name: "trois", type: "png", date: "25/12/1999", size: "1 Mo" }, { name: "quatre", type: "png", date: "25/12/1999", size: "1 Mo" }, { name: "un", type: "png", date: "25/12/1999", size: "1 Mo" }, { name: "un", type: "png", date: "25/12/1999", size: "1 Mo" }, { name: "un", type: "png", date: "25/12/1999", size: "1 Mo" }, { name: "un", type: "png", date: "25/12/1999", size: "1 Mo" }, { name: "un", type: "png", date: "25/12/1999", size: "1 Mo" }, { name: "un", type: "png", date: "25/12/1999", size: "1 Mo" }, { name: "un", type: "png", date: "25/12/1999", size: "1 Mo" }, { name: "un", type: "png", date: "25/12/1999", size: "1 Mo" }, { name: "un", type: "png", date: "25/12/1999", size: "1 Mo" }, { name: "un", type: "png", date: "25/12/1999", size: "1 Mo" }, { name: "un", type: "png", date: "25/12/1999", size: "1 Mo" }, { name: "un", type: "png", date: "25/12/1999", size: "1 Mo" }, { name: "un", type: "png", date: "25/12/1999", size: "1 Mo" }, { name: "un", type: "png", date: "25/12/1999", size: "1 Mo" }]
 
@@ -47,14 +46,4 @@ export class FileViewComponent {
     this.gridlayout = true;
   }
 
-  upload(file: File) {
-    this.api.uploadFile(file).subscribe({
-      next(value) {
-        console.log(value)
-      },
-      error(e) {
-        console.log(e)
-      }
-    })
-  }
 }
