@@ -3,6 +3,7 @@ import { IconTextButtonComponent } from '../../shared/buttons/icon-text-button/i
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { LongInputComponent } from '../../shared/form/long-input/long-input.component';
 import { SelectComponent } from '../../shared/form/select/select.component';
+import { ChipsInputComponent } from '../../shared/form/chips-input/chips-input.component';
 
 @Component({
   selector: 'app-upload-dialog',
@@ -10,7 +11,8 @@ import { SelectComponent } from '../../shared/form/select/select.component';
   imports: [
     IconTextButtonComponent,
     LongInputComponent,
-    SelectComponent
+    SelectComponent,
+    ChipsInputComponent
   ],
   templateUrl: './upload-dialog.component.html',
   styleUrl: './upload-dialog.component.css'

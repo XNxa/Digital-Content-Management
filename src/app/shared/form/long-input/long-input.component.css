@@ -29,6 +29,7 @@ textarea {
   color: var(--text-color);
   resize: none;
   padding: 5px;
+  font-family: "Roboto", Arial, sans-serif;
 }
 
 textarea:focus {

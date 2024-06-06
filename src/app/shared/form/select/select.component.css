@@ -29,7 +29,7 @@ select {
   color: var(--text-color);
   appearance: none;
   outline: none;
-  padding: 5px;
+  padding: 10px;
 }
 
 span {

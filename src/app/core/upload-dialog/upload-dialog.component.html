@@ -34,10 +34,15 @@
       <app-icon-text-button title="Suivant" icon="forward" (click)="nextStep()"></app-icon-text-button>
     </div>
     } @else {
-    <div class="dialog-body">
-      <app-long-input label="Description" hint="(facultatif)" [rows]="5" ></app-long-input>
-      <app-select label="Version" [options]="['VF', 'VA']"></app-select>
-      <app-select label="Status" [options]="['Publié', 'Archivé']"></app-select> <!-- TODO : Replace options with dynamic list of options -->
+    <div class="dialog-body-form">
+      <div>
+        <app-long-input label="Description" hint="(facultatif)" [rows]="5" ></app-long-input>
+      </div>
+      <div class="dialog-version-status">
+        <app-select class="version" label="Version" [options]="['VF', 'VA']"></app-select>
+        <app-select class="status" label="Status" [options]="['Publié', 'Archivé']"></app-select> <!-- TODO : Replace options with dynamic list of options -->
+      </div>
+      <app-chips-input label="Mots-Clés" hint="(Maximum 20)" [maxKeywords]="20" [keywords]="[]"></app-chips-input> <!-- // TODO : Repace with dynamic keywords -->
     </div>
     <div class="dialog-footer">
       <app-icon-text-button title="Annuler" icon="close" color="white" (click)="cancel()"></app-icon-text-button>
