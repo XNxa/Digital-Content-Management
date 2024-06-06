@@ -11,17 +11,13 @@ label {
   font-weight: bold;
 }
 
-.input-wrapper-border {
-  display: flex;
-  align-items: center;
+.input-border {
   background-color: white;
   border: 1px solid #c6ced6;
   border-radius: 4px;
 }
 
 .no-border {
-  display: flex;
-  align-items: center;
   background-color: white;
   border: none;
   box-shadow: 0px 4px 4px -4px rgba(24, 24, 28, 0.02),
@@ -29,32 +25,18 @@ label {
   border-radius: 4px;
 }
 
-.input-wrapper:focus-within {
-  outline: 1px solid var(--text-color);
-}
-
-button {
-  display: flex;
-  align-items: center;
-  margin: 5px;
-  border: none;
-  background-color: transparent;
-  border-radius: 100%;
-  cursor: pointer;
-}
-
-input {
-  flex-grow: 2;
-  padding: 10px;
-  border: none;
-  background-color: transparent;
+textarea {
   color: var(--text-color);
+  resize: none;
+  padding: 5px;
 }
 
-input:focus {
+textarea:focus {
   outline: none;
 }
 
-input[type="password"] {
-  letter-spacing: 2px;
+span {
+  color: var(--grey-text);
+  font-weight: normal;
+  font-size: small;
 }

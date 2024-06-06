@@ -42,7 +42,7 @@
   font-size: small;
   text-align: center;
   background-color: #ECEFF1;
-  color: #8D9CAD;
+  color: var(--grey-text);
 }
 
 .step-left {
@@ -76,7 +76,7 @@
 
 .upload-text {
   margin: 5px;
-  color: #8D9CAD;
+  color: var(--grey-text);
 }
 
 .upload-label {

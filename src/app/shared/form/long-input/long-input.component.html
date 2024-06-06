@@ -1,0 +1,10 @@
+<div class="input-container">
+    <label>{{ label }} <span>{{hint}}</span></label>
+    <textarea [class]="border ? 'input-border' : 'no-border'"
+        [placeholder]="placeholder" 
+        [value]="value" 
+        (input)="onInput($event)"
+        [attr.aria-label]="label"
+        [rows]="rows"
+    ></textarea>
+</div>
