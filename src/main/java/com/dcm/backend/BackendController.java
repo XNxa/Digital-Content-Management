@@ -1,9 +1,9 @@
 package com.dcm.backend;
 
-import com.dcm.backend.beans.File;
-import com.dcm.backend.beans.Keyword;
-import com.dcm.backend.beans.Status;
-import com.dcm.backend.beans.Version;
+import com.dcm.backend.entities.File;
+import com.dcm.backend.entities.Keyword;
+import com.dcm.backend.entities.Status;
+import com.dcm.backend.entities.Version;
 import com.dcm.backend.repositories.FileRepository;
 import com.dcm.backend.repositories.KeywordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Optional;
 
@@ -54,7 +53,7 @@ public class BackendController {
             fileRepository.save(f);
             return ResponseEntity.ok("File successfully uploaded");
         } else {
-            return ResponseEntity.internalServerError().build();
+            return ResponseEntity.internalServerError().build(); // Pas besoin
         }
     }
 

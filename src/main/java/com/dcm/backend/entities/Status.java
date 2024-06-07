@@ -1,4 +1,4 @@
-package com.dcm.backend.beans;
+package com.dcm.backend.entities;
 
 public enum Status {
     PLANIFIE,

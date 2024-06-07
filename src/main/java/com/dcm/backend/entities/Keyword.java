@@ -1,7 +1,6 @@
-package com.dcm.backend.beans;
+package com.dcm.backend.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
