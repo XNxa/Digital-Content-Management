@@ -22,3 +22,12 @@
 .table {
     width: 100%;
 }
+
+.search-area {
+    display: flex;
+    gap: 10px;
+}
+
+.search-element {
+    flex: 1;
+}

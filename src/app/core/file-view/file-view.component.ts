@@ -8,6 +8,7 @@ import { UploadDialogComponent } from '../upload-dialog/upload-dialog.component'
 import { InputComponent } from '../../shared/form/input/input.component';
 import { FileApiService } from '../../file-api.service';
 import { FileHeader } from '../../interfaces/FileHeader';
+import { SelectComponent } from '../../shared/form/select/select.component';
 
 @Component({
   selector: 'app-file-view',
@@ -19,7 +20,8 @@ import { FileHeader } from '../../interfaces/FileHeader';
     PageSelectorComponent,
     TableComponent,
     UploadDialogComponent,
-    InputComponent
+    InputComponent,
+    SelectComponent
   ],
   templateUrl: './file-view.component.html',
   styleUrl: './file-view.component.css'
