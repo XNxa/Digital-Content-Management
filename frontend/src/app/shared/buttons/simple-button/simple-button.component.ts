@@ -13,8 +13,8 @@ export class SimpleButtonComponent {
   @Input() color: 'blue' | 'white' | 'clearblue' = 'blue';
   @Output() click = new EventEmitter();
 
-  handleClick(event: Event) {
-    event.stopPropagation(); 
+  handleClick(event: Event): void {
+    event.stopPropagation();
     this.click.emit();
   }
 }

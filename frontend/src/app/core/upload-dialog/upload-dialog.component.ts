@@ -33,15 +33,15 @@ export class UploadDialogComponent {
 
   constructor(private api: FileApiService) { }
 
-  close() {
+  close(): void {
     this.closeDialog.emit();
   }
 
-  onDialogClick(event: MouseEvent) {
+  onDialogClick(event: MouseEvent): void {
     event.stopPropagation();
   }
 
-  onFileSelected($event: Event) {
+  onFileSelected($event: Event): void {
     const input = ($event.target as HTMLInputElement);
     if (input.files != null) {
       if (input.files.length > 0) {
@@ -51,16 +51,16 @@ export class UploadDialogComponent {
     }
   }
 
-  nextStep() {
+  nextStep(): void {
     this.currentStep = this.currentStep + 1;
   }
 
-  previousStep() {
+  previousStep(): void {
     this.selectedFile = undefined;
     this.currentStep = this.currentStep - 1;
   }
 
-  save() {
+  save(): void {
     if (!this.selectedFile) {
       console.error("No file selected!");
       return;
@@ -80,7 +80,7 @@ export class UploadDialogComponent {
     this.close();
   }
 
-  cancel() {
+  cancel(): void {
     this.selectedFile = undefined;
     this.close();
   }

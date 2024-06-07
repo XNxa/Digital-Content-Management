@@ -17,13 +17,13 @@ export class InputComponent {
   @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
 
   isPasswordVisible: boolean = false;
-  
+
   onInput(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.valueChange.emit(input.value);
   }
 
-  togglePasswordVisibility() {
+  togglePasswordVisibility(): void {
     this.isPasswordVisible = !this.isPasswordVisible;
   }
 }

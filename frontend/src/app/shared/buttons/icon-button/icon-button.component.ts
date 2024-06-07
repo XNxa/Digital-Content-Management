@@ -12,14 +12,14 @@ export class IconButtonComponent {
   @Input() icon!: ButtonIcon;
   @Input() disabled = false;
   @Input() color: 'blue' | 'white' | 'clearblue' = 'blue';
-  @Output() click : EventEmitter<void> = new EventEmitter<void>();
+  @Output() click: EventEmitter<void> = new EventEmitter<void>();
 
-  getIconPath() {
-    return 'icons/' + ((this.color == 'blue')?'white/':'blue/') + this.icon + '.svg';
+  getIconPath(): string {
+    return 'icons/' + ((this.color == 'blue') ? 'white/' : 'blue/') + this.icon + '.svg';
   }
 
-  handleClick(event: Event) {
-    event.stopPropagation(); 
+  handleClick(event: Event): void {
+    event.stopPropagation();
     this.click.emit();
   }
 }

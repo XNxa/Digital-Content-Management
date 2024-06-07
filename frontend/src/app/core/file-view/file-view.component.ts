@@ -33,28 +33,28 @@ export class FileViewComponent implements OnInit {
   gridlayout = true;
 
   isDialogOpen: boolean = false;
-  
-  files : FileHeader[] = [];
 
-  constructor(private api : FileApiService) { }  
+  files: FileHeader[] = [];
+
+  constructor(private api: FileApiService) { }
 
   ngOnInit(): void {
-      this.api.getFiles().subscribe(files => {
-        this.files = files;
-      });
+    this.api.getFiles().subscribe(files => {
+      this.files = files;
+    });
   }
 
 
-  onPageChange($event: number) {
+  onPageChange($event: number): void {
     throw new Error('Method not implemented.'); // TODO
   }
 
-  onListClicked() {
+  onListClicked(): void {
     this.gridlayout = false;
     console.log("list clicked");
   }
 
-  onGridClicked() {
+  onGridClicked(): void {
     this.gridlayout = true;
   }
 

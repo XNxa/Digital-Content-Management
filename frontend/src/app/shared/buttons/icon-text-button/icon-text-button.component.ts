@@ -15,12 +15,12 @@ export class IconTextButtonComponent {
   @Input() color: 'blue' | 'white' | 'clearblue' = 'blue';
   @Output() click = new EventEmitter();
 
-  getIconPath() {
-    return 'icons/' + ((this.color == 'blue')?'white/':'blue/') + this.icon + '.svg';
+  getIconPath(): string {
+    return 'icons/' + ((this.color == 'blue') ? 'white/' : 'blue/') + this.icon + '.svg';
   }
 
-  handleClick(event: Event) {
-    event.stopPropagation(); 
+  handleClick(event: Event): void {
+    event.stopPropagation();
     this.click.emit();
   }
 }
