@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: backend
+  datasource:
+    url: jdbc:postgresql://localhost:5432/mydatabase
+    username: myuser
+    password: secret
+  jpa:
+    hibernate:
+      ddl-auto: create-drop  # Comment this line for production
+
+minio:
+  endpoint: http://localhost:9000
+  accessKey: admin
+  secretKey: password
+  bucketName: main

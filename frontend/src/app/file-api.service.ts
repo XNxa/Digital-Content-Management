@@ -21,6 +21,7 @@ export class FileApiService {
     formData.append('version', version);
     formData.append('status', status.toUpperCase().replace(' ', '_').replace('É', 'E'));
     formData.append('keywords', keywords.toString());
+    
     return this.httpClient.post<string>(`${this.API}/upload`, formData);
   }
 

@@ -1,4 +1,4 @@
-package com.dcm.backend.entities;
+package com.dcm.backend.enumeration;
 
 public enum Version {
     VF,
