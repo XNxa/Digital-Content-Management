@@ -19,7 +19,7 @@ public class Keyword {
     private String name;
 
     @ManyToMany(mappedBy = "keywords")
-    private Collection<File> files;
+    private Collection<FileHeader> fileHeaders;
 
     public Keyword(String key) {
         this.name = key;

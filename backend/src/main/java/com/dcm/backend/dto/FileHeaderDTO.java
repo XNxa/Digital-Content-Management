@@ -1,7 +1,6 @@
 package com.dcm.backend.dto;
 
 import com.dcm.backend.enumeration.Status;
-import com.dcm.backend.enumeration.Version;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +16,7 @@ public class FileHeaderDTO {
 
     private String description;
 
-    private Version version;
+    private String version;
 
     private Status status;
 

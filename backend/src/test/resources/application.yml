@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    driver-class-name: 'org.h2.Driver'
+    url: 'jdbc:h2:mem:test'
+    username: 'sa'
+    password: 'sa'
+
+minio:
+  endpoint: http://localhost:9000
+  accessKey: admin
+  secretKey: password
+  bucketName: test
