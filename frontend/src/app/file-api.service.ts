@@ -4,13 +4,14 @@ import { Observable } from 'rxjs';
 import { Status } from './interfaces/status';
 import { Version } from './interfaces/version';
 import { FileHeader } from './interfaces/FileHeader';
+import { environment } from '../environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FileApiService {
 
-  private API = "http://localhost:8080/api"
+  private API = environment.api; 
 
   constructor(private httpClient : HttpClient) { }
 
