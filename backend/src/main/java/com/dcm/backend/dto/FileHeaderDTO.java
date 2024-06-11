@@ -1,6 +1,7 @@
 package com.dcm.backend.dto;
 
 import com.dcm.backend.enumeration.Status;
+import com.dcm.backend.validation.constraints.ValidMimeType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,6 +23,7 @@ public class FileHeaderDTO {
 
     private String date;
 
+    @ValidMimeType
     private String type;
 
     private Long size;

@@ -6,7 +6,10 @@ import com.dcm.backend.entities.Keyword;
 import com.dcm.backend.services.FileService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -51,6 +54,13 @@ public class FileController {
                 .stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
+    }
+
+    @GetMapping("/filedata")
+    public ResponseEntity<Resource> getFileData(@RequestParam("filename") String filename) throws
+            Exception {
+        InputStreamResource resource = fs.getFile(filename);
+        return ResponseEntity.ok().contentType(fs.getFileType(filename)).body(resource);
     }
 
     private FileHeaderDTO convertToDto(FileHeader fileHeader) {

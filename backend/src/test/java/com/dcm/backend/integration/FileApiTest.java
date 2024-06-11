@@ -64,6 +64,7 @@ public class FileApiTest {
                 "Deux");
         assertTrue(utils.presentInBucket("test1.png"));
         assertTrue(utils.presentInBucket("thumbnail_test1.png"));
+        assertTrue(utils.hasTags("test1.png", "Un", "Deux"));
     }
 
     @Test
@@ -71,6 +72,7 @@ public class FileApiTest {
         this.upload("test.txt", "src/test/resources/test.txt", MediaType.TEXT_PLAIN_VALUE,
                 "Un", "Deux");
         assertTrue(utils.presentInBucket("test.txt"));
+        assertTrue(utils.hasTags("test.txt", "Un", "Deux"));
     }
 
     @Test
@@ -97,7 +99,7 @@ public class FileApiTest {
         List<FileHeaderDTO> expectedFiles = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             expectedFiles.add(new FileHeaderDTO("test" + i, "", "VF", Status.PUBLIE,
-                    LocalDate.now().toString(), "png", 23998L, new ArrayList<>()));
+                    LocalDate.now().toString(), "image/png", 23998L, new ArrayList<>()));
         }
 
         ObjectMapper mapper = new ObjectMapper();
@@ -110,7 +112,11 @@ public class FileApiTest {
 
     @Test
     public void testGetFile() throws Exception {
-        throw new UnsupportedOperationException("TODO : Not implemented yet");
+        utils.addFile("test1", "src/test/resources/test1.png");
+
+        mockMvc.perform(get("/api/filedata").param("filename", "test1"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.IMAGE_PNG));
     }
 
     /**

@@ -5,9 +5,11 @@ import com.dcm.backend.enumeration.Status;
 import com.dcm.backend.repositories.FileRepository;
 import io.minio.*;
 import io.minio.messages.Item;
+import io.minio.messages.Tags;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.nio.file.Files;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -56,7 +58,7 @@ public class FileTestUtils {
         f.setSize(file.length());
         f.setStatus(Status.PUBLIE);
         f.setVersion("VF");
-        f.setType(file.getName().substring(file.getName().lastIndexOf('.') + 1));
+        f.setType(Files.probeContentType(file.toPath()));
 
         fileRepository.save(f);
     }
@@ -74,6 +76,23 @@ public class FileTestUtils {
             return true;
         } catch (Exception e) {
             return false;
+        }
+    }
+
+
+    public boolean hasTags(String name, String... tags) throws Exception {
+        Tags t = mc.getObjectTags(
+                GetObjectTagsArgs.builder().bucket(TEST_BUCKET).object(name).build());
+
+        if (tags.length != t.get().size()) {
+            return false;
+        } else {
+            for (String tag : tags) {
+                if (!t.get().containsKey(tag)) {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 

@@ -2,8 +2,11 @@ package com.dcm.backend.services;
 
 import com.dcm.backend.dto.FileHeaderDTO;
 import com.dcm.backend.entities.FileHeader;
+import com.dcm.backend.exceptions.FileNotFoundException;
 import io.minio.errors.*;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -106,4 +109,24 @@ public interface FileService {
             InvalidKeyException, InvalidResponseException, XmlParserException,
             InternalException;
 
+    /**
+     * Gets a file data from the Minio server
+     *
+     * @param filename Name of the file
+     * @return InputStreamResource of the file
+     * @throws FileNotFoundException If the file is not found
+     */
+    public InputStreamResource getFile(String filename) throws ServerException,
+            InsufficientDataException, ErrorResponseException, IOException,
+            NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
+            XmlParserException, InternalException, FileNotFoundException;
+
+    /**
+     * Gets the type of file
+     *
+     * @param filename Name of the file
+     * @return MediaType of the file
+     * @throws FileNotFoundException If the file is not found
+     */
+    MediaType getFileType(String filename) throws FileNotFoundException;
 }

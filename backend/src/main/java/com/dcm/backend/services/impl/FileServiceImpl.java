@@ -5,16 +5,21 @@ import com.dcm.backend.config.MinioProperties;
 import com.dcm.backend.dto.FileHeaderDTO;
 import com.dcm.backend.entities.FileHeader;
 import com.dcm.backend.entities.Keyword;
+import com.dcm.backend.exceptions.FileNotFoundException;
 import com.dcm.backend.repositories.FileRepository;
 import com.dcm.backend.repositories.KeywordRepository;
 import com.dcm.backend.services.FileService;
 import com.dcm.backend.services.ThumbnailService;
+import io.minio.GetObjectArgs;
 import io.minio.PutObjectArgs;
 import io.minio.errors.*;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 import java.awt.image.BufferedImage;
@@ -23,9 +28,7 @@ import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class FileServiceImpl implements FileService {
@@ -46,15 +49,15 @@ public class FileServiceImpl implements FileService {
     private ThumbnailService thumbnailService;
 
     @Override
-    public void upload(InputStream is, FileHeaderDTO metadata) throws IOException,
+    public void upload(InputStream is, @Valid FileHeaderDTO metadata) throws IOException,
             ServerException, InsufficientDataException, ErrorResponseException,
             NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
             XmlParserException, InternalException {
 
-        BufferedImage thumbnail = generateThumbnail(is, metadata.getType());
-        uploadFileToMinio(is, metadata);
-        uploadThumbnailToMinio(thumbnail, metadata);
         Collection<Keyword> keywordCollection = getKeywords(metadata);
+        BufferedImage thumbnail = generateThumbnail(is, metadata.getType());
+        uploadFileToMinio(is, metadata, keywordCollection);
+        uploadThumbnailToMinio(thumbnail, metadata);
         saveFileMetadata(metadata, thumbnail, keywordCollection);
     }
 
@@ -92,6 +95,32 @@ public class FileServiceImpl implements FileService {
 
     }
 
+    @Override
+    public InputStreamResource getFile(String filename) throws ServerException,
+            InsufficientDataException, ErrorResponseException, IOException,
+            NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
+            XmlParserException, InternalException, FileNotFoundException {
+        Optional<FileHeader> fileHeader = fileRepository.findByFilename(filename);
+
+        if (fileHeader.isPresent()) {
+            return new InputStreamResource(mc.minioClient()
+                    .getObject(GetObjectArgs.builder()
+                            .bucket(mp.getBucketName())
+                            .object(fileHeader.get().getFilename())
+                            .build()));
+        } else {
+            throw new FileNotFoundException("getFile : " + filename + " not found");
+        }
+    }
+
+    @Override
+    public MediaType getFileType(String filename) throws FileNotFoundException {
+        FileHeader fileHeader = fileRepository.findByFilename(filename).orElseThrow(() ->
+                new FileNotFoundException("getFileType : " + filename + " not found"));
+
+        return MediaType.parseMediaType(fileHeader.getType());
+    }
+
     /**
      * Generate a thumbnail for the file if it is an image or a video
      *
@@ -121,14 +150,22 @@ public class FileServiceImpl implements FileService {
      * @param is       InputStream of the file
      * @param metadata FileHeaderDTO metadata of the file
      */
-    private void uploadFileToMinio(InputStream is, FileHeaderDTO metadata) throws
+    private void uploadFileToMinio(InputStream is, FileHeaderDTO metadata,
+                                   Collection<Keyword> keywords) throws
             IOException, ServerException, InsufficientDataException,
             ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException,
             InvalidResponseException, XmlParserException, InternalException {
+
+        Map<String, String> keywordsTags = new HashMap<>();
+        for (Keyword k : keywords) {
+            keywordsTags.put(k.getName(), "");
+        }
+
         mc.minioClient()
                 .putObject(PutObjectArgs.builder()
                         .bucket(mp.getBucketName())
                         .object(metadata.getFilename())
+                        .tags(keywordsTags)
                         .stream(is, -1, 5_000_000_000L)
                         .contentType(metadata.getType())
                         .build());
@@ -194,4 +231,6 @@ public class FileServiceImpl implements FileService {
         }
         return keywordCollection;
     }
+
+
 }
