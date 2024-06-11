@@ -51,55 +51,19 @@ public class FileServiceImpl implements FileService {
             NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
             XmlParserException, InternalException {
 
-        // Generate the thumbnail if necessary
-        BufferedImage thumbnail = null;
-        if (thumbnailService.isImage(metadata.getType())) {
-            thumbnail = thumbnailService.generateImageThumbnail(is,
-                    ThumbnailService.WIDTH,
-                    ThumbnailService.HEIGHT);
-        } else if (thumbnailService.isVideo(metadata.getType())) {
-            thumbnail = thumbnailService.generateVideoThumbnail(is,
-                    ThumbnailService.WIDTH,
-                    ThumbnailService.HEIGHT);
-        }
-
-        // Add the file to the Minio bucket
-        mc.minioClient()
-                .putObject(PutObjectArgs.builder()
-                        .bucket(mp.getBucketName())
-                        .object(metadata.getFilename())
-                        .stream(is, metadata.getSize(), -1)
-                        .contentType(metadata.getType())
-                        .build());
-
-        if (thumbnail != null) {
-            InputStream thumbnailInputStream =
-                    thumbnailService.getInputStreamFromBufferedImage(thumbnail, "png");
-
-            int size = thumbnailInputStream.available();
-
-            // Save the thumbnail
-            mc.minioClient().putObject(PutObjectArgs.builder()
-                    .bucket(mp.getBucketName())
-                    .object("thumbnails_" + metadata.getFilename())
-                    .stream(thumbnailInputStream, size, -1)
-                    .contentType("image/png")
-                    .build());
-        }
-
+        BufferedImage thumbnail = generateThumbnail(is, metadata.getType());
+        uploadFileToMinio(is, metadata);
+        uploadThumbnailToMinio(thumbnail, metadata);
         Collection<Keyword> keywordCollection = getKeywords(metadata);
-
-        // Save the file metadata
-        FileHeader f = new FileHeader(metadata.getFilename(), metadata.getDescription(),
-                metadata.getVersion(), metadata.getStatus(), LocalDate.now().toString(),
-                metadata.getType(), metadata.getSize(), keywordCollection);
-        fileRepository.save(f);
+        saveFileMetadata(metadata, thumbnail, keywordCollection);
     }
 
+    @Override
     public long count() {
         return fileRepository.count();
     }
 
+    @Override
     public Page<FileHeader> getPage(int page, int size) {
         Pageable pageRequest = PageRequest.of(page, size);
         return fileRepository.findAll(pageRequest);
@@ -128,6 +92,94 @@ public class FileServiceImpl implements FileService {
 
     }
 
+    /**
+     * Generate a thumbnail for the file if it is an image or a video
+     *
+     * @param is   InputStream of the file
+     * @param type
+     * @return BufferedImage thumbnail or null if the file is not an image or a video
+     * @throws IOException if the InputStream is not valid
+     */
+    private BufferedImage generateThumbnail(InputStream is, String type) throws
+            IOException {
+        BufferedImage thumbnail = null;
+        if (thumbnailService.isImage(type)) {
+            thumbnail =
+                    thumbnailService.generateImageThumbnail(is, ThumbnailService.WIDTH,
+                            ThumbnailService.HEIGHT);
+        } else if (thumbnailService.isVideo(type)) {
+            thumbnail =
+                    thumbnailService.generateVideoThumbnail(is, ThumbnailService.WIDTH,
+                            ThumbnailService.HEIGHT);
+        }
+        return thumbnail;
+    }
+
+    /**
+     * Upload the file to Minio
+     *
+     * @param is       InputStream of the file
+     * @param metadata FileHeaderDTO metadata of the file
+     */
+    private void uploadFileToMinio(InputStream is, FileHeaderDTO metadata) throws
+            IOException, ServerException, InsufficientDataException,
+            ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException,
+            InvalidResponseException, XmlParserException, InternalException {
+        mc.minioClient()
+                .putObject(PutObjectArgs.builder()
+                        .bucket(mp.getBucketName())
+                        .object(metadata.getFilename())
+                        .stream(is, -1, 5_000_000_000L)
+                        .contentType(metadata.getType())
+                        .build());
+    }
+
+    /**
+     * Upload the thumbnail to Minio
+     *
+     * @param thumbnail BufferedImage thumbnail of the file
+     * @param metadata  FileHeaderDTO metadata of the file
+     */
+    private void uploadThumbnailToMinio(BufferedImage thumbnail, FileHeaderDTO metadata) throws
+            IOException, ServerException, InsufficientDataException,
+            ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException,
+            InvalidResponseException, XmlParserException, InternalException {
+        if (thumbnail != null) {
+            InputStream thumbnailInputStream =
+                    thumbnailService.getInputStreamFromBufferedImage(thumbnail, "png");
+            mc.minioClient().putObject(PutObjectArgs.builder()
+                    .bucket(mp.getBucketName())
+                    .object("thumbnail_" + metadata.getFilename())
+                    .stream(thumbnailInputStream, -1, 5_000_000_000L)
+                    .contentType("image/png")
+                    .build());
+        }
+    }
+
+    /**
+     * Save the file metadata to the database
+     *
+     * @param metadata          FileHeaderDTO metadata of the file
+     * @param thumbnail         BufferedImage thumbnail of the file
+     * @param keywordCollection Collection of keywords of the file
+     */
+    private void saveFileMetadata(FileHeaderDTO metadata, BufferedImage thumbnail, Collection<Keyword> keywordCollection) {
+        FileHeader f = new FileHeader(metadata.getFilename(), metadata.getDescription(),
+                metadata.getVersion(), metadata.getStatus(), LocalDate.now().toString(),
+                metadata.getType(), metadata.getSize(), keywordCollection);
+        if (thumbnail != null) {
+            f.setThumbnailName("thumbnails_" + metadata.getFilename());
+        }
+        fileRepository.save(f);
+    }
+
+    /**
+     * Get the keywords from the metadata (if they exist in the database, they are
+     * retrieved, otherwise they are created in the database)
+     *
+     * @param metadata FileHeaderDTO metadata of the file
+     * @return Collection of keywords
+     */
     private Collection<Keyword> getKeywords(FileHeaderDTO metadata) {
         // Compute the keywords
         Collection<Keyword> keywordCollection = new LinkedList<>();

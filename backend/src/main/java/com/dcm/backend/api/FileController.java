@@ -4,16 +4,12 @@ import com.dcm.backend.dto.FileHeaderDTO;
 import com.dcm.backend.entities.FileHeader;
 import com.dcm.backend.entities.Keyword;
 import com.dcm.backend.services.FileService;
-import io.minio.errors.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,9 +27,7 @@ public class FileController {
     @PostMapping("/upload")
     public void uploadFile(@RequestPart("file") MultipartFile file,
                            @RequestPart("metadata") FileHeaderDTO metadata)
-            throws IOException, ServerException, InsufficientDataException,
-            ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException,
-            InvalidResponseException, XmlParserException, InternalException {
+            throws Exception {
 
         metadata.setFilename(file.getOriginalFilename());
         metadata.setSize(file.getSize());
@@ -48,7 +42,8 @@ public class FileController {
     }
 
     @GetMapping("/files")
-    public List<FileHeaderDTO> getFiles(@RequestParam("page") int page, @RequestParam("size") int size) {
+    public List<FileHeaderDTO> getFiles(@RequestParam("page") int page,
+                                        @RequestParam("size") int size) {
         Page<FileHeader> p = fs.getPage(page, size);
         p.getTotalPages();
 

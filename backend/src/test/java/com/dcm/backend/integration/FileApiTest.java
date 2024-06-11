@@ -15,9 +15,10 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -55,33 +56,21 @@ public class FileApiTest {
     public void contextLoads() {
     }
 
+
     @Test
-    public void testUpload() throws Exception {
-        String name = "testfile";
+    public void testUploadPng() throws Exception {
+        this.upload("test1.png", "src/test/resources/test1.png",
+                "image/png", "Un",
+                "Deux");
+        assertTrue(utils.presentInBucket("test1.png"));
+        assertTrue(utils.presentInBucket("thumbnail_test1.png"));
+    }
 
-        // Build a mock MultipartFile
-        MockMultipartFile file =
-                new MockMultipartFile("file", name, MediaType.TEXT_PLAIN_VALUE,
-                        "some text".getBytes());
-        Collection<String> k = List.of(new String[]{"Kw1", "Kw2"});
-
-        // Build a metadata object
-        FileHeaderDTO f = new FileHeaderDTO();
-        f.setDescription("Description...");
-        f.setKeywords(k);
-        f.setStatus(Status.PUBLIE);
-        f.setVersion("VF");
-
-        ObjectMapper mapper = new ObjectMapper();
-        MockMultipartFile metadata = new MockMultipartFile("metadata", "metadata",
-                MediaType.APPLICATION_JSON_VALUE, mapper.writeValueAsBytes(f));
-
-        mockMvc.perform(multipart("/api/upload")
-                        .file(file)
-                        .file(metadata))
-                .andExpect(status().isOk());
-
-        assertTrue(utils.presentInBucket(name));
+    @Test
+    public void testUploadTxt() throws Exception {
+        this.upload("test.txt", "src/test/resources/test.txt", MediaType.TEXT_PLAIN_VALUE,
+                "Un", "Deux");
+        assertTrue(utils.presentInBucket("test.txt"));
     }
 
     @Test
@@ -122,6 +111,30 @@ public class FileApiTest {
     @Test
     public void testGetFile() throws Exception {
         throw new UnsupportedOperationException("TODO : Not implemented yet");
+    }
+
+    /**
+     * Generic test method for uploading files
+     */
+    private void upload(String fileName, String path, String type, String... keywords) throws
+            Exception {
+
+        // Get file from file system
+        MockMultipartFile file = new MockMultipartFile("file", fileName, type,
+                Files.readAllBytes(Path.of(path)));
+
+        FileHeaderDTO fileHeader = new FileHeaderDTO();
+        fileHeader.setDescription("Description...");
+        fileHeader.setKeywords(List.of(keywords));
+        fileHeader.setStatus(Status.PUBLIE);
+        fileHeader.setVersion("VF");
+
+        MockMultipartFile metadata = new MockMultipartFile("metadata", "metadata",
+                MediaType.APPLICATION_JSON_VALUE,
+                new ObjectMapper().writeValueAsBytes(fileHeader));
+
+        mockMvc.perform(multipart("/api/upload").file(file).file(metadata))
+                .andExpect(status().isOk());
     }
 
 }
