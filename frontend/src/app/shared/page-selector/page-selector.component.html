@@ -1,7 +1,7 @@
 <div class="pagination">
     <button class="white" [disabled]="currentPage === 1" (click)="previousPage()">&#8249;</button>
     
-    @if (currentPage > totalPages - 3) {
+    @if (currentPage > totalPages - 3 && totalPages > 3) {
         <button class="white" (click)="goToPage(1)">
             1
         </button>

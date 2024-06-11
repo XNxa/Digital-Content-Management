@@ -40,7 +40,7 @@ public class FileController {
     }
 
     @GetMapping("/count")
-    public long getNumberOfPages() {
+    public long getNumberOfElements() {
         return fs.count();
     }
 
@@ -60,6 +60,13 @@ public class FileController {
     public ResponseEntity<Resource> getFileData(@RequestParam("filename") String filename) throws
             Exception {
         InputStreamResource resource = fs.getFile(filename);
+        return ResponseEntity.ok().contentType(fs.getFileType(filename)).body(resource);
+    }
+
+    @GetMapping("/thumbnail")
+    public ResponseEntity<Resource> getThumbnail(@RequestParam("filename") String filename) throws
+            Exception {
+        InputStreamResource resource = fs.getThumbnail(filename);
         return ResponseEntity.ok().contentType(fs.getFileType(filename)).body(resource);
     }
 

@@ -15,6 +15,8 @@ public class FileHeaderDTO {
 
     private String filename;
 
+    private String thumbnailName;
+
     private String description;
 
     private String version;

@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { FileHeader } from '../../models/FileHeader';
 
 @Component({
   selector: 'app-filecard',
@@ -8,12 +9,8 @@ import { Component, Input } from '@angular/core';
   styleUrl: './filecard.component.css'
 })
 export class FilecardComponent {
-
-  @Input() filename = 'Name';
-  @Input() filetype = '.TYP';
-  @Input() filesize = '48 Mo';
-  @Input() filedate = '25/01/2000';
-  @Input() filestatus = 'Archivé';
+  
+  @Input() file : FileHeader | undefined;
 
   isChecked = false;
 

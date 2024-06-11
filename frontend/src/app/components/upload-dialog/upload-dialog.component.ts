@@ -4,8 +4,8 @@ import { LongInputComponent } from '../../shared/form/long-input/long-input.comp
 import { SelectComponent } from '../../shared/form/select/select.component';
 import { ChipsInputComponent } from '../../shared/form/chips-input/chips-input.component';
 import { FileApiService } from '../../file-api.service';
-import { Version } from '../../interfaces/version';
-import { Status } from '../../interfaces/status';
+import { Status } from '../../enums/status';
+import { FileHeader } from '../../models/FileHeader';
 
 @Component({
   selector: 'app-upload-dialog',
@@ -25,11 +25,12 @@ export class UploadDialogComponent {
 
   selectedFile: File | undefined;
   description: string = '';
-  version: Version = 'VF'
+  version: string = 'VF'
   keywords: string[] = [];
-  status: Status = 'Archivé'
-
   currentStep = 1;
+  
+  readonly statusOptions = Status.getStringList();
+  status : string = Status.printableString(Status.ARCHIVE);
 
   constructor(private api: FileApiService) { }
 
@@ -66,13 +67,15 @@ export class UploadDialogComponent {
       return;
     }
 
-    this.api.uploadFile(
-      this.selectedFile as File,
-      this.description, this.version,
-      this.status,
-      this.keywords
-    ).subscribe({
-      next: (response) => console.log(response),
+    const metadata : FileHeader = {
+      description: this.description,
+      version: this.version,
+      keywords: this.keywords,
+      status: Status.fromString(this.status)
+    } as FileHeader;
+
+    this.api.uploadFile(this.selectedFile, metadata).subscribe({
+      next: () => console.log(),
       error: () => console.error()
     });
 

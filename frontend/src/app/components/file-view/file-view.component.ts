@@ -7,7 +7,7 @@ import { IconTextButtonComponent } from '../../shared/buttons/icon-text-button/i
 import { UploadDialogComponent } from '../upload-dialog/upload-dialog.component';
 import { InputComponent } from '../../shared/form/input/input.component';
 import { FileApiService } from '../../file-api.service';
-import { FileHeader } from '../../interfaces/FileHeader';
+import { FileHeader } from '../../models/FileHeader';
 import { SelectComponent } from '../../shared/form/select/select.component';
 
 @Component({
@@ -27,35 +27,48 @@ import { SelectComponent } from '../../shared/form/select/select.component';
   styleUrl: './file-view.component.css'
 })
 export class FileViewComponent implements OnInit {
-
   viewtitle = "Fichiers";
-
   gridlayout = true;
-
   isDialogOpen: boolean = false;
-
   files: FileHeader[] = [];
+  currentPage: number = 1;
+  itemsPerPage: number = 10;
+  numberOfElements!: number;
 
-  constructor(private api: FileApiService) { }
-
-  ngOnInit(): void {
-    this.api.getFiles().subscribe(files => {
-      this.files = files;
+  constructor(private api: FileApiService) {
+    this.api.getNumberOfElement().subscribe(n => {
+      this.numberOfElements = n;
     });
   }
 
+  ngOnInit(): void {
+    this.refreshFileList();
+  }
 
-  onPageChange($event: number): void {
-    throw new Error('Method not implemented.'); // TODO
+  onPageChange(pageNumber: number): void {
+    this.currentPage = pageNumber
+    this.refreshFileList();
   }
 
   onListClicked(): void {
     this.gridlayout = false;
-    console.log("list clicked");
   }
 
   onGridClicked(): void {
     this.gridlayout = true;
+  }
+
+  refreshFileList(): void {
+    this.api.getPages(this.currentPage - 1, this.itemsPerPage).subscribe(files => {
+      this.files = files;
+      for (let file of this.files) {
+        if (file.thumbnailName != null) {
+          this.api.getThumbnail(file.filename).subscribe(blob => {
+            file.thumbnail = URL.createObjectURL(blob);
+          });
+        }
+      }
+    });
   }
 
 }

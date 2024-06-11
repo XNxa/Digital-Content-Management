@@ -1,9 +1,7 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Status } from './interfaces/status';
-import { Version } from './interfaces/version';
-import { FileHeader } from './interfaces/FileHeader';
+import { FileHeader } from './models/FileHeader';
 import { environment } from '../environments/environment.development';
 
 @Injectable({
@@ -15,18 +13,36 @@ export class FileApiService {
 
   constructor(private httpClient : HttpClient) { }
 
-  public uploadFile(file : File, description : string, version: Version, status : Status, keywords : string[]) : Observable<string> {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('description', description);
-    formData.append('version', version);
-    formData.append('status', status.toUpperCase().replace(' ', '_').replace('É', 'E'));
-    formData.append('keywords', keywords.toString());
-    
-    return this.httpClient.post<string>(`${this.API}/upload`, formData);
+  public uploadFile(file: File, metadata: FileHeader): Observable<void> {
+    const formData: FormData = new FormData();
+    formData.append('file', file, file.name);
+    formData.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+
+    return this.httpClient.post<void>(`${this.API}/upload`, formData);
   }
 
-  public getFiles() : Observable<FileHeader[]> {
-    return this.httpClient.get<FileHeader[]>(`${this.API}/files`);
+  public getNumberOfElement(): Observable<number> {
+    return this.httpClient.get<number>(`${this.API}/count`);
+  }
+  
+  public getPages(page: number, size: number): Observable<FileHeader[]> {
+    const params = new HttpParams().set('page', page.toString()).set('size', size.toString());
+    return this.httpClient.get<FileHeader[]>(`${this.API}/files`, { params });
+  }
+
+  public getFileData(filename: string): Observable<Blob> {
+    const params = new HttpParams().set('filename', filename);
+    return this.httpClient.get<Blob>(`${this.API}/filedata`, {
+      params,
+      responseType: 'blob' as 'json'
+    });
+  }
+
+  public getThumbnail(filename: string): Observable<Blob> {
+    const params = new HttpParams().set('filename', filename);
+    return this.httpClient.get<Blob>(`${this.API}/thumbnail`, {
+      params,
+      responseType: 'blob' as 'json'
+    });
   }
 }

@@ -3,6 +3,7 @@ package com.dcm.backend.services;
 import com.dcm.backend.dto.FileHeaderDTO;
 import com.dcm.backend.entities.FileHeader;
 import com.dcm.backend.exceptions.FileNotFoundException;
+import com.dcm.backend.exceptions.NoThumbnailException;
 import io.minio.errors.*;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
@@ -122,11 +123,26 @@ public interface FileService {
             XmlParserException, InternalException, FileNotFoundException;
 
     /**
+     * Gets the thumbnail of a file
+     *
+     * @param filename Name of the file
+     * @return InputStreamResource of the thumbnail
+     * @throws FileNotFoundException If the file is not found
+     * @throws NoThumbnailException  If the file has no thumbnail
+     */
+    public InputStreamResource getThumbnail(String filename) throws ServerException,
+            InsufficientDataException, ErrorResponseException, IOException,
+            NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
+            XmlParserException, InternalException, FileNotFoundException,
+            NoThumbnailException;
+
+    /**
      * Gets the type of file
      *
      * @param filename Name of the file
      * @return MediaType of the file
      * @throws FileNotFoundException If the file is not found
      */
-    MediaType getFileType(String filename) throws FileNotFoundException;
+    public MediaType getFileType(String filename) throws FileNotFoundException;
+
 }

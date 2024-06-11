@@ -16,7 +16,7 @@
 <div class="header">
     <h2>{{viewtitle}}</h2>
     <div class="action-buttons">
-        <app-icon-button color='white' icon="update"></app-icon-button>
+        <app-icon-button color='white' icon="update" (click)="refreshFileList()"></app-icon-button>
         <app-icon-button color='white' icon="checkbox"></app-icon-button>
         <app-icon-button [color]="(gridlayout)?'clearblue':'white'" icon="card" (click)="onGridClicked()"></app-icon-button>
         <app-icon-button [color]="(gridlayout)?'white':'clearblue'" icon="list" (click)="onListClicked()"></app-icon-button>
@@ -26,8 +26,7 @@
 <div class="file-grid">
     @if (gridlayout) {
     @for (file of files; track $index) {
-    <app-filecard [filename]="file.filename" [filetype]="file.type" [filesize]="(file.size / 1_000_000).toString() + ' MB'"
-        [filedate]="file.date" [filestatus]="file.status"></app-filecard>
+    <app-filecard [file]="file"></app-filecard>
     }
     } @else {
     <app-table
@@ -39,5 +38,5 @@
 </div>
 
 <div class="footer">
-    <app-page-selector [totalItems]="100" [itemsPerPage]="10" (pageChange)="onPageChange($event)"></app-page-selector>
+    <app-page-selector [totalItems]="numberOfElements" [itemsPerPage]="itemsPerPage" (pageChange)="onPageChange($event)"></app-page-selector>
 </div>

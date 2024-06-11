@@ -6,6 +6,7 @@ import com.dcm.backend.dto.FileHeaderDTO;
 import com.dcm.backend.entities.FileHeader;
 import com.dcm.backend.entities.Keyword;
 import com.dcm.backend.exceptions.FileNotFoundException;
+import com.dcm.backend.exceptions.NoThumbnailException;
 import com.dcm.backend.repositories.FileRepository;
 import com.dcm.backend.repositories.KeywordRepository;
 import com.dcm.backend.services.FileService;
@@ -100,23 +101,46 @@ public class FileServiceImpl implements FileService {
             InsufficientDataException, ErrorResponseException, IOException,
             NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
             XmlParserException, InternalException, FileNotFoundException {
-        Optional<FileHeader> fileHeader = fileRepository.findByFilename(filename);
+        FileHeader fileHeader = fileRepository.findByFilename(filename).orElseThrow(
+                () -> new FileNotFoundException("getFile : " + filename + " not found")
+        );
 
-        if (fileHeader.isPresent()) {
-            return new InputStreamResource(mc.minioClient()
-                    .getObject(GetObjectArgs.builder()
-                            .bucket(mp.getBucketName())
-                            .object(fileHeader.get().getFilename())
-                            .build()));
-        } else {
-            throw new FileNotFoundException("getFile : " + filename + " not found");
+        return new InputStreamResource(mc.minioClient()
+                .getObject(GetObjectArgs.builder()
+                        .bucket(mp.getBucketName())
+                        .object(fileHeader.getFilename())
+                        .build()));
+    }
+
+    @Override
+    public InputStreamResource getThumbnail(String filename) throws ServerException,
+            InsufficientDataException, ErrorResponseException, IOException,
+            NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
+            XmlParserException, InternalException, FileNotFoundException,
+            NoThumbnailException {
+        FileHeader fileHeader = fileRepository.findByFilename(filename).orElseThrow(
+                () -> new FileNotFoundException("getThumbnail : " + filename + " not " +
+                        "found")
+        );
+
+        if (fileHeader.getThumbnailName() == null) {
+            throw new NoThumbnailException(
+                    "getThumbnail : " + filename + " no thumbnail");
         }
+
+        return new InputStreamResource(mc.minioClient()
+                .getObject(GetObjectArgs.builder()
+                        .bucket(mp.getBucketName())
+                        .object(fileHeader.getThumbnailName())
+                        .build()));
     }
 
     @Override
     public MediaType getFileType(String filename) throws FileNotFoundException {
-        FileHeader fileHeader = fileRepository.findByFilename(filename).orElseThrow(() ->
-                new FileNotFoundException("getFileType : " + filename + " not found"));
+        FileHeader fileHeader = fileRepository.findByFilename(filename).orElseThrow(
+                () -> new FileNotFoundException("getFileType : " + filename + " not " +
+                        "found")
+        );
 
         return MediaType.parseMediaType(fileHeader.getType());
     }
@@ -205,7 +229,7 @@ public class FileServiceImpl implements FileService {
                 metadata.getVersion(), metadata.getStatus(), LocalDate.now().toString(),
                 metadata.getType(), metadata.getSize(), keywordCollection);
         if (thumbnail != null) {
-            f.setThumbnailName("thumbnails_" + metadata.getFilename());
+            f.setThumbnailName("thumbnail_" + metadata.getFilename());
         }
         fileRepository.save(f);
     }
