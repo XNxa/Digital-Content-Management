@@ -49,3 +49,24 @@ span {
   font-weight: normal;
   font-size: small;
 }
+
+.suggestions {
+  margin-top: 5px;
+  list-style: none;
+  padding: 0;
+  border: 1px solid #c6ced6;
+  border-radius: 4px;
+  background-color: white;
+  max-height: 100px;
+  overflow-y: auto;
+  z-index: 1;
+}
+
+.suggestions li {
+  padding: 5px;
+  cursor: pointer;
+}
+
+.suggestions li:hover {
+  background-color: #f0f0f0;
+}

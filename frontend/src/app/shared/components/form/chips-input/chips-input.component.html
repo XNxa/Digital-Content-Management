@@ -9,7 +9,16 @@
         }
         @if (keywords.length < maxKeywords) {
             <input placeholder="..." [(ngModel)]="inputValue" (keyup.enter)="add(inputValue)"
-                (blur)="add(inputValue)">
+                (blur)="add(inputValue)" (input)="onInputChange()">
         }
     </div>
+    @if (filteredSuggestions.length > 0) {
+        <ul class="suggestions">
+            @for (suggestion of filteredSuggestions; track $index) {
+                <li (mousedown)="selectSuggestion(suggestion)">
+                    {{ suggestion }}
+                </li>
+            }
+        </ul>
+    }
 </div>
