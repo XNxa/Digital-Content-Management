@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { FileHeader } from '../models/FileHeader';
+import { Observable, map } from 'rxjs';
+import { FileHeader, convertSizeToPrintable } from '../models/FileHeader';
 import { environment } from '../../environments/environment.development';
 
 @Injectable({
@@ -27,7 +27,14 @@ export class FileApiService {
   
   public getPages(page: number, size: number): Observable<FileHeader[]> {
     const params = new HttpParams().set('page', page.toString()).set('size', size.toString());
-    return this.httpClient.get<FileHeader[]>(`${this.API}/files`, { params });
+    return this.httpClient.get<FileHeader[]>(`${this.API}/files`, { params }).pipe(
+      map((files: FileHeader[]) => {
+        return files.map((file: FileHeader) => {
+          file.printableSize = convertSizeToPrintable(file.size);
+          return file;
+        }, this);
+      }
+    ));
   }
 
   public getFileData(filename: string): Observable<Blob> {

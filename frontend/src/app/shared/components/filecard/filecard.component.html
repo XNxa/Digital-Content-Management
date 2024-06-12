@@ -13,10 +13,11 @@
     </div>
     <div class="file-card-footer">
         <div class="file-card-footer-left">
-            <span class="primary">{{file?.filename}}</span>
-            <span class="secondary">{{file?.type}} - {{file?.size}}</span>
+            <span class="primary">{{filename}}</span>
+            <span class="secondary">{{type}}</span>
+            <span class="secondary">{{file?.printableSize}}</span>
         </div>
-        <div class="file-card-footer-left">
+        <div class="file-card-footer-right">
             <span class="primary status archived">{{file?.status}}</span> <!-- TODO : Separate component -->
             <span class="secondary">{{file?.date}}</span>
         </div>

@@ -2,8 +2,8 @@
     <thead>
         <tr>
             <th><input type="checkbox"></th>
-            @for (column of columns; track $index) {
-            <th>{{ column.header }}</th>
+            @for (column of columnsToDisplay; track $index) {
+                <th>{{ column.header }}</th>
             }
         </tr>
     </thead>
@@ -11,8 +11,21 @@
         @for (row of data; track $index) {
         <tr>
             <td><input type="checkbox"></td>
-            @for (column of columns; track $index) {
-            <td>{{ row[column.field] }}</td>
+            @for (column of columnsToDisplay; track $index) {
+            <td>
+                <div class="cell">
+                    @if (imageColumnPresent && $index == 0) {
+                        @if (row[imageColumn.field] != null) {
+                            <img src="{{ row[imageColumn.field] }}">
+                        } @else {
+                            <img src="/icons/file.svg">
+                        }
+                    }
+                    <span [class]="imageColumnPresent && $index == 0 ? 'next-icon' : ''">
+                        {{ row[column.field] }}
+                    </span>
+                </div>
+            </td>
             }
         </tr>
         }

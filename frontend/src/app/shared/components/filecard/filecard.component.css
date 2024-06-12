@@ -45,7 +45,7 @@
 .file-card-footer-left {
   display: flex;
   flex-direction: column;
-  margin: 5px 0;
+  margin-right: 5px 0;
   text-align: left;
   gap: 2px;
 }
@@ -53,8 +53,9 @@
 .file-card-footer-right {
   display: flex;
   flex-direction: column;
-  margin: 5px 0;
+  margin-left: 5px 0;
   text-align: right;
+  gap: 2px;
 }
 
 .status {

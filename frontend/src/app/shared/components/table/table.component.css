@@ -24,3 +24,18 @@ th {
   font-size: x-small;  
   border-top: 0px solid #dddddd; 
 }
+
+img {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+}
+
+.next-icon {
+  margin-left: 10px;
+}
