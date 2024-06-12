@@ -35,6 +35,8 @@ export class FileViewComponent implements OnInit {
   currentPage: number = 1;
   itemsPerPage: number = 16;
   numberOfElements!: number;
+
+  filenameSearched: string = '';
   
   constructor(private api: FileApiService, private snackbar: SnackbarService) {
     this.api.getNumberOfElement().subscribe(n => {
@@ -60,7 +62,7 @@ export class FileViewComponent implements OnInit {
   }
 
   refreshFileList(): void {
-    this.api.getPages(this.currentPage - 1, this.itemsPerPage).subscribe(files => {
+    this.api.getPages(this.currentPage - 1, this.itemsPerPage, this.filenameSearched).subscribe(files => {
       this.files = files;
       for (let file of this.files) {
         if (file.thumbnailName != null) {

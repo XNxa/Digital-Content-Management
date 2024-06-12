@@ -3,6 +3,7 @@ package com.dcm.backend.api;
 import com.dcm.backend.dto.FileHeaderDTO;
 import com.dcm.backend.entities.FileHeader;
 import com.dcm.backend.entities.Keyword;
+import com.dcm.backend.enumeration.Status;
 import com.dcm.backend.services.FileService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -46,12 +48,14 @@ public class FileController {
 
     @GetMapping("/files")
     public List<FileHeaderDTO> getFiles(@RequestParam("page") int page,
-                                        @RequestParam("size") int size) {
-        Page<FileHeader> p = fs.getPage(page, size);
+                                        @RequestParam("size") int size,
+                                        @RequestParam("filename") Optional<String> filename,
+                                        @RequestParam("keywords") Optional<List<String>> keywords,
+                                        @RequestParam("status") Optional<Status> status) {
+        Page<FileHeader> p = fs.getPage(page, size, filename, keywords, status);
         p.getTotalPages();
 
-        return fs.getPage(page, size)
-                .stream()
+        return p.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }

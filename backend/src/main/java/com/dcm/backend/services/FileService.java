@@ -2,6 +2,7 @@ package com.dcm.backend.services;
 
 import com.dcm.backend.dto.FileHeaderDTO;
 import com.dcm.backend.entities.FileHeader;
+import com.dcm.backend.enumeration.Status;
 import com.dcm.backend.exceptions.FileNotFoundException;
 import com.dcm.backend.exceptions.NoThumbnailException;
 import io.minio.errors.*;
@@ -14,6 +15,7 @@ import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Optional;
 
 public interface FileService {
 
@@ -47,11 +49,14 @@ public interface FileService {
     /**
      * Returns a page of files headers
      *
-     * @param page Page number
-     * @param size Number of files per page
+     * @param page     Page number
+     * @param size     Number of files per page
+     * @param filename Name of the file
+     * @param keywords Keywords of the file
+     * @param status   Status of the file
      * @return Page of files
      */
-    public Page<FileHeader> getPage(int page, int size);
+    public Page<FileHeader> getPage(int page, int size, Optional<String> filename, Optional<List<String>> keywords, Optional<Status> status);
 
     /**
      * Deletes a file from the Minio server

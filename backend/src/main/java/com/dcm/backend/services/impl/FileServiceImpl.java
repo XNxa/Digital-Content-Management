@@ -5,10 +5,12 @@ import com.dcm.backend.config.MinioProperties;
 import com.dcm.backend.dto.FileHeaderDTO;
 import com.dcm.backend.entities.FileHeader;
 import com.dcm.backend.entities.Keyword;
+import com.dcm.backend.enumeration.Status;
 import com.dcm.backend.exceptions.FileNotFoundException;
 import com.dcm.backend.exceptions.NoThumbnailException;
 import com.dcm.backend.repositories.FileRepository;
 import com.dcm.backend.repositories.KeywordRepository;
+import com.dcm.backend.repositories.specifications.FileFilterSpecification;
 import com.dcm.backend.services.FileService;
 import com.dcm.backend.services.ThumbnailService;
 import io.minio.GetObjectArgs;
@@ -78,9 +80,15 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public Page<FileHeader> getPage(int page, int size) {
+    public Page<FileHeader> getPage(int page, int size, Optional<String> filename, Optional<List<String>> keywords, Optional<Status> status) {
         Pageable pageRequest = PageRequest.of(page, size);
-        return fileRepository.findAll(pageRequest);
+
+        FileFilterSpecification spec =
+                new FileFilterSpecification(filename, keywords.map(
+                        k -> k.stream().map(Keyword::new).toList())
+                        , status);
+
+        return fileRepository.findAll(spec, pageRequest);
     }
 
     @Override

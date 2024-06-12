@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { FileHeader, convertSizeToPrintable } from '../models/FileHeader';
 import { environment } from '../../environments/environment.development';
+import { Status } from '../enums/status';
 
 @Injectable({
   providedIn: 'root'
@@ -25,8 +26,19 @@ export class FileApiService {
     return this.httpClient.get<number>(`${this.API}/count`);
   }
   
-  public getPages(page: number, size: number): Observable<FileHeader[]> {
-    const params = new HttpParams().set('page', page.toString()).set('size', size.toString());
+  public getPages(page: number, size: number, filename: string, keywords?: string[], status?: Status): Observable<FileHeader[]> {
+    let params = new HttpParams().set('page', page.toString()).set('size', size.toString());
+    
+    if (filename?.length > 0) {
+      params = params.set('filename', filename);
+    }
+    if (keywords) {
+      params.set('keywords', keywords.join(','));
+    }
+    if (status) {
+      params.set('status', status);
+    }
+    
     return this.httpClient.get<FileHeader[]>(`${this.API}/files`, { params }).pipe(
       map((files: FileHeader[]) => {
         return files.map((file: FileHeader) => {
