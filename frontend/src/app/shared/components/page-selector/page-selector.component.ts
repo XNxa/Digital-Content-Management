@@ -31,16 +31,16 @@ export class PageSelectorComponent implements OnChanges{
 
   generatePagesArray(): number[] {
     const pages = [];
-    if (this.currentPage <= 3) {
+    if (this.currentPage <= 4) {
       for (let i = 1; i <= 5; i++) {
         pages.push(i);
       }
-    } else if (this.currentPage > this.totalPages - 3) {
+    } else if (this.currentPage > this.totalPages - 4) {
       for (let i = this.totalPages - 4; i <= this.totalPages; i++) {
         pages.push(i);
       }
     } else {
-      pages.push(this.currentPage - 2)
+      
       pages.push(this.currentPage - 1);
       pages.push(this.currentPage);
       pages.push(this.currentPage + 1);

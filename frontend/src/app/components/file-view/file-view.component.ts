@@ -33,7 +33,7 @@ export class FileViewComponent implements OnInit {
   isDialogOpen: boolean = false;
   files: FileHeader[] = [];
   currentPage: number = 1;
-  itemsPerPage: number = 10;
+  itemsPerPage: number = 16;
   numberOfElements!: number;
   
   constructor(private api: FileApiService, private snackbar: SnackbarService) {
