@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { IconButtonComponent } from '../../shared/buttons/icon-button/icon-button.component';
-import { FilecardComponent } from '../../shared/filecard/filecard.component';
-import { PageSelectorComponent } from '../../shared/page-selector/page-selector.component';
-import { TableComponent } from '../../shared/table/table.component';
-import { IconTextButtonComponent } from '../../shared/buttons/icon-text-button/icon-text-button.component';
+import { IconButtonComponent } from '../../shared/components/buttons/icon-button/icon-button.component';
+import { FilecardComponent } from '../../shared/components/filecard/filecard.component';
+import { PageSelectorComponent } from '../../shared/components/page-selector/page-selector.component';
+import { TableComponent } from '../../shared/components/table/table.component';
+import { IconTextButtonComponent } from '../../shared/components/buttons/icon-text-button/icon-text-button.component';
 import { UploadDialogComponent } from '../upload-dialog/upload-dialog.component';
-import { InputComponent } from '../../shared/form/input/input.component';
+import { InputComponent } from '../../shared/components/form/input/input.component';
 import { FileApiService } from '../../file-api.service';
 import { FileHeader } from '../../models/FileHeader';
-import { SelectComponent } from '../../shared/form/select/select.component';
+import { SelectComponent } from '../../shared/components/form/select/select.component';
 
 @Component({
   selector: 'app-file-view',
