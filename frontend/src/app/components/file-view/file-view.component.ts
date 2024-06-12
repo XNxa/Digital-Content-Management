@@ -6,9 +6,10 @@ import { TableComponent } from '../../shared/components/table/table.component';
 import { IconTextButtonComponent } from '../../shared/components/buttons/icon-text-button/icon-text-button.component';
 import { UploadDialogComponent } from '../upload-dialog/upload-dialog.component';
 import { InputComponent } from '../../shared/components/form/input/input.component';
-import { FileApiService } from '../../file-api.service';
+import { FileApiService } from '../../services/file-api.service';
 import { FileHeader } from '../../models/FileHeader';
 import { SelectComponent } from '../../shared/components/form/select/select.component';
+import { SnackbarService } from '../../services/snackbar.service';
 
 @Component({
   selector: 'app-file-view',
@@ -34,22 +35,22 @@ export class FileViewComponent implements OnInit {
   currentPage: number = 1;
   itemsPerPage: number = 10;
   numberOfElements!: number;
-
-  constructor(private api: FileApiService) {
+  
+  constructor(private api: FileApiService, private snackbar: SnackbarService) {
     this.api.getNumberOfElement().subscribe(n => {
       this.numberOfElements = n;
     });
   }
-
+  
   ngOnInit(): void {
     this.refreshFileList();
   }
-
+  
   onPageChange(pageNumber: number): void {
     this.currentPage = pageNumber
     this.refreshFileList();
   }
-
+  
   onListClicked(): void {
     this.gridlayout = false;
   }
@@ -71,4 +72,7 @@ export class FileViewComponent implements OnInit {
     });
   }
 
+  hello() {
+    this.snackbar.show('Hello World!');
+  }
 }

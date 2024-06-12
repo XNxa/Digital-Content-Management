@@ -17,7 +17,7 @@
     <h2>{{viewtitle}}</h2>
     <div class="action-buttons">
         <app-icon-button color='white' icon="update" (click)="refreshFileList()"></app-icon-button>
-        <app-icon-button color='white' icon="checkbox"></app-icon-button>
+        <app-icon-button color='white' icon="checkbox" (click)="hello()"></app-icon-button>
         <app-icon-button [color]="(gridlayout)?'clearblue':'white'" icon="card" (click)="onGridClicked()"></app-icon-button>
         <app-icon-button [color]="(gridlayout)?'white':'clearblue'" icon="list" (click)="onListClicked()"></app-icon-button>
     </div>

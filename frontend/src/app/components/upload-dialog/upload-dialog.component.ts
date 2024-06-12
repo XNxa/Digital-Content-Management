@@ -3,7 +3,7 @@ import { IconTextButtonComponent } from '../../shared/components/buttons/icon-te
 import { LongInputComponent } from '../../shared/components/form/long-input/long-input.component';
 import { SelectComponent } from '../../shared/components/form/select/select.component';
 import { ChipsInputComponent } from '../../shared/components/form/chips-input/chips-input.component';
-import { FileApiService } from '../../file-api.service';
+import { FileApiService } from '../../services/file-api.service';
 import { Status } from '../../enums/status';
 import { FileHeader } from '../../models/FileHeader';
 

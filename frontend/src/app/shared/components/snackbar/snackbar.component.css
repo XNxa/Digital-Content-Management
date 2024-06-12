@@ -1,0 +1,24 @@
+.snackbar {
+  visibility: hidden;
+
+  position: fixed;
+  bottom: 50px;
+  left: 50%;
+  
+  padding: 10px 10px;
+  border-radius: 8px;
+  
+  min-width: 20%;
+  transform-origin: center center;
+  transform: translate(-50%, 0%);
+
+  background: var(--primary-accent);
+
+  text-align: center;
+  color: white;
+}
+
+.snackbar.show {
+  visibility: visible;
+  opacity: 1;
+}
