@@ -71,8 +71,4 @@ export class FileViewComponent implements OnInit {
       }
     });
   }
-
-  hello() {
-    this.snackbar.show('Hello World!');
-  }
 }

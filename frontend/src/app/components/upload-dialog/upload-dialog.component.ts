@@ -6,6 +6,7 @@ import { ChipsInputComponent } from '../../shared/components/form/chips-input/ch
 import { FileApiService } from '../../services/file-api.service';
 import { Status } from '../../enums/status';
 import { FileHeader } from '../../models/FileHeader';
+import { SnackbarService } from '../../services/snackbar.service';
 
 @Component({
   selector: 'app-upload-dialog',
@@ -32,7 +33,7 @@ export class UploadDialogComponent {
   readonly statusOptions = Status.getStringList();
   status : string = Status.printableString(Status.ARCHIVE);
 
-  constructor(private api: FileApiService) { }
+  constructor(private api: FileApiService, private snackbar : SnackbarService) { }
 
   close(): void {
     this.closeDialog.emit();
@@ -48,11 +49,20 @@ export class UploadDialogComponent {
       if (input.files.length > 0) {
         const file = input.files[0];
         this.selectedFile = file;
+
+        if (file.size > 50_000_000) {
+          this.snackbar.show("Fichier trop volumineux");
+          this.selectedFile = undefined;
+        }
       }
     }
   }
 
   nextStep(): void {
+    if (this.currentStep === 1 && !this.selectedFile) {
+      this.snackbar.show("No file selected !");
+      return;
+    }
     this.currentStep = this.currentStep + 1;
   }
 
