@@ -24,6 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
@@ -55,11 +56,20 @@ public class FileServiceImpl implements FileService {
             NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
             XmlParserException, InternalException {
 
+        // Clone the InputStream to be able to read it twice
+        byte[] bytes = is.readAllBytes();
+        is.close();
+        ByteArrayInputStream is1 = new ByteArrayInputStream(bytes);
+        ByteArrayInputStream is2 = new ByteArrayInputStream(bytes);
+
         Collection<Keyword> keywordCollection = getKeywords(metadata);
-        BufferedImage thumbnail = generateThumbnail(is, metadata.getType());
-        uploadFileToMinio(is, metadata, keywordCollection);
+        BufferedImage thumbnail = generateThumbnail(is1, metadata.getType());
+        uploadFileToMinio(is2, metadata, keywordCollection);
         uploadThumbnailToMinio(thumbnail, metadata);
         saveFileMetadata(metadata, thumbnail, keywordCollection);
+
+        is1.close();
+        is2.close();
     }
 
     @Override
