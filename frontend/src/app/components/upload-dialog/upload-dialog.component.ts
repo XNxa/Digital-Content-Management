@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { IconTextButtonComponent } from '../../shared/components/buttons/icon-text-button/icon-text-button.component';
 import { LongInputComponent } from '../../shared/components/form/long-input/long-input.component';
 import { SelectComponent } from '../../shared/components/form/select/select.component';
@@ -20,7 +20,7 @@ import { SnackbarService } from '../../services/snackbar.service';
   templateUrl: './upload-dialog.component.html',
   styleUrl: './upload-dialog.component.css'
 })
-export class UploadDialogComponent {
+export class UploadDialogComponent implements OnInit {
   title = "Importer un ficher";
   @Output() closeDialog: EventEmitter<void> = new EventEmitter<void>();
 
@@ -29,11 +29,22 @@ export class UploadDialogComponent {
   version: string = 'VF'
   keywords: string[] = [];
   currentStep = 1;
+
+  keywordsSuggestions: string[] = [];
   
   readonly statusOptions = Status.getStringList();
   status : string = Status.printableString(Status.ARCHIVE);
 
   constructor(private api: FileApiService, private snackbar : SnackbarService) { }
+
+  ngOnInit(): void {
+    this.api.getKeywords().subscribe({
+      next: (keywords) => {
+        this.keywordsSuggestions = keywords;
+      },
+      error: () => console.error()
+    });
+  }
 
   close(): void {
     this.closeDialog.emit();
@@ -85,7 +96,14 @@ export class UploadDialogComponent {
     } as FileHeader;
 
     this.api.uploadFile(this.selectedFile, metadata).subscribe({
-      next: () => console.log(),
+      next: () => {
+        this.api.getKeywords().subscribe({
+          next: (keywords) => {
+            this.keywordsSuggestions = keywords;
+          },
+          error: () => console.error()
+        });
+      },
       error: () => console.error()
     });
 

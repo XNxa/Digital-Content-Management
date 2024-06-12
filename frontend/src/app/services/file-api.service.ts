@@ -45,4 +45,8 @@ export class FileApiService {
       responseType: 'blob' as 'json'
     });
   }
+
+  public getKeywords(): Observable<string[]> {
+    return this.httpClient.get<string[]>(`${this.API}/keywords`);
+  }
 }

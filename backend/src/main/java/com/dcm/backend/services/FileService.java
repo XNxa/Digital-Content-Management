@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 public interface FileService {
 
@@ -145,4 +146,10 @@ public interface FileService {
      */
     public MediaType getFileType(String filename) throws FileNotFoundException;
 
+    /**
+     * Gets all previously defined keywords
+     *
+     * @return List of keywords
+     */
+    List<String> getKeywords();
 }

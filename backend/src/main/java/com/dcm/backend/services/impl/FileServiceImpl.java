@@ -155,6 +155,11 @@ public class FileServiceImpl implements FileService {
         return MediaType.parseMediaType(fileHeader.getType());
     }
 
+    @Override
+    public List<String> getKeywords() {
+        return keywordRepository.findAll().stream().map(Keyword::getName).toList();
+    }
+
     /**
      * Generate a thumbnail for the file if it is an image or a video
      *

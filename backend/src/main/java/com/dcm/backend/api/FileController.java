@@ -70,6 +70,11 @@ public class FileController {
         return ResponseEntity.ok().contentType(fs.getFileType(filename)).body(resource);
     }
 
+    @GetMapping("/keywords")
+    public List<String> getKeywords() {
+        return fs.getKeywords();
+    }
+
     private FileHeaderDTO convertToDto(FileHeader fileHeader) {
         FileHeaderDTO fileHeaderDTO = modelMapper.map(fileHeader, FileHeaderDTO.class);
         fileHeaderDTO.setKeywords(

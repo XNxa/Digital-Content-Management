@@ -57,7 +57,7 @@
         <app-select class="status" label="Status" [options]="statusOptions" [(value)]="status"></app-select>
         <!-- TODO : Replace options with dynamic list of options -->
       </div>
-      <app-chips-input label="Mots-Clés" hint="(Maximum 20)" [maxKeywords]="20" [(keywords)]="keywords" [suggestions]="['a', 'b', 'c', 'aa', 'aaa', 'aaaa', 'aaaaaa', 'aaaaaaa', 'aaaaaaaa']" ></app-chips-input>
+      <app-chips-input label="Mots-Clés" hint="(Maximum 20)" [maxKeywords]="20" [(keywords)]="keywords" [suggestions]="keywordsSuggestions" ></app-chips-input>
       <!-- // TODO : Repace with dynamic keywords -->
     </div>
     <div class="dialog-footer">

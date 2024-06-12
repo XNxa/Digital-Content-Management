@@ -9,7 +9,7 @@
         }
         @if (keywords.length < maxKeywords) {
             <input placeholder="..." [(ngModel)]="inputValue" (keyup.enter)="add(inputValue)"
-                (blur)="add(inputValue)" (input)="onInputChange()">
+                (blur)="add(inputValue)" (input)="onInputChange()" (click)="onInputChange()">
         }
     </div>
     @if (filteredSuggestions.length > 0) {
