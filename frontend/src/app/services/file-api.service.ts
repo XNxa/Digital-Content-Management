@@ -26,7 +26,7 @@ export class FileApiService {
     return this.httpClient.get<number>(`${this.API}/count`);
   }
   
-  public getPages(page: number, size: number, filename: string, keywords?: string[], status?: Status): Observable<FileHeader[]> {
+  public getPages(page: number, size: number, filename: string, keywords?: string[], status?: Status[]): Observable<FileHeader[]> {
     let params = new HttpParams().set('page', page.toString()).set('size', size.toString());
     
     if (filename?.length > 0) {
@@ -35,8 +35,8 @@ export class FileApiService {
     if (keywords && keywords.length > 0) {
       params = params.set('keywords', keywords.join(','));
     }
-    if (status) {
-      params.set('status', status);
+    if (status && status.length > 0) {
+      params = params.set('status', status.join(','));
     }
     
     return this.httpClient.get<FileHeader[]>(`${this.API}/files`, { params }).pipe(

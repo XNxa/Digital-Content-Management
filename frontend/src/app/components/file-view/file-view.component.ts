@@ -11,6 +11,7 @@ import { FileHeader } from '../../models/FileHeader';
 import { SelectComponent } from '../../shared/components/form/select/select.component';
 import { SnackbarService } from '../../services/snackbar.service';
 import { DropdownCheckboxComponent } from '../../shared/components/form/dropdown-checkbox/dropdown-checkbox.component';
+import { Status } from '../../enums/status';
 
 @Component({
   selector: 'app-file-view',
@@ -38,9 +39,11 @@ export class FileViewComponent implements OnInit {
   itemsPerPage: number = 16;
   numberOfElements!: number;
   keywords!: string[];
+  status = Status.getStringList();
 
   filenameSearched: string = '';
   keywordsSearched: string[] = [];
+  statusSearched: string[] = [];
   
   constructor(private api: FileApiService, private snackbar: SnackbarService) {
     this.api.getNumberOfElement().subscribe(n => {
@@ -69,7 +72,7 @@ export class FileViewComponent implements OnInit {
   }
 
   refreshFileList(): void {
-    this.api.getPages(this.currentPage - 1, this.itemsPerPage, this.filenameSearched, this.keywordsSearched).subscribe(files => {
+    this.api.getPages(this.currentPage - 1, this.itemsPerPage, this.filenameSearched, this.keywordsSearched, this.statusSearched.map(s => Status.fromString(s))).subscribe(files => {
       this.files = files;
       for (let file of this.files) {
         if (file.thumbnailName != null) {
