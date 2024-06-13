@@ -28,15 +28,15 @@ export namespace Status {
 
     export function fromString(status: string): Status {
         switch (status) {
-            case 'Planifié':
+            case 'Planifié': case 'PLANIFIE':
                 return Status.PLANIFIE;
-            case 'Publié':
+            case 'Publié': case 'PUBLIE':
                 return Status.PUBLIE;
-            case 'En attente':
+            case 'En attente': case 'EN_ATTENTE':
                 return Status.EN_ATTENTE;
-            case 'Non publié':
+            case 'Non publié': case 'NON_PUBLIE':
                 return Status.NON_PUBLIE;
-            case 'Archivé':
+            case 'Archivé': case 'ARCHIVE':
                 return Status.ARCHIVE;
             default:
                 throw new Error('Invalid status: ' + status);

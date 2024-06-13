@@ -7,6 +7,7 @@ import { FileApiService } from '../../services/file-api.service';
 import { Status } from '../../enums/status';
 import { FileHeader } from '../../models/FileHeader';
 import { SnackbarService } from '../../services/snackbar.service';
+import { MimeTypes } from '../../utils/mime-types';
 
 @Component({
   selector: 'app-upload-dialog',
@@ -31,11 +32,13 @@ export class UploadDialogComponent implements OnInit {
   currentStep = 1;
 
   keywordsSuggestions: string[] = [];
-  
-  readonly statusOptions = Status.getStringList();
-  status : string = Status.printableString(Status.ARCHIVE);
 
-  constructor(private api: FileApiService, private snackbar : SnackbarService) { }
+  readonly statusOptions = Status.getStringList();
+  status: string = Status.printableString(Status.PLANIFIE);
+  
+  fileType: string | undefined;
+
+  constructor(private api: FileApiService, private snackbar: SnackbarService) { }
 
   ngOnInit(): void {
     this.api.getKeywords().subscribe({
@@ -60,6 +63,18 @@ export class UploadDialogComponent implements OnInit {
       if (input.files.length > 0) {
         const file = input.files[0];
         this.selectedFile = file;
+
+        new Promise<string>((resolve) => {
+          const mimeType = MimeTypes.lookup(file.name);
+          if (mimeType) {
+            resolve(mimeType);
+          } else {
+            resolve('application/octet-stream');
+          }
+        }).then(mimeType => {
+          this.fileType = mimeType;
+          console.log('Detected MIME type:', mimeType);
+        });
 
         if (file.size > 50_000_000) {
           this.snackbar.show("Fichier trop volumineux");
@@ -88,11 +103,12 @@ export class UploadDialogComponent implements OnInit {
       return;
     }
 
-    const metadata : FileHeader = {
+    const metadata: FileHeader = {
       description: this.description,
       version: this.version,
       keywords: this.keywords,
-      status: Status.fromString(this.status)
+      status: Status.fromString(this.status),
+      type: this.fileType || 'application/octet-stream'
     } as FileHeader;
 
     this.api.uploadFile(this.selectedFile, metadata).subscribe({

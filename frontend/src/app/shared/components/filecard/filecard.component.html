@@ -18,7 +18,7 @@
             <span class="secondary">{{file?.printableSize}}</span>
         </div>
         <div class="file-card-footer-right">
-            <span class="primary status archived">{{file?.status}}</span> <!-- TODO : Separate component -->
+            <app-status-chip [status]="status" size='small'></app-status-chip>
             <span class="secondary">{{file?.date}}</span>
         </div>
     </div>

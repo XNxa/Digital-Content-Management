@@ -36,7 +36,6 @@ public class FileController {
 
         metadata.setFilename(file.getOriginalFilename());
         metadata.setSize(file.getSize());
-        metadata.setType(file.getContentType());
 
         fs.upload(file.getInputStream(), metadata);
     }

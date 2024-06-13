@@ -49,7 +49,9 @@ public class ThumbnailServiceImpl implements ThumbnailService {
 
     @Override
     public boolean isImage(String format) {
-        if (format.contains("image")) {
+        if (format.contains("png") || format.contains("gif") || format.contains(
+                "jpeg") || format.contains("bmp") || format.contains(
+                "jpg") || format.contains("wbmp")) {
             return true;
         }
         return false;
