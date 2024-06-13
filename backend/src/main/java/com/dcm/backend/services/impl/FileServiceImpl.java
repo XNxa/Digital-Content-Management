@@ -80,7 +80,9 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public Page<FileHeader> getPage(int page, int size, Optional<String> filename, Optional<List<String>> keywords, Optional<Status> status) {
+    public Page<FileHeader> getPage(int page, int size, Optional<String> filename,
+                                    Optional<List<String>> keywords,
+                                    Optional<List<Status>> status) {
         Pageable pageRequest = PageRequest.of(page, size);
 
         FileFilterSpecification spec =

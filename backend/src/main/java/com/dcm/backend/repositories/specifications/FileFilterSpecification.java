@@ -19,7 +19,7 @@ public class FileFilterSpecification implements Specification<FileHeader> {
 
     Optional<String> filename;
     Optional<List<Keyword>> keywords;
-    Optional<Status> status;
+    Optional<List<Status>> status;
 
     @Override
     public Predicate toPredicate(Root<FileHeader> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
@@ -33,9 +33,12 @@ public class FileFilterSpecification implements Specification<FileHeader> {
                 predicates.add(criteriaBuilder.isMember(kw, root.get("keywords")));
             }
         });
-
-        status.ifPresent(st -> predicates.add(
-                criteriaBuilder.equal(root.get("status"), st)));
+        
+        status.ifPresent(sts -> predicates.add(
+                criteriaBuilder.or(sts.stream()
+                        .map(st -> criteriaBuilder.equal(root.get("status"), st))
+                        .toArray(Predicate[]::new))
+        ));
 
         return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
     }

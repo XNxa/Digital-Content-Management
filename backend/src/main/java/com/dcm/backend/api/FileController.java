@@ -50,7 +50,7 @@ public class FileController {
                                         @RequestParam("size") int size,
                                         @RequestParam("filename") Optional<String> filename,
                                         @RequestParam("keywords") Optional<List<String>> keywords,
-                                        @RequestParam("status") Optional<Status> status) {
+                                        @RequestParam("status") Optional<List<Status>> status) {
         Page<FileHeader> p = fs.getPage(page, size, filename, keywords, status);
         p.getTotalPages();
 

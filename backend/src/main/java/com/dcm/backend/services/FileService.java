@@ -56,7 +56,9 @@ public interface FileService {
      * @param status   Status of the file
      * @return Page of files
      */
-    public Page<FileHeader> getPage(int page, int size, Optional<String> filename, Optional<List<String>> keywords, Optional<Status> status);
+    public Page<FileHeader> getPage(int page, int size, Optional<String> filename,
+                                    Optional<List<String>> keywords,
+                                    Optional<List<Status>> status);
 
     /**
      * Deletes a file from the Minio server

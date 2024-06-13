@@ -1,5 +1,5 @@
 <div class="chips-container" (keydown)="exit($event)">
-    <label class="label">Mots-clés</label>
+    <label class="label">{{label}}</label>
     <div class="selected-chips" (click)="toggleDropdown()">
         @if (selectedChips.length == 0) {
             <span class="placeholder">{{placeholder}}</span>
