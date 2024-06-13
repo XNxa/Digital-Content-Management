@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ViewChild, viewChild } from '@angular/core';
+import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HomeComponent } from './components/home/home.component';
 import { SnackbarService } from './services/snackbar.service';

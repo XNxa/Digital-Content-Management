@@ -1,0 +1,56 @@
+/* Styles communs pour toutes les chips */
+span {
+  display: inline-block;
+  text-align: center;
+}
+
+.small {
+    padding: 1px 2px;
+    border-radius: 2px;
+} 
+
+.large {
+    padding: 4px;
+    border-radius: 4px;
+}
+
+/* Styles spécifiques pour chaque type de chip */
+.planifie {
+  background-color: #DDD8FF;
+  color: #4B1E97;
+}
+
+.publie {
+  background-color: #D1EEDB;
+  color: #102A19;
+}
+
+.en_attente {
+  background-color: #FFE9C5;
+  color: #3B2604;
+}
+
+.non_publie {
+  background-color: #FCD9BD;
+  color: #771D1D;
+}
+
+.archive {
+  background-color: #E0E0E0;
+  color: #131B24;
+}
+
+.erreur_de_publication {
+  background-color: #F8D5D5;
+  color: #920E0E;
+}
+
+.active {
+  background-color: #D1EEDB;
+  color: #102A19;
+}
+
+.desactive {
+  background-color: #F8D5D5;
+  color: #920E0E;
+}
