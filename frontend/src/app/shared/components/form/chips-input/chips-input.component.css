@@ -44,6 +44,12 @@ input {
   padding: 5px;
 }
 
+input::placeholder {
+  color: #757575;
+  font-size: 13px;
+  user-select: none;
+}
+
 span {
   color: var(--grey-text);
   font-weight: normal;
@@ -56,6 +62,7 @@ span {
   padding: 0;
   border: 1px solid #c6ced6;
   border-radius: 4px;
+  color: var(--text-color);
   background-color: white;
   max-height: 100px;
   overflow-y: auto;

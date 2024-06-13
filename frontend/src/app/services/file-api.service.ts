@@ -32,8 +32,8 @@ export class FileApiService {
     if (filename?.length > 0) {
       params = params.set('filename', filename);
     }
-    if (keywords) {
-      params.set('keywords', keywords.join(','));
+    if (keywords && keywords.length > 0) {
+      params = params.set('keywords', keywords.join(','));
     }
     if (status) {
       params.set('status', status);

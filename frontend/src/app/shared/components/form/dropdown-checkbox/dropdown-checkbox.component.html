@@ -1,0 +1,31 @@
+<div class="chips-container" (keydown)="exit($event)">
+    <label class="label">Mots-clés</label>
+    <div class="selected-chips" (click)="toggleDropdown()">
+        @if (selectedChips.length == 0) {
+            <span class="placeholder">{{placeholder}}</span>
+        } @else {
+            @for (chip of selectedChips; track $index) {
+            <div class="chip" (click)="stopprop($event)">
+                {{ chip }}
+                <span class="remove-chip" (click)="removeChip($index)">&times;</span>
+            </div>
+            }
+        } 
+        @if (dropdownOpen) {
+        <img class="dropdown-button" src="/icons/chevron_up.svg">
+        } @else {
+        <img class="dropdown-button" src="/icons/chevron_down.svg">
+        }
+    </div>
+    @if (dropdownOpen) {
+    <div class="dropdown-content">
+        <input type="text" placeholder="Filter options" [(ngModel)]="filterText" (input)="filterOptions()" />
+        @for (option of filteredOptions; track $index) {
+        <div class="option" (click)="toggleSelection(option)">
+            <input type="checkbox" [id]="option" [checked]="isSelected(option)" (change)="toggleSelection(option)" />
+            <label class="optionlabel" [for]="option">{{ option }}</label>
+        </div>
+        }
+    </div>
+    }
+</div>

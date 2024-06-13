@@ -1,7 +1,6 @@
 .input-container {
   display: flex;
   flex-direction: column;
-  padding: 1px;
 }
 
 label {
@@ -49,6 +48,12 @@ input {
   border: none;
   background-color: transparent;
   color: var(--text-color);
+}
+
+input::placeholder {
+  color: #757575;
+  font-size: 13px;
+  user-select: none;
 }
 
 input:focus {

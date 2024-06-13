@@ -106,6 +106,7 @@
 
 .dialog-version-status {
   display: flex;
+  gap: 2px;
 }
 
 .version {

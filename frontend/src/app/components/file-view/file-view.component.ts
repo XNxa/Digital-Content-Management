@@ -10,6 +10,7 @@ import { FileApiService } from '../../services/file-api.service';
 import { FileHeader } from '../../models/FileHeader';
 import { SelectComponent } from '../../shared/components/form/select/select.component';
 import { SnackbarService } from '../../services/snackbar.service';
+import { DropdownCheckboxComponent } from '../../shared/components/form/dropdown-checkbox/dropdown-checkbox.component';
 
 @Component({
   selector: 'app-file-view',
@@ -22,7 +23,8 @@ import { SnackbarService } from '../../services/snackbar.service';
     TableComponent,
     UploadDialogComponent,
     InputComponent,
-    SelectComponent
+    SelectComponent,
+    DropdownCheckboxComponent
   ],
   templateUrl: './file-view.component.html',
   styleUrl: './file-view.component.css'
@@ -35,12 +37,17 @@ export class FileViewComponent implements OnInit {
   currentPage: number = 1;
   itemsPerPage: number = 16;
   numberOfElements!: number;
+  keywords!: string[];
 
   filenameSearched: string = '';
+  keywordsSearched: string[] = [];
   
   constructor(private api: FileApiService, private snackbar: SnackbarService) {
     this.api.getNumberOfElement().subscribe(n => {
       this.numberOfElements = n;
+    });
+    this.api.getKeywords().subscribe(keywords => {
+      this.keywords = keywords;
     });
   }
   
@@ -62,7 +69,7 @@ export class FileViewComponent implements OnInit {
   }
 
   refreshFileList(): void {
-    this.api.getPages(this.currentPage - 1, this.itemsPerPage, this.filenameSearched).subscribe(files => {
+    this.api.getPages(this.currentPage - 1, this.itemsPerPage, this.filenameSearched, this.keywordsSearched).subscribe(files => {
       this.files = files;
       for (let file of this.files) {
         if (file.thumbnailName != null) {
@@ -71,6 +78,9 @@ export class FileViewComponent implements OnInit {
           });
         }
       }
+    });
+    this.api.getKeywords().subscribe(keywords => {
+      this.keywords = keywords;
     });
   }
 }
