@@ -1,33 +1,40 @@
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .action-buttons {
-    display: flex;
-    column-gap: 5px;
+  display: flex;
+  column-gap: 10px;
+}
+
+.vertical-separator {
+  width: 1px;
+  background-color: #D7E3FC;
+  height: 24px;
+  align-self: center;
 }
 
 .file-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .footer {
-    padding: 5px;
+  padding: 5px;
 }
 
 .table {
-    width: 100%;
+  width: 100%;
 }
 
 .search-area {
-    display: flex;
-    gap: 10px;
+  display: flex;
+  gap: 10px;
 }
 
 .search-element {
-    flex: 1;
+  flex: 1;
 }

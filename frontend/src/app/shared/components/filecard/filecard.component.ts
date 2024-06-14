@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, output } from '@angular/core';
 import { FileHeader } from '../../../models/FileHeader';
 import { StatusChipComponent } from '../status-chip/status-chip.component';
 import { Status } from '../../../enums/status';
@@ -15,12 +15,14 @@ export class FilecardComponent implements OnInit {
 
   @Input() file: FileHeader | undefined;
 
+  @Output() fileSelected = new EventEmitter();
+
   filename: string = '';
   type: string = '';
   status: Status = Status.ARCHIVE;
 
   isChecked = false;
-
+  
   ngOnInit(): void {
     if (this.file && this.file?.filename.length > 12) {
       this.filename = this.file.filename.substring(0, 12) + '...';
@@ -33,9 +35,16 @@ export class FilecardComponent implements OnInit {
     if (this.file?.status) {
       this.status = Status.fromString(this.file?.status);
     }
+
+    this.isChecked = false;
+  }
+
+  ngOnChanges(): void {
+    this.ngOnInit();
   }
 
   onCardClicked(): void {
     this.isChecked = !this.isChecked;
+    this.fileSelected.emit(this.file);
   }
 }

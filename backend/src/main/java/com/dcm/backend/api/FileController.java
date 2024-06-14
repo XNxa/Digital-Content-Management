@@ -5,6 +5,7 @@ import com.dcm.backend.entities.FileHeader;
 import com.dcm.backend.entities.Keyword;
 import com.dcm.backend.enumeration.Status;
 import com.dcm.backend.services.FileService;
+import com.dcm.backend.services.KeywordService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -25,6 +26,9 @@ public class FileController {
 
     @Autowired
     private FileService fs;
+
+    @Autowired
+    private KeywordService ks;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -75,7 +79,13 @@ public class FileController {
 
     @GetMapping("/keywords")
     public List<String> getKeywords() {
-        return fs.getKeywords();
+        return ks.getKeywords();
+    }
+
+    @DeleteMapping("/delete")
+    public void deleteFile(@RequestParam("filename") String[] filenames) throws
+            Exception {
+        fs.delete(filenames);
     }
 
     private FileHeaderDTO convertToDto(FileHeader fileHeader) {

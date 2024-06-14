@@ -11,7 +11,7 @@ import { FormsModule } from '@angular/forms';
 export class DropdownCheckboxComponent {
   @Input() label: string = '';
   @Input() placeholder: string = '';
-  @Input() options: string[] = ['Aaa', 'Bbb', 'Ccc'];
+  @Input() options: string[] = [];
 
   @Input() value: string[] = [];
   @Output() valueChange: EventEmitter<string[]> = new EventEmitter<string[]>();

@@ -74,10 +74,10 @@ public interface FileService {
      * @throws XmlParserException
      * @throws InternalException
      */
-    public void delete(String filename) throws IOException, ServerException,
-            InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException,
-            InvalidKeyException, InvalidResponseException, XmlParserException,
-            InternalException;
+    public void delete(String[] filename) throws FileNotFoundException, ServerException,
+            InsufficientDataException, ErrorResponseException, IOException,
+            NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
+            XmlParserException, InternalException;
 
     /**
      * Renames a file in the Minio server
@@ -152,11 +152,5 @@ public interface FileService {
      * @throws FileNotFoundException If the file is not found
      */
     public MediaType getFileType(String filename) throws FileNotFoundException;
-
-    /**
-     * Gets all previously defined keywords
-     *
-     * @return List of keywords
-     */
-    List<String> getKeywords();
+    
 }

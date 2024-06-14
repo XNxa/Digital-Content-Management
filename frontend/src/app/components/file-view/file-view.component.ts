@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { IconButtonComponent } from '../../shared/components/buttons/icon-button/icon-button.component';
 import { FilecardComponent } from '../../shared/components/filecard/filecard.component';
 import { PageSelectorComponent } from '../../shared/components/page-selector/page-selector.component';
@@ -31,15 +31,17 @@ import { Status } from '../../enums/status';
   styleUrl: './file-view.component.css'
 })
 export class FileViewComponent implements OnInit {
+  @ViewChild('FileCard') fileCard!: FilecardComponent;
+
 
   /** The title of the file view. */
   readonly viewtitle: string = "Fichiers";
 
   /** The number of items to display per page. */
   readonly itemsPerPage: number = 16;
-  
+
   /** Array of status strings. */
-  readonly status : string[] = Status.getStringList();
+  readonly status: string[] = Status.getStringList();
 
   /** Flag indicating whether to display files in grid layout or list layout. */
   gridlayout: boolean = true;
@@ -70,6 +72,9 @@ export class FileViewComponent implements OnInit {
   /** Array of status strings being searched. 
    * Binded to the search field */
   statusSearched: string[] = [];
+
+  /** Files currently selected */
+  selectedFiles: number[] = [];
 
   constructor(private api: FileApiService, private snackbar: SnackbarService) {
     this.api.getNumberOfElement().subscribe(n => {
@@ -122,5 +127,33 @@ export class FileViewComponent implements OnInit {
     this.api.getKeywords().subscribe(keywords => {
       this.keywords = keywords;
     });
+  }
+
+  onDeleteClicked() {
+    this.api.delete(this.selectedFiles.map(index => this.files[index].filename)).subscribe({
+      next: () => {
+        this.files = this.files.filter((_, index) => !this.selectedFiles.includes(index));
+        this.selectedFiles = [];
+        this.snackbar.show('Fichiers supprimés avec succès');
+        this.api.getNumberOfElement().subscribe(n => {
+          this.numberOfElements = n;
+        });
+        this.api.getKeywords().subscribe(keywords => {
+          this.keywords = keywords;
+        });
+      },
+      error: () => {
+        this.snackbar.show('Erreur lors de la suppression des fichiers');
+      }
+    });
+  }
+
+
+  fileSelected(index: number) {
+    if (this.selectedFiles.includes(index)) {
+      this.selectedFiles = this.selectedFiles.filter(i => i != index);
+    } else {
+      this.selectedFiles.push(index);
+    }
   }
 }

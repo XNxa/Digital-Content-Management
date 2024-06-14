@@ -73,7 +73,6 @@ export class UploadDialogComponent implements OnInit {
           }
         }).then(mimeType => {
           this.fileType = mimeType;
-          console.log('Detected MIME type:', mimeType);
         });
 
         if (file.size > 50_000_000) {

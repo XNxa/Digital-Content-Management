@@ -9,12 +9,13 @@ import com.dcm.backend.enumeration.Status;
 import com.dcm.backend.exceptions.FileNotFoundException;
 import com.dcm.backend.exceptions.NoThumbnailException;
 import com.dcm.backend.repositories.FileRepository;
-import com.dcm.backend.repositories.KeywordRepository;
 import com.dcm.backend.repositories.specifications.FileFilterSpecification;
 import com.dcm.backend.services.FileService;
+import com.dcm.backend.services.KeywordService;
 import com.dcm.backend.services.ThumbnailService;
 import io.minio.GetObjectArgs;
 import io.minio.PutObjectArgs;
+import io.minio.RemoveObjectArgs;
 import io.minio.errors.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,10 +45,10 @@ public class FileServiceImpl implements FileService {
     private MinioProperties mp;
 
     @Autowired
-    private KeywordRepository keywordRepository;
+    private FileRepository fileRepository;
 
     @Autowired
-    private FileRepository fileRepository;
+    private KeywordService keywordService;
 
     @Autowired
     private ThumbnailService thumbnailService;
@@ -94,10 +95,31 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public void delete(String filename) throws InsufficientDataException,
-            ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException,
-            InvalidResponseException, XmlParserException, InternalException {
+    public void delete(String[] filename) throws FileNotFoundException, ServerException,
+            InsufficientDataException, ErrorResponseException, IOException,
+            NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
+            XmlParserException, InternalException {
+        for (String f : filename) {
+            FileHeader fileHeader = fileRepository.findByFilename(f).orElseThrow(
+                    () -> new FileNotFoundException("delete : " + f + " not found")
+            );
 
+            mc.minioClient()
+                    .removeObject(RemoveObjectArgs.builder()
+                            .bucket(mp.getBucketName())
+                            .object(fileHeader.getFilename())
+                            .build());
+            if (fileHeader.getThumbnailName() != null) {
+                mc.minioClient()
+                        .removeObject(RemoveObjectArgs.builder()
+                                .bucket(mp.getBucketName())
+                                .object(fileHeader.getThumbnailName())
+                                .build());
+            }
+
+            fileRepository.delete(fileHeader);
+            keywordService.deleteUnusedKeywords();
+        }
     }
 
     @Override
@@ -163,11 +185,6 @@ public class FileServiceImpl implements FileService {
         );
 
         return MediaType.parseMediaType(fileHeader.getType());
-    }
-
-    @Override
-    public List<String> getKeywords() {
-        return keywordRepository.findAll().stream().map(Keyword::getName).toList();
     }
 
     /**
@@ -270,13 +287,7 @@ public class FileServiceImpl implements FileService {
         // Compute the keywords
         Collection<Keyword> keywordCollection = new LinkedList<>();
         for (String key : metadata.getKeywords()) {
-            Optional<Keyword> k = keywordRepository.findById(key);
-            if (k.isPresent()) {
-                keywordCollection.add(k.get());
-            } else {
-                Keyword saved = keywordRepository.save(new Keyword(key));
-                keywordCollection.add(saved);
-            }
+            keywordCollection.add(keywordService.getOrAddKeyword(key));
         }
         return keywordCollection;
     }

@@ -7,7 +7,7 @@
     <app-upload-dialog (closeDialog)="isDialogOpen = false"></app-upload-dialog>
 }
 
-<div class="search-area"> <!-- TODO : Add other fields -->
+<div class="search-area">
     <app-input class="search-element" label="ID du fichier" placeholder="Saisissez l'ID du fichier" [border]="false" [(value)]="filenameSearched" (valueChange)="refreshFileList()"></app-input>
     <app-dropdown-checkbox class="search-element" label="Mots-clés" placeholder="Selectionnez des tags" [options]="keywords" [(value)]="keywordsSearched"></app-dropdown-checkbox>
     <app-dropdown-checkbox class="search-element" label="Statut" placeholder="Selectionnez un statut" [options]="status" [(value)]="statusSearched"></app-dropdown-checkbox>
@@ -16,6 +16,11 @@
 <div class="header">
     <h2>{{viewtitle}}</h2>
     <div class="action-buttons">
+        @if (selectedFiles.length > 0) {
+        <app-icon-button color="white" icon="delete" (click)="onDeleteClicked()"></app-icon-button>
+        <app-icon-button color="white" icon="menu"></app-icon-button>
+        <div class="vertical-separator"></div>
+        }
         <app-icon-button color='white' icon="update" (click)="refreshFileList()"></app-icon-button>
         <app-icon-button color='white' icon="checkbox"></app-icon-button>
         <app-icon-button [color]="(gridlayout)?'clearblue':'white'" icon="card" (click)="onGridClicked()"></app-icon-button>
@@ -26,7 +31,7 @@
 <div class="file-grid">
     @if (gridlayout) {
     @for (file of files; track $index) {
-    <app-filecard [file]="file"></app-filecard>
+    <app-filecard [file]="file" (fileSelected)="fileSelected($index)"></app-filecard>
     }
     } @else {
     <app-table

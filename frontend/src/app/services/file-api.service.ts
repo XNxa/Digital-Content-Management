@@ -68,4 +68,10 @@ export class FileApiService {
   public getKeywords(): Observable<string[]> {
     return this.httpClient.get<string[]>(`${this.API}/keywords`);
   }
+
+  public delete(filename: string[]) {
+    return this.httpClient.delete<void>(`${this.API}/delete`, {
+      params: new HttpParams().set('filename', filename.join(','))
+    });
+  }
 }
