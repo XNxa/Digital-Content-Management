@@ -4,6 +4,7 @@ import { FilecardComponent } from '../../shared/components/filecard/filecard.com
 import { PageSelectorComponent } from '../../shared/components/page-selector/page-selector.component';
 import { TableComponent } from '../../shared/components/table/table.component';
 import { IconTextButtonComponent } from '../../shared/components/buttons/icon-text-button/icon-text-button.component';
+import { IconMenuButtonComponent } from '../../shared/components/buttons/icon-menu-button/icon-menu-button.component';
 import { UploadDialogComponent } from '../upload-dialog/upload-dialog.component';
 import { InputComponent } from '../../shared/components/form/input/input.component';
 import { FileApiService } from '../../services/file-api.service';
@@ -19,6 +20,7 @@ import { Status } from '../../enums/status';
   imports: [
     IconButtonComponent,
     IconTextButtonComponent,
+    IconMenuButtonComponent,
     FilecardComponent,
     PageSelectorComponent,
     TableComponent,

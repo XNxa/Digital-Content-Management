@@ -18,7 +18,10 @@
     <div class="action-buttons">
         @if (selectedFiles.length > 0) {
         <app-icon-button color="white" icon="delete" (click)="onDeleteClicked()"></app-icon-button>
-        <app-icon-button color="white" icon="menu"></app-icon-button>
+        <app-icon-menu-button color="white" icon="menu" 
+            [buttonsLabels]="['Dupliquer', 'Télécharger', 'Copier le lien', 'Partager par e-mail']"
+            [buttonsIcons]="['duplicate', 'download', 'link', 'send']"
+            ></app-icon-menu-button>
         <div class="vertical-separator"></div>
         }
         <app-icon-button color='white' icon="update" (click)="refreshFileList()"></app-icon-button>

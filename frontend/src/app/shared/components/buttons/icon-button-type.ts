@@ -13,4 +13,7 @@ export type ButtonIcon =
     'settings' |
     'download' |
     'forward'  |
-    'add';
+    'add'      |
+    'duplicate'|
+    'send'   |
+    'link';

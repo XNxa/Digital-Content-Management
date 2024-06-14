@@ -1,0 +1,70 @@
+button {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 8px;
+  border-radius: 5px;
+  border-width: 0;
+}
+
+button.blue {
+  /* Bleu électrique */
+  background: var(--primary);
+  color: white;
+}
+
+button.blue:hover {
+  background: var(--primary);
+  box-shadow: 1px 1px var(--primary-accent);
+}
+
+button.blue:active {
+  background: var(--primary-accent);
+}
+
+button.white {
+  background: white;
+  color: var(--text-color);
+}
+
+button.white:hover {
+  background: var(--secondary);
+  box-shadow: 1px 1px var(--secondary-accent);
+}
+
+button.white:active {
+  background: var(--secondary-accent);
+}
+
+button.clearblue {
+  background: var(--secondary);
+  color: var(--text-color);
+}
+
+button.clearblue:hover {
+  background: white;
+  box-shadow: 1px 1px gray;
+}
+
+button.clearblue:active {
+  background: gray;
+}
+
+.menu {
+  position: absolute;
+  margin-top: 6px;
+  background-color: white;
+  border-radius: 5px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  button {
+    justify-content: flex-start;
+    width: 100%;
+    border-radius: 0px;
+    img {
+      margin-right: 5px;
+    }
+  }
+}
