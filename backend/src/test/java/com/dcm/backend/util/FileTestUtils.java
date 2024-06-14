@@ -3,13 +3,13 @@ package com.dcm.backend.util;
 import com.dcm.backend.entities.FileHeader;
 import com.dcm.backend.enumeration.Status;
 import com.dcm.backend.repositories.FileRepository;
+import com.dcm.backend.services.ThumbnailService;
 import io.minio.*;
 import io.minio.messages.Item;
 import io.minio.messages.Tags;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.nio.file.Files;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -23,6 +23,9 @@ public class FileTestUtils {
 
     @Autowired
     private FileRepository fileRepository;
+
+    @Autowired
+    private ThumbnailService thumbnailService;
 
 
     /**
@@ -40,7 +43,7 @@ public class FileTestUtils {
      * @param name filename in the bucket
      * @param path path to the file (with extension)
      */
-    public void addFile(String name, String path) throws Exception {
+    public void addFile(String name, String path, String type) throws Exception {
         java.io.File file = new java.io.File(path);
         assert file.exists();
 
@@ -52,13 +55,16 @@ public class FileTestUtils {
 
         FileHeader f = new FileHeader();
         f.setFilename(name);
+        if (thumbnailService.isImage(type)) {
+            f.setThumbnailName("thumbnail_" + name);
+        }
         f.setDescription("");
         f.setDate(LocalDate.now().toString());
         f.setKeywords(new ArrayList<>());
         f.setSize(file.length());
         f.setStatus(Status.PUBLIE);
         f.setVersion("VF");
-        f.setType(Files.probeContentType(file.toPath()));
+        f.setType(type);
 
         fileRepository.save(f);
     }

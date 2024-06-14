@@ -77,13 +77,13 @@ public class FileApiTest {
 
     @Test
     public void testCount() throws Exception {
-        utils.addFile("test1", "src/test/resources/test1.png");
+        utils.addFile("test1", "src/test/resources/test1.png", "image/png");
 
         mockMvc.perform(get("/api/count"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("1"));
 
-        utils.addFile("test2", "src/test/resources/test2.png");
+        utils.addFile("test2", "src/test/resources/test2.png", "image/png");
 
         mockMvc.perform(get("/api/count"))
                 .andExpect(status().isOk())
@@ -93,13 +93,23 @@ public class FileApiTest {
     @Test
     public void testGetPage() throws Exception {
         for (int i = 0; i < 10; i++) {
-            utils.addFile("test" + i, "src/test/resources/test1.png");
+            utils.addFile("test" + i + ".png", "src/test/resources/test1.png", "image" +
+                    "/png");
         }
 
         List<FileHeaderDTO> expectedFiles = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
-            expectedFiles.add(new FileHeaderDTO("test" + i, "", "VF", Status.PUBLIE,
-                    LocalDate.now().toString(), "image/png", 23998L, new ArrayList<>()));
+            FileHeaderDTO file = new FileHeaderDTO();
+            file.setFilename("test" + i + ".png");
+            file.setThumbnailName("thumbnail_test" + i + ".png");
+            file.setDescription("");
+            file.setKeywords(List.of());
+            file.setStatus(Status.PUBLIE);
+            file.setVersion("VF");
+            file.setDate(LocalDate.now().toString());
+            file.setType("image/png");
+            file.setSize(Files.size(Path.of("src/test/resources/test1.png")));
+            expectedFiles.add(file);
         }
 
         ObjectMapper mapper = new ObjectMapper();
@@ -112,7 +122,7 @@ public class FileApiTest {
 
     @Test
     public void testGetFile() throws Exception {
-        utils.addFile("test1", "src/test/resources/test1.png");
+        utils.addFile("test1", "src/test/resources/test1.png", "image/png");
 
         mockMvc.perform(get("/api/filedata").param("filename", "test1"))
                 .andExpect(status().isOk())
@@ -134,6 +144,7 @@ public class FileApiTest {
         fileHeader.setKeywords(List.of(keywords));
         fileHeader.setStatus(Status.PUBLIE);
         fileHeader.setVersion("VF");
+        fileHeader.setType(type);
 
         MockMultipartFile metadata = new MockMultipartFile("metadata", "metadata",
                 MediaType.APPLICATION_JSON_VALUE,
