@@ -104,7 +104,7 @@ export class FileViewComponent implements OnInit {
   }
 
   /** Fetch file list from the server. Get files of current page only. */
-  private refreshFileList(): void {
+  refreshFileList(): void {
     // Get the files for the current page and search criteria
     this.api.getPages(this.currentPage - 1, this.itemsPerPage, this.filenameSearched, this.keywordsSearched, this.statusSearched.map(s => Status.fromString(s))).subscribe(files => {
       this.files = files;
