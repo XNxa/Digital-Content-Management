@@ -175,4 +175,17 @@ public interface FileService {
             InsufficientDataException, ErrorResponseException, IOException,
             NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
             XmlParserException, InternalException;
+
+
+    /**
+     * Updates the metadata of a file
+     *
+     * @param filename Name of the file
+     * @param metadata Metadata of the file
+     */
+    public void update(String filename, FileHeaderDTO metadata) throws
+            FileNotFoundException, ServerException, InsufficientDataException,
+            ErrorResponseException, IOException, NoSuchAlgorithmException,
+            InvalidKeyException, InvalidResponseException, XmlParserException,
+            InternalException;
 }

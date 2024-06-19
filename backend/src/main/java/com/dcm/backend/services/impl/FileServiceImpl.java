@@ -241,6 +241,32 @@ public class FileServiceImpl implements FileService {
         fileRepository.save(newFileHeader);
     }
 
+    @Override
+    public void update(String filename, FileHeaderDTO metadata) throws
+            FileNotFoundException, ServerException, InsufficientDataException,
+            ErrorResponseException, IOException, NoSuchAlgorithmException,
+            InvalidKeyException, InvalidResponseException, XmlParserException,
+            InternalException {
+        
+        FileHeader fileHeader = fileRepository.findByFilename(filename).orElseThrow(
+                () -> new FileNotFoundException("update : " + filename + " not found")
+        );
+
+        fileHeader.setDescription(metadata.getDescription());
+        fileHeader.setVersion(metadata.getVersion());
+        fileHeader.setStatus(metadata.getStatus());
+        fileHeader.setKeywords(getKeywords(metadata));
+
+        mc.minioClient().setObjectTags(SetObjectTagsArgs.builder()
+                .bucket(mp.getBucketName())
+                .object(fileHeader.getFilename())
+                .tags(metadata.getKeywords().stream()
+                        .collect(Collectors.toMap(k -> k, v -> "")))
+                .build());
+
+        fileRepository.save(fileHeader);
+    }
+
     /**
      * Generate a thumbnail for the file if it is an image or a video
      *

@@ -100,6 +100,13 @@ public class FileController {
         fs.duplicate(filename);
     }
 
+    @PutMapping("/update")
+    public void updateFile(@RequestParam("filename") String filename,
+                           @RequestPart("metadata") FileHeaderDTO metadata) throws
+            Exception {
+        fs.update(filename, metadata);
+    }
+
     private FileHeaderDTO convertToDto(FileHeader fileHeader) {
         FileHeaderDTO fileHeaderDTO = modelMapper.map(fileHeader, FileHeaderDTO.class);
         fileHeaderDTO.setKeywords(

@@ -4,11 +4,12 @@ import { MimeTypes } from '../../utils/mime-types';
 import { FileApiService } from '../../services/file-api.service';
 import { ZoomButtonComponent } from '../../shared/components/buttons/zoom-button/zoom-button.component';
 import { IconButtonComponent } from '../../shared/components/buttons/icon-button/icon-button.component';
+import { ModifyDialogComponent } from '../modify-dialog/modify-dialog.component';
 
 @Component({
   selector: 'app-file-details',
   standalone: true,
-  imports: [ZoomButtonComponent, IconButtonComponent],
+  imports: [ZoomButtonComponent, IconButtonComponent, ModifyDialogComponent],
   templateUrl: './file-details.component.html',
   styleUrl: './file-details.component.css'
 })
@@ -23,6 +24,8 @@ export class FileDetailsComponent implements OnInit {
   
   height: number | undefined;
   width: number | undefined;
+
+  isDialogOpen: boolean = false;
   
   constructor(private api : FileApiService) { }
   
@@ -48,6 +51,10 @@ export class FileDetailsComponent implements OnInit {
     };
     
     this.type = (MimeTypes.extension(this.file?.type!) || 'unknown').toUpperCase();
+  }
+
+  openDialog() {
+    this.isDialogOpen = true;
   }
   
   zoomChange(zoom : number) {

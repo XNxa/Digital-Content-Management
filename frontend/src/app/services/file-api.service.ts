@@ -10,9 +10,9 @@ import { Status } from '../enums/status';
 })
 export class FileApiService {
 
-  private API = environment.api; 
+  private API = environment.api;
 
-  constructor(private httpClient : HttpClient) { }
+  constructor(private httpClient: HttpClient) { }
 
   public uploadFile(file: File, metadata: FileHeader): Observable<void> {
     const formData: FormData = new FormData();
@@ -25,10 +25,10 @@ export class FileApiService {
   public getNumberOfElement(): Observable<number> {
     return this.httpClient.get<number>(`${this.API}/count`);
   }
-  
+
   public getPages(page: number, size: number, filename: string, keywords?: string[], status?: Status[]): Observable<FileHeader[]> {
     let params = new HttpParams().set('page', page.toString()).set('size', size.toString());
-    
+
     if (filename?.length > 0) {
       params = params.set('filename', filename);
     }
@@ -38,7 +38,7 @@ export class FileApiService {
     if (status && status.length > 0) {
       params = params.set('status', status.join(','));
     }
-    
+
     return this.httpClient.get<FileHeader[]>(`${this.API}/files`, { params }).pipe(
       map((files: FileHeader[]) => {
         return files.map((file: FileHeader) => {
@@ -46,7 +46,7 @@ export class FileApiService {
           return file;
         }, this);
       }
-    ));
+      ));
   }
 
   public getFileData(filename: string): Observable<Blob> {
@@ -69,21 +69,27 @@ export class FileApiService {
     return this.httpClient.get<string[]>(`${this.API}/keywords`);
   }
 
-  public delete(filename: string[]) : Observable<void> {
+  public delete(filename: string[]): Observable<void> {
     return this.httpClient.delete<void>(`${this.API}/delete`, {
       params: new HttpParams().set('filename', filename.join(','))
     });
   }
 
-  public getLink(filename: string) : Observable<string> {
+  public getLink(filename: string): Observable<string> {
     return this.httpClient.get<string>(`${this.API}/link`, {
       params: new HttpParams().set('filename', filename),
       responseType: 'text' as 'json'
     });
   }
 
-  public duplicate(filename: string) : Observable<void> {
+  public duplicate(filename: string): Observable<void> {
     return this.httpClient.post<void>(`${this.API}/duplicate`, null, {
+      params: new HttpParams().set('filename', filename)
+    });
+  }
+
+  public update(filename: string, metadata: FileHeader): Observable<void> {
+    return this.httpClient.put<void>(`${this.API}/update`, metadata, {
       params: new HttpParams().set('filename', filename)
     });
   }

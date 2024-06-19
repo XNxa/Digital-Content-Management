@@ -54,7 +54,7 @@
       </div>
       <div class="dialog-version-status">
         <app-select class="version" label="Version" [options]="['VF', 'VA']" [(value)]="version"></app-select>
-        <app-select class="status" label="Status" [options]="statusOptions" [(value)]="status"></app-select>
+        <app-select class="status" label="Statut" [options]="statusOptions" [(value)]="status"></app-select>
         <!-- TODO : Replace options with dynamic list of options -->
       </div>
       <app-chips-input label="Mots-Clés" hint="(Maximum 20)" [maxKeywords]="20" [(keywords)]="keywords" [suggestions]="keywordsSuggestions" ></app-chips-input>

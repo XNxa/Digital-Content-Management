@@ -26,7 +26,7 @@
 
         <div class="other-actions">
             <app-icon-button icon="delete" color="white"></app-icon-button>
-            <app-icon-button icon="modify" color="white"></app-icon-button>
+            <app-icon-button icon="modify" color="white" (click)="openDialog()"></app-icon-button>
             <app-icon-button icon="close" color="white"></app-icon-button>
         </div>
 
@@ -62,3 +62,7 @@
         </div>
     </div>
 </div>
+
+@if (isDialogOpen) {
+    <app-modify-dialog [file]="file" (closeDialog)="isDialogOpen = false"></app-modify-dialog>
+}
