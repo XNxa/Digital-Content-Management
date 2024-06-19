@@ -16,7 +16,7 @@ import { Status } from '../../enums/status';
 import { lastValueFrom } from 'rxjs';
 
 @Component({
-  selector: 'app-file-view',
+  selector: 'app-file-list',
   standalone: true,
   imports: [
     IconButtonComponent,
@@ -30,10 +30,10 @@ import { lastValueFrom } from 'rxjs';
     SelectComponent,
     DropdownCheckboxComponent
   ],
-  templateUrl: './file-view.component.html',
-  styleUrl: './file-view.component.css'
+  templateUrl: './file-list.component.html',
+  styleUrl: './file-list.component.css'
 })
-export class FileViewComponent implements OnInit {
+export class FileListComponent implements OnInit {
   /** The title of the file view. */
   readonly viewtitle: string = "Fichiers";
 
