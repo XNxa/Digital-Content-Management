@@ -152,5 +152,27 @@ public interface FileService {
      * @throws FileNotFoundException If the file is not found
      */
     public MediaType getFileType(String filename) throws FileNotFoundException;
-    
+
+    /**
+     * Gets the link of a file
+     *
+     * @param filename Name of the file
+     * @return
+     */
+    public String getLink(String filename) throws ServerException,
+            InsufficientDataException, ErrorResponseException, IOException,
+            NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
+            XmlParserException, InternalException;
+
+    /**
+     * Duplicates a file
+     *
+     * @param filename file to duplicate
+     * @throws FileNotFoundException If the file is
+     *                               not found
+     */
+    public void duplicate(String filename) throws FileNotFoundException, ServerException,
+            InsufficientDataException, ErrorResponseException, IOException,
+            NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
+            XmlParserException, InternalException;
 }

@@ -21,7 +21,7 @@
         <app-icon-menu-button color="white" icon="menu" 
             [buttonsLabels]="['Dupliquer', 'Télécharger', 'Copier le lien', 'Partager par e-mail']"
             [buttonsIcons]="['duplicate', 'download', 'link', 'send']"
-            ></app-icon-menu-button>
+            (click)="onMenuButtonClicked($event)"></app-icon-menu-button>
         <div class="vertical-separator"></div>
         }
         <app-icon-button color='white' icon="update" (click)="refreshFileList()"></app-icon-button>

@@ -88,6 +88,18 @@ public class FileController {
         fs.delete(filenames);
     }
 
+    @GetMapping("/link")
+    public String getLink(@RequestParam("filename") String filename) throws
+            Exception {
+        return fs.getLink(filename);
+    }
+
+    @PostMapping("/duplicate")
+    public void duplicateFile(@RequestParam("filename") String filename) throws
+            Exception {
+        fs.duplicate(filename);
+    }
+
     private FileHeaderDTO convertToDto(FileHeader fileHeader) {
         FileHeaderDTO fileHeaderDTO = modelMapper.map(fileHeader, FileHeaderDTO.class);
         fileHeaderDTO.setKeywords(

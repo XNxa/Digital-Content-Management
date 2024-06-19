@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { IconButtonComponent } from '../../shared/components/buttons/icon-button/icon-button.component';
 import { FilecardComponent } from '../../shared/components/filecard/filecard.component';
 import { PageSelectorComponent } from '../../shared/components/page-selector/page-selector.component';
@@ -13,6 +13,7 @@ import { SelectComponent } from '../../shared/components/form/select/select.comp
 import { SnackbarService } from '../../services/snackbar.service';
 import { DropdownCheckboxComponent } from '../../shared/components/form/dropdown-checkbox/dropdown-checkbox.component';
 import { Status } from '../../enums/status';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-file-view',
@@ -33,9 +34,6 @@ import { Status } from '../../enums/status';
   styleUrl: './file-view.component.css'
 })
 export class FileViewComponent implements OnInit {
-  @ViewChild('FileCard') fileCard!: FilecardComponent;
-
-
   /** The title of the file view. */
   readonly viewtitle: string = "Fichiers";
 
@@ -150,12 +148,63 @@ export class FileViewComponent implements OnInit {
     });
   }
 
-
   fileSelected(index: number) {
     if (this.selectedFiles.includes(index)) {
       this.selectedFiles = this.selectedFiles.filter(i => i != index);
     } else {
       this.selectedFiles.push(index);
+    }
+  }
+
+  onMenuButtonClicked(buttonClicked: string) {
+    switch (buttonClicked) {
+      case 'Dupliquer':
+        const filenames = this.selectedFiles.map(index => this.files[index].filename);
+        filenames.forEach(filename => {
+          this.api.duplicate(filename).subscribe({
+            next: () => {
+              this.snackbar.show('Fichier dupliqué avec succès');
+            },
+            error: () => {
+              this.snackbar.show('Erreur lors de la duplication du fichier');
+            }
+          });
+        });
+        break;
+      case 'Télécharger':
+        for (let index of this.selectedFiles) {
+          this.api.getFileData(this.files[index].filename).subscribe({
+            next: blob => {
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = this.files[index].filename;
+              a.click();
+              URL.revokeObjectURL(url);
+            },
+            error: () => {
+              this.snackbar.show('Erreur lors du téléchargement');
+            }
+          });
+        }
+        break;
+      case 'Copier le lien':
+        this.api.getLink(this.files[this.selectedFiles[0]].filename).subscribe(link => {
+          navigator.clipboard.writeText(link).then(() => {
+            this.snackbar.show('Lien copié dans le presse-papier');
+          });
+        });
+        break;
+      case 'Partager par e-mail':
+        const selectedFiles = this.selectedFiles.map(index => this.files[index]);
+        const linkPromises = selectedFiles.map(file => lastValueFrom(this.api.getLink(file.filename)));
+
+        Promise.all(linkPromises).then(links => {
+          const mailtoLinks = links.map(link => `- ${encodeURIComponent(link)}`).join('%0A%0A');
+          const mailtoLink = `mailto:?subject=Partage de fichier&body=Bonjour,%0A%0AVeuillez trouver ci-joint les liens vers les fichiers :%0A${mailtoLinks}`;
+          window.location.href = mailtoLink;
+        });
+        break;
     }
   }
 }

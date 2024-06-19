@@ -13,10 +13,9 @@ import com.dcm.backend.repositories.specifications.FileFilterSpecification;
 import com.dcm.backend.services.FileService;
 import com.dcm.backend.services.KeywordService;
 import com.dcm.backend.services.ThumbnailService;
-import io.minio.GetObjectArgs;
-import io.minio.PutObjectArgs;
-import io.minio.RemoveObjectArgs;
+import io.minio.*;
 import io.minio.errors.*;
+import io.minio.http.Method;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -34,6 +33,8 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 public class FileServiceImpl implements FileService {
@@ -185,6 +186,59 @@ public class FileServiceImpl implements FileService {
         );
 
         return MediaType.parseMediaType(fileHeader.getType());
+    }
+
+    @Override
+    public String getLink(String filename) throws ServerException,
+            InsufficientDataException, ErrorResponseException, IOException,
+            NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
+            XmlParserException, InternalException {
+        return mc.minioClient().getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
+                .method(Method.GET)
+                .bucket(mp.getBucketName())
+                .object(filename)
+                .expiry(1, TimeUnit.DAYS)
+                .build());
+    }
+
+    @Override
+    public void duplicate(String filename) throws FileNotFoundException, ServerException,
+            InsufficientDataException, ErrorResponseException, IOException,
+            NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
+            XmlParserException, InternalException {
+        FileHeader fileHeader = fileRepository.findByFilename(filename).orElseThrow(
+                () -> new FileNotFoundException("duplicate : " + filename + " not found")
+        );
+
+        FileHeader newFileHeader = new FileHeader(fileHeader);
+        newFileHeader.setFilename("copy_" + fileHeader.getFilename());
+        newFileHeader.setThumbnailName("thumbnail_" + newFileHeader.getFilename());
+
+
+        List<Keyword> newKeywords = fileHeader.getKeywords().stream()
+                .map(Keyword::new)
+                .collect(Collectors.toList());
+        newFileHeader.setKeywords(newKeywords);
+
+        mc.minioClient().copyObject(CopyObjectArgs.builder()
+                .source(CopySource.builder()
+                        .bucket(mp.getBucketName())
+                        .object(fileHeader.getFilename())
+                        .build())
+                .bucket(mp.getBucketName())
+                .object(newFileHeader.getFilename())
+                .build());
+
+        mc.minioClient().copyObject(CopyObjectArgs.builder()
+                .source(CopySource.builder()
+                        .bucket(mp.getBucketName())
+                        .object(fileHeader.getThumbnailName())
+                        .build())
+                .bucket(mp.getBucketName())
+                .object(newFileHeader.getThumbnailName())
+                .build());
+
+        fileRepository.save(newFileHeader);
     }
 
     /**

@@ -47,4 +47,16 @@ public class FileHeader {
         this.size = size;
         this.keywords = keywords;
     }
+
+    public FileHeader(FileHeader fileHeader) {
+        this.filename = fileHeader.getFilename();
+        this.thumbnailName = fileHeader.getThumbnailName();
+        this.description = fileHeader.getDescription();
+        this.version = fileHeader.getVersion();
+        this.status = fileHeader.getStatus();
+        this.date = fileHeader.getDate();
+        this.type = fileHeader.getType();
+        this.size = fileHeader.getSize();
+        this.keywords = fileHeader.getKeywords();
+    }
 }

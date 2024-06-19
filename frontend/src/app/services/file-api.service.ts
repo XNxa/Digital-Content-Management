@@ -69,9 +69,22 @@ export class FileApiService {
     return this.httpClient.get<string[]>(`${this.API}/keywords`);
   }
 
-  public delete(filename: string[]) {
+  public delete(filename: string[]) : Observable<void> {
     return this.httpClient.delete<void>(`${this.API}/delete`, {
       params: new HttpParams().set('filename', filename.join(','))
+    });
+  }
+
+  public getLink(filename: string) : Observable<string> {
+    return this.httpClient.get<string>(`${this.API}/link`, {
+      params: new HttpParams().set('filename', filename),
+      responseType: 'text' as 'json'
+    });
+  }
+
+  public duplicate(filename: string) : Observable<void> {
+    return this.httpClient.post<void>(`${this.API}/duplicate`, null, {
+      params: new HttpParams().set('filename', filename)
     });
   }
 }

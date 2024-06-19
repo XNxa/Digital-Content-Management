@@ -25,4 +25,7 @@ public class Keyword {
         this.name = key;
     }
 
+    public Keyword(Keyword keyword) {
+        this.name = keyword.getName();
+    }
 }
