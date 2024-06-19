@@ -1,0 +1,33 @@
+.component {
+    display: flex;
+}
+
+button {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+    
+    width: 40px;
+    height: 40px;
+
+    border: none;
+    background-color: #404040;
+
+    img {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+button:active {
+    background-color: #5A5C60;
+}
+
+.right {
+    border-radius: 0 5px 5px 0;
+}
+
+.left {
+    border-radius: 5px 0 0 5px;
+}
