@@ -25,7 +25,7 @@ export class ZoomButtonComponent {
   }
 
   zoomOut(): void {
-    if (this.zoom > 0.1) {
+    if (this.zoom > 0.2) {
       this.zoom -= 0.1;
     }
     this.onZoom.emit(this.zoom);

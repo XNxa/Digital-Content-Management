@@ -7,15 +7,35 @@
 
 .preview-section {
   flex: 3;
-  display: flex;
-  background-color: #222124;
-  justify-content: center;
+
+  display: grid;
+  grid:
+    "top top top" auto
+    "left middle right" auto
+    "bot bot bot" auto
+    / auto auto auto;
+  grid-auto-flow: row dense;
+
+  justify-items: center;
   align-items: center;
+
+  background-color: #222124;
   color: #fff;
 }
 
-.preview-message {
+.preview {
+  width: 500px;
+  height: 500px;
+  overflow: auto;
+
+  display: flex;
   text-align: center;
+  justify-content: center;
+
+  grid-area: middle;
+}
+
+.image {
 }
 
 .download-button {
@@ -25,6 +45,13 @@
   padding: 10px 20px;
   cursor: pointer;
   margin-top: 10px;
+}
+
+.zoom {
+  grid-area: bot;
+  display: flex;
+  align-self: end;
+  margin-bottom: 30px;
 }
 
 .details-section {

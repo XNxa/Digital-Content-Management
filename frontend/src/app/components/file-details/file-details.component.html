@@ -1,13 +1,18 @@
 <div class="file-details-container">
     <div class="preview-section">
-        @if (displayable) {
-        <img src="{{data}}">
-        } @else {
-        <div class="preview-message">
+        <div class="preview">
+            @if (displayable) {
+            <img class="image" src="{{data}}" [style]='"transform: scale(" + currentZoom + ");  transform-origin: " + (currentZoom > 1? "0" : "50") +"% "+ (currentZoom > 1? "0" : "50")+"%;"'>
+            } @else {
             <p>Aucun aperçu disponible</p>
             <button class="download-button">Télécharger</button>
+            }
         </div>
-        }
+
+        <div class="zoom">
+            <app-zoom-button (onZoom)="zoomChange($event)"></app-zoom-button>
+        </div>
+
     </div>
     <div class="details-section">
         <div class="section">
