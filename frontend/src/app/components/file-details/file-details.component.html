@@ -2,7 +2,8 @@
     <div class="preview-section">
         <div class="preview">
             @if (displayable) {
-            <img class="image" src="{{data}}" [style]='"transform: scale(" + currentZoom + ");  transform-origin: " + (currentZoom > 1? "0" : "50") +"% "+ (currentZoom > 1? "0" : "50")+"%;"'>
+            <img src="{{data}}"
+                [style]='"transform: scale(" + currentZoom + ");  transform-origin: " + (currentZoom > 1? "0" : "50") +"% "+ (currentZoom > 1? "0" : "50")+"%;"'>
             } @else {
             <p>Aucun aperçu disponible</p>
             <button class="download-button">Télécharger</button>
@@ -13,8 +14,22 @@
             <app-zoom-button (onZoom)="zoomChange($event)"></app-zoom-button>
         </div>
 
+        <div class="actions">
+            <app-icon-button icon="send" color="dark"></app-icon-button>
+            <app-icon-button icon="link" color="dark"></app-icon-button>
+            <app-icon-button icon="download" color="dark"></app-icon-button>
+            <app-icon-button icon="duplicate" color="dark"></app-icon-button>
+        </div>
+
     </div>
     <div class="details-section">
+
+        <div class="other-actions">
+            <app-icon-button icon="delete" color="white"></app-icon-button>
+            <app-icon-button icon="modify" color="white"></app-icon-button>
+            <app-icon-button icon="close" color="white"></app-icon-button>
+        </div>
+
         <div class="section">
             <h2>{{file.filename}}</h2>
             <div class="metadata">

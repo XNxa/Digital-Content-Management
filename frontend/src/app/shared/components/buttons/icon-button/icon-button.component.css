@@ -23,6 +23,21 @@ button.blue:active {
   background: var(--primary-accent);
 }
 
+button.dark {
+  /* Bleu électrique */
+  background: #404040;
+  color: white;
+}
+
+button.dark:hover {
+  background: #5A5C60;
+  box-shadow: 1px 1px #404040;
+}
+
+button.dark:active {
+  background: #404040;
+}
+
 button.white {
   background: white;
   color: var(--text-color);
