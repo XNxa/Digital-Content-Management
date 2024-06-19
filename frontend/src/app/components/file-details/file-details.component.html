@@ -1,0 +1,44 @@
+<div class="file-details-container">
+    <div class="preview-section">
+        @if (displayable) {
+        <img src="{{data}}">
+        } @else {
+        <div class="preview-message">
+            <p>Aucun aperçu disponible</p>
+            <button class="download-button">Télécharger</button>
+        </div>
+        }
+    </div>
+    <div class="details-section">
+        <div class="section">
+            <h2>{{file.filename}}</h2>
+            <div class="metadata">
+                <p>Ajouté le: {{file.date}}</p>
+                <p>{{type}}: 1800 Ko</p>
+                <p>Images > Site web > Dossiers > TODO</p>
+            </div>
+        </div>
+        <div class="section">
+            <h3>Description</h3>
+            <div class="description">
+                {{file.description}}
+            </div>
+        </div>
+        <div class="section">
+            <h3>Version</h3>
+            <p>{{file.version}}</p>
+        </div>
+        <div class="section">
+            <h3>Statut</h3>
+            <p>{{file.status}}</p>
+        </div>
+        <div class="section">
+            <h3>Mots-clés</h3>
+            <div class="keywords">
+                @for (keyword of file.keywords; track $index) {
+                <span class="keyword">{{keyword}}</span>
+                }
+            </div>
+        </div>
+    </div>
+</div>
