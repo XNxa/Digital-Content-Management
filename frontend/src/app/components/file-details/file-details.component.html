@@ -15,10 +15,10 @@
         </div>
 
         <div class="actions">
-            <app-icon-button icon="send" color="dark"></app-icon-button>
-            <app-icon-button icon="link" color="dark"></app-icon-button>
-            <app-icon-button icon="download" color="dark"></app-icon-button>
-            <app-icon-button icon="duplicate" color="dark"></app-icon-button>
+            <app-icon-button icon="send" color="dark" (click)="onSendByEmail()"></app-icon-button>
+            <app-icon-button icon="link" color="dark" (click)="onGetLink()"></app-icon-button>
+            <app-icon-button icon="download" color="dark" (click)="onDownload()"></app-icon-button>
+            <app-icon-button icon="duplicate" color="dark" (click)="onDuplicate()"></app-icon-button>
         </div>
 
     </div>
