@@ -1,7 +1,7 @@
 <div class="input-container">
     <label>{{ label }} <span>{{hint}}</span></label>
     <select [class]="border ? 'input-border' : 'no-border'"
-        [value]="value" 
+        [(ngModel)]="value"
         (input)="onInput($event)"
         [attr.aria-label]="label"
     >

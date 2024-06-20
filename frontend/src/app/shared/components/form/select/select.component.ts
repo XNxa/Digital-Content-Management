@@ -1,18 +1,20 @@
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-select',
   standalone: true,
-  imports: [],
+  imports: [FormsModule, CommonModule],
   templateUrl: './select.component.html',
   styleUrl: './select.component.css'
 })
 export class SelectComponent {
   @Input() label: string = '';
   @Input() hint: string = '';
-  @Input() options: string[] = [''];
+  @Input() options!: string[];
   @Input() border = true;
-  @Input() value: string = this.options[0];
+  @Input() value!: string;
   @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
 
   onInput(event: Event): void {
