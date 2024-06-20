@@ -64,10 +64,6 @@
   text-align: center;
 }
 
-.archived { /* TODO : delete this */
-  background-color: #ccc;
-}
-
 .primary {
   font-size: 14px;
 }
