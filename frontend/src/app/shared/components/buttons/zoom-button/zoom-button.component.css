@@ -20,7 +20,7 @@ button {
     }
 }
 
-button:active {
+button:hover {
     background-color: #5A5C60;
 }
 

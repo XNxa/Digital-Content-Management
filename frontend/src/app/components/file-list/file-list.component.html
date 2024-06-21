@@ -1,6 +1,9 @@
 @if (fileDetailOpen) {
 <app-file-details style="position: absolute; top: 0; left: 0; bottom: 0;" [file]="files[indexToOpen]"
-    (closeView)="closeFileDetail()"></app-file-details>
+    (closeView)="closeFileDetail()"
+    (next)="nextFile()"
+    (previous)="previousFile()"
+    ></app-file-details>
 }
 @else {
 <div class="header">

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FileHeader } from '../../models/FileHeader';
 import { MimeTypes } from '../../utils/mime-types';
 import { FileApiService } from '../../services/file-api.service';
@@ -14,12 +14,15 @@ import { StatusChipComponent } from '../../shared/components/status-chip/status-
   standalone: true,
   imports: [ZoomButtonComponent, IconButtonComponent, ModifyDialogComponent, StatusChipComponent],
   templateUrl: './file-details.component.html',
-  styleUrl: './file-details.component.css'
+  styleUrl: './file-details.component.css',
 })
-export class FileDetailsComponent implements OnInit {
-
+export class FileDetailsComponent implements OnInit, OnChanges {
   @Input() file!: FileHeader;
+
   @Output() closeView: EventEmitter<void> = new EventEmitter<void>();
+
+  @Output() previous: EventEmitter<void> = new EventEmitter<void>();
+  @Output() next: EventEmitter<void> = new EventEmitter<void>();
 
   type!: string;
   displayable!: boolean;
@@ -35,7 +38,7 @@ export class FileDetailsComponent implements OnInit {
   Status = Status;
 
   constructor(private api: FileApiService, private snackbar: SnackbarService) { }
-
+  
   ngOnInit(): void {
     this.displayable = this.file.type.includes('image');
 
@@ -47,7 +50,7 @@ export class FileDetailsComponent implements OnInit {
           this.width = img.width;
           this.height = img.height;
         };
-
+        
         const reader = new FileReader();
         reader.readAsDataURL(data);
         reader.onload = () => {
@@ -55,8 +58,12 @@ export class FileDetailsComponent implements OnInit {
         }
       });
     };
-
+    
     this.type = (MimeTypes.extension(this.file?.type!) || 'unknown').toUpperCase();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    this.ngOnInit();
   }
 
   openDialog(): void {
@@ -124,4 +131,11 @@ export class FileDetailsComponent implements OnInit {
     this.closeView.emit();
   }
 
+  onPrevious() {
+    this.previous.emit();
+  }
+
+  onNext() {
+    this.next.emit();
+  }
 }

@@ -10,10 +10,7 @@
 
   display: grid;
   grid:
-    "top top top" auto
-    "left middle right" auto
-    "bot bot bot" auto
-    / auto auto auto;
+    "top top top" auto "left middle right" auto "bot bot bot" auto / auto auto auto;
   grid-auto-flow: row dense;
 
   justify-items: center;
@@ -56,6 +53,32 @@
   display: flex;
   align-self: end;
   margin-bottom: 30px;
+}
+
+.left {
+  grid-area: left;
+  justify-self: start;
+  margin-left: 30px;
+}
+
+.right {
+  grid-area: right;
+  justify-self: end;
+  margin-right: 30px;
+}
+
+.previous, .next {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #404040;
+  border: none;
+  border-radius: 100%;
+  padding: 8px;
+}
+
+.previous:hover, .next:hover {
+  background-color: #5A5C60;
 }
 
 .details-section {

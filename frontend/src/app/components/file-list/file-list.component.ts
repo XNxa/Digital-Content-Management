@@ -258,4 +258,11 @@ export class FileListComponent implements OnInit {
     }
   }
 
+  nextFile() {
+    this.indexToOpen = (this.indexToOpen + 1) % this.files.length;
+  }
+
+  previousFile() {
+    this.indexToOpen = (this.indexToOpen - 1 + this.files.length) % this.files.length;
+  }
 }
