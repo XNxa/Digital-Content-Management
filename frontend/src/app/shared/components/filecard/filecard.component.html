@@ -2,13 +2,13 @@
     <div class="file-card-body">
         <div class="file-image-container">
             @if (file?.thumbnail != null) {
-                <img class="file-thumbnail" src="{{file?.thumbnail}}">
+            <img class="file-thumbnail" src="{{file?.thumbnail}}">
             } @else {
-                <img class="file-icon" src="/icons/file.svg">
+            <img class="file-icon" src="/icons/file.svg">
             }
         </div>
         <div class="file-card-header">
-            <input type="checkbox" [(checked)]="isChecked"/>
+            <input type="checkbox" [(checked)]="isChecked" (click)="onFileSelected($event)"/>
         </div>
     </div>
     <div class="file-card-footer">

@@ -16,13 +16,14 @@ export class FilecardComponent implements OnInit {
   @Input() file: FileHeader | undefined;
 
   @Output() fileSelected = new EventEmitter();
+  @Output() fileClicked = new EventEmitter();
 
   filename: string = '';
   type: string = '';
   status: Status = Status.ARCHIVE;
 
   isChecked = false;
-  
+
   ngOnInit(): void {
     if (this.file && this.file?.filename.length > 12) {
       this.filename = this.file.filename.substring(0, 12) + '...';
@@ -43,8 +44,13 @@ export class FilecardComponent implements OnInit {
     this.ngOnInit();
   }
 
-  onCardClicked(): void {
-    this.isChecked = !this.isChecked;
+  onFileSelected(event : MouseEvent): void {
+    event.stopPropagation();
     this.fileSelected.emit(this.file);
+  }
+
+  onCardClicked(): void {
+    console.log('FilecardComponent: onCardClicked');
+    this.fileClicked.emit(this.file);
   }
 }

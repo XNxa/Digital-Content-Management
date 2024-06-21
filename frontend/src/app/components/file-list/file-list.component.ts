@@ -14,6 +14,7 @@ import { SnackbarService } from '../../services/snackbar.service';
 import { DropdownCheckboxComponent } from '../../shared/components/form/dropdown-checkbox/dropdown-checkbox.component';
 import { Status } from '../../enums/status';
 import { lastValueFrom } from 'rxjs';
+import { FileDetailsComponent } from '../file-details/file-details.component';
 
 @Component({
   selector: 'app-file-list',
@@ -28,21 +29,23 @@ import { lastValueFrom } from 'rxjs';
     UploadDialogComponent,
     InputComponent,
     SelectComponent,
-    DropdownCheckboxComponent
+    DropdownCheckboxComponent,
+    FileDetailsComponent
   ],
   templateUrl: './file-list.component.html',
   styleUrl: './file-list.component.css'
 })
 export class FileListComponent implements OnInit {
+  
   /** The title of the file view. */
   readonly viewtitle: string = "Fichiers";
 
   /** The number of items to display per page. */
   readonly itemsPerPage: number = 16;
-
+  
   /** Array of status strings. */
   readonly status: string[] = Status.getStringList();
-
+  
   /** Flag indicating whether to display files in grid layout or list layout. */
   gridlayout: boolean = true;
 
@@ -51,20 +54,20 @@ export class FileListComponent implements OnInit {
 
   /** Array of file headers to display. */
   files: FileHeader[] = [];
-
+  
   /** The current page number. */
   currentPage: number = 1;
-
+  
   /** The total number of elements. */
   numberOfElements!: number;
-
+  
   /** Array currently defined keywords. */
   keywords!: string[];
-
+  
   /** The filename being searched. 
    * Binded to the search field */
   filenameSearched: string = '';
-
+  
   /** Array of keywords being searched. 
    * Binded to the search field */
   keywordsSearched: string[] = [];
@@ -75,7 +78,13 @@ export class FileListComponent implements OnInit {
 
   /** Files currently selected */
   selectedFiles: number[] = [];
-
+  
+  /** Flag indicating whether the file detail view is open or not. */
+  fileDetailOpen = false;
+  
+  /** Index of the file to open in the file detail view. */
+  indexToOpen: number = 0;
+  
   constructor(private api: FileApiService, private snackbar: SnackbarService) {
     this.api.getNumberOfElement().subscribe(n => {
       this.numberOfElements = n;
@@ -92,8 +101,8 @@ export class FileListComponent implements OnInit {
   /**
    * Event handler for page change.
    * @param pageNumber The new page number.
-   */
-  onPageChange(pageNumber: number): void {
+  */
+ onPageChange(pageNumber: number): void {
     this.currentPage = pageNumber
     this.refreshFileList();
   }
@@ -102,12 +111,12 @@ export class FileListComponent implements OnInit {
   onListClicked(): void {
     this.gridlayout = false;
   }
-
+  
   /** Event handler for grid view button click. */
   onGridClicked(): void {
     this.gridlayout = true;
   }
-
+  
   /** Fetch file list from the server. Get files of current page only. */
   refreshFileList(): void {
     // Get the files for the current page and search criteria
@@ -122,7 +131,7 @@ export class FileListComponent implements OnInit {
         }
       }
     });
-
+    
     // Refresh the list of keywords
     this.api.getKeywords().subscribe(keywords => {
       this.keywords = keywords;
@@ -195,7 +204,7 @@ export class FileListComponent implements OnInit {
           });
         });
         break;
-      case 'Partager par e-mail':
+        case 'Partager par e-mail':
         const selectedFiles = this.selectedFiles.map(index => this.files[index]);
         const linkPromises = selectedFiles.map(file => lastValueFrom(this.api.getLink(file.filename)));
 
@@ -206,5 +215,14 @@ export class FileListComponent implements OnInit {
         });
         break;
     }
+  }
+
+  fileClicked(index: number) {
+    this.indexToOpen = index;
+    this.fileDetailOpen = true;
+  }
+  
+  closeFileDetail() {
+    this.fileDetailOpen = false;
   }
 }

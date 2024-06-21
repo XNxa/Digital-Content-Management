@@ -27,7 +27,7 @@
         <div class="other-actions">
             <app-icon-button icon="delete" color="white"></app-icon-button>
             <app-icon-button icon="modify" color="white" (click)="openDialog()"></app-icon-button>
-            <app-icon-button icon="close" color="white"></app-icon-button>
+            <app-icon-button icon="close" color="white" (click)="onClose()"></app-icon-button>
         </div>
 
         <div class="section">
@@ -50,7 +50,7 @@
         </div>
         <div class="section">
             <h3>Statut</h3>
-            <p>{{file.status}}</p>
+            <app-status-chip [status]="Status.fromString(file.status)" size="large"></app-status-chip>
         </div>
         <div class="section">
             <h3>Mots-clés</h3>

@@ -34,7 +34,7 @@
 <div class="file-grid">
     @if (gridlayout) {
     @for (file of files; track $index) {
-    <app-filecard [file]="file" (fileSelected)="fileSelected($index)"></app-filecard>
+    <app-filecard [file]="file" (fileSelected)="fileSelected($index)" (fileClicked)="fileClicked($index)"></app-filecard>
     }
     } @else {
     <app-table
@@ -48,3 +48,7 @@
 <div class="footer">
     <app-page-selector [totalItems]="numberOfElements" [itemsPerPage]="itemsPerPage" (pageChange)="onPageChange($event)"></app-page-selector>
 </div>
+
+@if (fileDetailOpen) {
+    <app-file-details style="position: absolute; top: 0; left: 0;" [file]="files[indexToOpen]" (closeView)="closeFileDetail()"></app-file-details>
+}

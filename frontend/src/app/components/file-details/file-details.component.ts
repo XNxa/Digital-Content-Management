@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FileHeader } from '../../models/FileHeader';
 import { MimeTypes } from '../../utils/mime-types';
 import { FileApiService } from '../../services/file-api.service';
@@ -6,17 +6,21 @@ import { ZoomButtonComponent } from '../../shared/components/buttons/zoom-button
 import { IconButtonComponent } from '../../shared/components/buttons/icon-button/icon-button.component';
 import { ModifyDialogComponent } from '../modify-dialog/modify-dialog.component';
 import { SnackbarService } from '../../services/snackbar.service';
+import { Status } from '../../enums/status';
+import { StatusChipComponent } from '../../shared/components/status-chip/status-chip.component';
 
 @Component({
   selector: 'app-file-details',
   standalone: true,
-  imports: [ZoomButtonComponent, IconButtonComponent, ModifyDialogComponent],
+  imports: [ZoomButtonComponent, IconButtonComponent, ModifyDialogComponent, StatusChipComponent],
   templateUrl: './file-details.component.html',
   styleUrl: './file-details.component.css'
 })
 export class FileDetailsComponent implements OnInit {
 
   @Input() file!: FileHeader;
+  @Output() closeView: EventEmitter<void> = new EventEmitter<void>();
+
   type!: string;
   displayable!: boolean;
 
@@ -28,7 +32,9 @@ export class FileDetailsComponent implements OnInit {
 
   isDialogOpen: boolean = false;
 
-  constructor(private api: FileApiService, private snackbar : SnackbarService) { }
+  Status = Status;
+
+  constructor(private api: FileApiService, private snackbar: SnackbarService) { }
 
   ngOnInit(): void {
     this.displayable = this.file.type.includes('image');
@@ -41,7 +47,7 @@ export class FileDetailsComponent implements OnInit {
           this.width = img.width;
           this.height = img.height;
         };
-        
+
         const reader = new FileReader();
         reader.readAsDataURL(data);
         reader.onload = () => {
@@ -62,7 +68,10 @@ export class FileDetailsComponent implements OnInit {
   }
 
   onSendByEmail(): void {
-    throw new Error('Not implemented');
+    this.api.getLink(this.file.filename).subscribe(link => {
+      const mailtoLink = `mailto:?subject=Partage de fichier&body=Bonjour,%0A%0AVeuillez trouver ci-joint le lien vers le fichier :%0A${encodeURIComponent(link)}`;
+      window.location.href = mailtoLink;
+    });
   }
 
   onGetLink(): void {
@@ -109,6 +118,10 @@ export class FileDetailsComponent implements OnInit {
         this.snackbar.show('Erreur lors de la suppression des fichiers');
       }
     });
+  }
+
+  onClose(): void {
+    this.closeView.emit();
   }
 
 }

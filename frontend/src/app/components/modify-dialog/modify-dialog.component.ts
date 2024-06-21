@@ -37,7 +37,7 @@ export class ModifyDialogComponent {
     this.description = this.file?.description || '';
     this.version = this.file.version;
     this.keywords = [...this.file.keywords];
-    this.status = this.file.status;
+    this.status = Status.printableString(Status.fromString(this.file.status));
     this.fileType = this.file.type;
 
     if (this.fileType.includes('image')) {
