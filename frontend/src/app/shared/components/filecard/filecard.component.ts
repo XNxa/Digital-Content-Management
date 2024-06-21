@@ -15,14 +15,13 @@ export class FilecardComponent implements OnInit {
 
   @Input() file: FileHeader | undefined;
 
-  @Output() fileSelected = new EventEmitter();
+  @Input() fileChecked !: boolean; 
+  @Output() fileCheckedChange = new EventEmitter();
   @Output() fileClicked = new EventEmitter();
 
   filename: string = '';
   type: string = '';
   status: Status = Status.ARCHIVE;
-
-  isChecked = false;
 
   ngOnInit(): void {
     if (this.file && this.file?.filename.length > 12) {
@@ -36,8 +35,6 @@ export class FilecardComponent implements OnInit {
     if (this.file?.status) {
       this.status = Status.fromString(this.file?.status);
     }
-
-    this.isChecked = false;
   }
 
   ngOnChanges(): void {
@@ -46,8 +43,8 @@ export class FilecardComponent implements OnInit {
 
   onFileSelected(event : MouseEvent): void {
     event.stopPropagation();
-    this.isChecked = !this.isChecked;
-    this.fileSelected.emit(this.file);
+    this.fileChecked = !this.fileChecked;
+    this.fileCheckedChange.emit(this.file);
   }
 
   onCardClicked(): void {

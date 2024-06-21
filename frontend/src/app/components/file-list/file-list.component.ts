@@ -36,16 +36,16 @@ import { FileDetailsComponent } from '../file-details/file-details.component';
   styleUrl: './file-list.component.css'
 })
 export class FileListComponent implements OnInit {
-  
+
   /** The title of the file view. */
   readonly viewtitle: string = "Fichiers";
 
   /** The number of items to display per page. */
   readonly itemsPerPage: number = 16;
-  
+
   /** Array of status strings. */
   readonly status: string[] = Status.getStringList();
-  
+
   /** Flag indicating whether to display files in grid layout or list layout. */
   gridlayout: boolean = true;
 
@@ -54,20 +54,20 @@ export class FileListComponent implements OnInit {
 
   /** Array of file headers to display. */
   files: FileHeader[] = [];
-  
+
   /** The current page number. */
   currentPage: number = 1;
-  
+
   /** The total number of elements. */
   numberOfElements!: number;
-  
+
   /** Array currently defined keywords. */
   keywords!: string[];
-  
+
   /** The filename being searched. 
    * Binded to the search field */
   filenameSearched: string = '';
-  
+
   /** Array of keywords being searched. 
    * Binded to the search field */
   keywordsSearched: string[] = [];
@@ -77,14 +77,17 @@ export class FileListComponent implements OnInit {
   statusSearched: string[] = [];
 
   /** Files currently selected */
-  selectedFiles: number[] = [];
-  
+  selectedFiles: Set<number> = new Set<number>();
+
   /** Flag indicating whether the file detail view is open or not. */
   fileDetailOpen = false;
-  
+
   /** Index of the file to open in the file detail view. */
   indexToOpen: number = 0;
-  
+
+  /** Button state for the multi-select button. */
+  buttonMultiSelect: 'Empty' | 'Full' = 'Empty';
+
   constructor(private api: FileApiService, private snackbar: SnackbarService) {
     this.api.getNumberOfElement().subscribe(n => {
       this.numberOfElements = n;
@@ -102,7 +105,7 @@ export class FileListComponent implements OnInit {
    * Event handler for page change.
    * @param pageNumber The new page number.
   */
- onPageChange(pageNumber: number): void {
+  onPageChange(pageNumber: number): void {
     this.currentPage = pageNumber
     this.refreshFileList();
   }
@@ -111,12 +114,12 @@ export class FileListComponent implements OnInit {
   onListClicked(): void {
     this.gridlayout = false;
   }
-  
+
   /** Event handler for grid view button click. */
   onGridClicked(): void {
     this.gridlayout = true;
   }
-  
+
   /** Fetch file list from the server. Get files of current page only. */
   refreshFileList(): void {
     // Get the files for the current page and search criteria
@@ -131,7 +134,7 @@ export class FileListComponent implements OnInit {
         }
       }
     });
-    
+
     // Refresh the list of keywords
     this.api.getKeywords().subscribe(keywords => {
       this.keywords = keywords;
@@ -139,10 +142,10 @@ export class FileListComponent implements OnInit {
   }
 
   onDeleteClicked() {
-    this.api.delete(this.selectedFiles.map(index => this.files[index].filename)).subscribe({
+    this.api.delete([...this.selectedFiles].map(index => this.files[index].filename)).subscribe({
       next: () => {
-        this.files = this.files.filter((_, index) => !this.selectedFiles.includes(index));
-        this.selectedFiles = [];
+        this.files = this.files.filter((_, index) => !this.selectedFiles.has(index));
+        this.selectedFiles.clear();
         this.snackbar.show('Fichiers supprimés avec succès');
         this.api.getNumberOfElement().subscribe(n => {
           this.numberOfElements = n;
@@ -158,17 +161,20 @@ export class FileListComponent implements OnInit {
   }
 
   fileSelected(index: number) {
-    if (this.selectedFiles.includes(index)) {
-      this.selectedFiles = this.selectedFiles.filter(i => i != index);
+    if (this.selectedFiles.has(index)) {
+      this.selectedFiles.delete(index);
     } else {
-      this.selectedFiles.push(index);
+      this.selectedFiles.add(index);
+      if (this.selectedFiles.size == this.files.length) {
+        this.buttonMultiSelect = 'Full';
+      }
     }
   }
 
   onMenuButtonClicked(buttonClicked: string) {
     switch (buttonClicked) {
       case 'Dupliquer':
-        const filenames = this.selectedFiles.map(index => this.files[index].filename);
+        const filenames = [...this.selectedFiles].map(index => this.files[index].filename);
         filenames.forEach(filename => {
           this.api.duplicate(filename).subscribe({
             next: () => {
@@ -198,14 +204,14 @@ export class FileListComponent implements OnInit {
         }
         break;
       case 'Copier le lien':
-        this.api.getLink(this.files[this.selectedFiles[0]].filename).subscribe(link => {
+        this.api.getLink(this.files[[...this.selectedFiles][0]].filename).subscribe(link => {
           navigator.clipboard.writeText(link).then(() => {
             this.snackbar.show('Lien copié dans le presse-papier');
           });
         });
         break;
-        case 'Partager par e-mail':
-        const selectedFiles = this.selectedFiles.map(index => this.files[index]);
+      case 'Partager par e-mail':
+        const selectedFiles = [...this.selectedFiles].map(index => this.files[index]);
         const linkPromises = selectedFiles.map(file => lastValueFrom(this.api.getLink(file.filename)));
 
         Promise.all(linkPromises).then(links => {
@@ -217,12 +223,22 @@ export class FileListComponent implements OnInit {
     }
   }
 
-  fileClicked(index: number) {
+  fileClicked(index: number): void {
     this.indexToOpen = index;
     this.fileDetailOpen = true;
   }
-  
-  closeFileDetail() {
+
+  closeFileDetail(): void {
     this.fileDetailOpen = false;
   }
+
+  onSelectClick(): void {
+    this.buttonMultiSelect = this.buttonMultiSelect == 'Empty' ? 'Full' : 'Empty';
+    if (this.buttonMultiSelect == 'Empty') {
+      this.selectedFiles.clear();
+    } else {
+      this.selectedFiles = new Set(this.files.map((_, index) => index));
+    }
+  }
+
 }

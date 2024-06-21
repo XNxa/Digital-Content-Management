@@ -10,6 +10,7 @@ export type ButtonIcon =
     'back'   |
     'upload' |
     'checkbox' |
+    'full-checkbox' |
     'settings' |
     'download' |
     'forward'  |

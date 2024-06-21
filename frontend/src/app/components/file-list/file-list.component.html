@@ -1,54 +1,62 @@
 <div class="header">
     <h1>Web / Images</h1>
-    <app-icon-text-button title="Importer un fichier" icon="upload" (click)="isDialogOpen = true"></app-icon-text-button>
+    <app-icon-text-button title="Importer un fichier" icon="upload"
+        (click)="isDialogOpen = true"></app-icon-text-button>
 </div>
 
 @if (isDialogOpen) {
-    <app-upload-dialog (closeDialog)="isDialogOpen = false"></app-upload-dialog>
+<app-upload-dialog (closeDialog)="isDialogOpen = false"></app-upload-dialog>
 }
 
 <div class="search-area">
-    <app-input class="search-element" label="ID du fichier" placeholder="Saisissez l'ID du fichier" [border]="false" [(value)]="filenameSearched" (valueChange)="refreshFileList()"></app-input>
-    <app-dropdown-checkbox class="search-element" label="Mots-clés" placeholder="Selectionnez des tags" [options]="keywords" [(value)]="keywordsSearched"></app-dropdown-checkbox>
-    <app-dropdown-checkbox class="search-element" label="Statut" placeholder="Selectionnez un statut" [options]="status" [(value)]="statusSearched"></app-dropdown-checkbox>
+    <app-input class="search-element" label="ID du fichier" placeholder="Saisissez l'ID du fichier" [border]="false"
+        [(value)]="filenameSearched" (valueChange)="refreshFileList()"></app-input>
+    <app-dropdown-checkbox class="search-element" label="Mots-clés" placeholder="Selectionnez des tags"
+        [options]="keywords" [(value)]="keywordsSearched"></app-dropdown-checkbox>
+    <app-dropdown-checkbox class="search-element" label="Statut" placeholder="Selectionnez un statut" [options]="status"
+        [(value)]="statusSearched"></app-dropdown-checkbox>
 </div>
 
 <div class="header">
     <h2>{{viewtitle}}</h2>
     <div class="action-buttons">
-        @if (selectedFiles.length > 0) {
+        @if (selectedFiles.size > 0) {
         <app-icon-button color="white" icon="delete" (click)="onDeleteClicked()"></app-icon-button>
-        <app-icon-menu-button color="white" icon="menu" 
+        <app-icon-menu-button color="white" icon="menu"
             [buttonsLabels]="['Dupliquer', 'Télécharger', 'Copier le lien', 'Partager par e-mail']"
             [buttonsIcons]="['duplicate', 'download', 'link', 'send']"
             (click)="onMenuButtonClicked($event)"></app-icon-menu-button>
         <div class="vertical-separator"></div>
         }
         <app-icon-button color='white' icon="update" (click)="refreshFileList()"></app-icon-button>
-        <app-icon-button color='white' icon="checkbox"></app-icon-button>
-        <app-icon-button [color]="(gridlayout)?'clearblue':'white'" icon="card" (click)="onGridClicked()"></app-icon-button>
-        <app-icon-button [color]="(gridlayout)?'white':'clearblue'" icon="list" (click)="onListClicked()"></app-icon-button>
+        <app-icon-button color='white' [icon]="buttonMultiSelect == 'Empty' ? 'checkbox' : 'full-checkbox'"
+            (click)="onSelectClick()"></app-icon-button>
+        <app-icon-button [color]="(gridlayout)?'clearblue':'white'" icon="card"
+            (click)="onGridClicked()"></app-icon-button>
+        <app-icon-button [color]="(gridlayout)?'white':'clearblue'" icon="list"
+            (click)="onListClicked()"></app-icon-button>
     </div>
 </div>
 
 <div class="file-grid">
     @if (gridlayout) {
     @for (file of files; track $index) {
-    <app-filecard [file]="file" (fileSelected)="fileSelected($index)" (fileClicked)="fileClicked($index)"></app-filecard>
+        <app-filecard [file]="file" [fileChecked]="selectedFiles.has($index)"
+        (fileCheckedChange)="fileSelected($index)" (fileClicked)="fileClicked($index)"></app-filecard>
     }
     } @else {
-    <app-table
-        class="table"
+    <app-table class="table"
         [columns]="[{header:'', field:'thumbnail', image:true}, {header: 'NAME', field: 'filename'}, {header: 'DATE', field: 'date'}, {header:'STATUT', field:'status'}, {header: 'TYPE', field: 'type'}, {header: 'POIDS', field: 'printableSize'}]"
-        [data]="files"
-        ></app-table>
+        [data]="files"></app-table>
     }
 </div>
 
 <div class="footer">
-    <app-page-selector [totalItems]="numberOfElements" [itemsPerPage]="itemsPerPage" (pageChange)="onPageChange($event)"></app-page-selector>
+    <app-page-selector [totalItems]="numberOfElements" [itemsPerPage]="itemsPerPage"
+        (pageChange)="onPageChange($event)"></app-page-selector>
 </div>
 
 @if (fileDetailOpen) {
-    <app-file-details style="position: absolute; top: 0; left: 0;" [file]="files[indexToOpen]" (closeView)="closeFileDetail()"></app-file-details>
+<app-file-details style="position: absolute; top: 0; left: 0;" [file]="files[indexToOpen]"
+    (closeView)="closeFileDetail()"></app-file-details>
 }
