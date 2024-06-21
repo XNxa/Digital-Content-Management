@@ -62,7 +62,7 @@ export class FileDetailsComponent implements OnInit, OnChanges {
     this.type = (MimeTypes.extension(this.file?.type!) || 'unknown').toUpperCase();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(_changes: SimpleChanges): void {
     this.ngOnInit();
   }
 
