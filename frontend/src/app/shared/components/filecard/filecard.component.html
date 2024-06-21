@@ -8,10 +8,10 @@
             }
         </div>
         <div class="file-card-header">
-            <input type="checkbox" [(checked)]="isChecked" (click)="onFileSelected($event)"/>
+            <input type="checkbox" [(checked)]="isChecked" (click)="onFileSelected($event)" />
         </div>
     </div>
-    <div class="file-card-footer">
+    <div class="file-card-footer" [style]="isChecked? 'background-color: #d7e3fc;' : ''">
         <div class="file-card-footer-left">
             <span class="primary">{{filename}}</span>
             <span class="secondary">{{type}}</span>

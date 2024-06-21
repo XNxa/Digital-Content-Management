@@ -46,6 +46,7 @@ export class FilecardComponent implements OnInit {
 
   onFileSelected(event : MouseEvent): void {
     event.stopPropagation();
+    this.isChecked = !this.isChecked;
     this.fileSelected.emit(this.file);
   }
 
