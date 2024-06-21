@@ -102,8 +102,9 @@ public class FileController {
 
     @PutMapping("/update")
     public void updateFile(@RequestParam("filename") String filename,
-                           @RequestPart("metadata") FileHeaderDTO metadata) throws
+                           @RequestBody FileHeaderDTO metadata) throws
             Exception {
+        System.out.println(metadata);
         fs.update(filename, metadata);
     }
 

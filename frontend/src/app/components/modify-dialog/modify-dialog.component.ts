@@ -61,12 +61,11 @@ export class ModifyDialogComponent {
   }
 
   save(): void {
-    const metadata: FileHeader = {
-      description: this.description,
-      version: this.version,
-      keywords: this.keywords,
-      status: Status.fromString(this.status),
-    } as FileHeader;
+    const metadata = this.file;
+    metadata.description = this.description;
+    metadata.version = this.version;
+    metadata.keywords = this.keywords;
+    metadata.status = Status.fromString(this.status);
 
     this.api.update(this.file.filename, metadata).subscribe({
       next: () => {

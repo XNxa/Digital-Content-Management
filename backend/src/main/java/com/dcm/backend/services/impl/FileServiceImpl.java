@@ -213,7 +213,7 @@ public class FileServiceImpl implements FileService {
         FileHeader newFileHeader = new FileHeader(fileHeader);
         newFileHeader.setFilename("copy_" + fileHeader.getFilename());
         newFileHeader.setThumbnailName("thumbnail_" + newFileHeader.getFilename());
-
+        newFileHeader.setDate(LocalDate.now().toString());
 
         List<Keyword> newKeywords = fileHeader.getKeywords().stream()
                 .map(Keyword::new)
@@ -247,7 +247,7 @@ public class FileServiceImpl implements FileService {
             ErrorResponseException, IOException, NoSuchAlgorithmException,
             InvalidKeyException, InvalidResponseException, XmlParserException,
             InternalException {
-        
+
         FileHeader fileHeader = fileRepository.findByFilename(filename).orElseThrow(
                 () -> new FileNotFoundException("update : " + filename + " not found")
         );
