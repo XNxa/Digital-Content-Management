@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FileHeader } from '../../models/FileHeader';
 import { MimeTypes } from '../../utils/mime-types';
 import { FileApiService } from '../../services/file-api.service';
@@ -125,6 +125,7 @@ export class FileDetailsComponent implements OnInit, OnChanges {
         this.snackbar.show('Erreur lors de la suppression des fichiers');
       }
     });
+    this.next.emit();
   }
 
   onClose(): void {
