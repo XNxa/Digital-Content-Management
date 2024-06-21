@@ -101,6 +101,14 @@ export class FileListComponent implements OnInit {
     this.refreshFileList();
   }
 
+  onCloseDialog() {
+    this.isDialogOpen = false;
+
+    setTimeout(() => {
+      this.refreshFileList();
+    }, 1000);
+  }
+
   /**
    * Event handler for page change.
    * @param pageNumber The new page number.

@@ -48,7 +48,6 @@ export class FilecardComponent implements OnInit {
   }
 
   onCardClicked(): void {
-    console.log('FilecardComponent: onCardClicked');
     this.fileClicked.emit(this.file);
   }
 }

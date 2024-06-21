@@ -1,3 +1,8 @@
+@if (fileDetailOpen) {
+<app-file-details style="position: absolute; top: 0; left: 0; bottom: 0;" [file]="files[indexToOpen]"
+    (closeView)="closeFileDetail()"></app-file-details>
+}
+@else {
 <div class="header">
     <h1>Web / Images</h1>
     <app-icon-text-button title="Importer un fichier" icon="upload"
@@ -5,7 +10,7 @@
 </div>
 
 @if (isDialogOpen) {
-<app-upload-dialog (closeDialog)="isDialogOpen = false"></app-upload-dialog>
+<app-upload-dialog (closeDialog)="onCloseDialog()"></app-upload-dialog>
 }
 
 <div class="search-area">
@@ -41,15 +46,13 @@
 <div class="file-grid">
     @if (gridlayout) {
     @for (file of files; track $index) {
-        <app-filecard [file]="file" [fileChecked]="selectedFiles.has($index)"
-        (fileCheckedChange)="fileSelected($index)" (fileClicked)="fileClicked($index)"></app-filecard>
+    <app-filecard [file]="file" [fileChecked]="selectedFiles.has($index)" (fileCheckedChange)="fileSelected($index)"
+        (fileClicked)="fileClicked($index)"></app-filecard>
     }
     } @else {
     <app-table class="table"
         [columns]="[{header:'', field:'thumbnail', image:true}, {header: 'NAME', field: 'filename'}, {header: 'DATE', field: 'date'}, {header:'STATUT', field:'status'}, {header: 'TYPE', field: 'type'}, {header: 'POIDS', field: 'printableSize'}]"
-        [data]="files"
-        [selected]="selectedFiles"
-        (selectedChange)="fileSelectedList($event)">
+        [data]="files" [selected]="selectedFiles" (selectedChange)="fileSelectedList($event)">
     </app-table>
     }
 </div>
@@ -58,8 +61,4 @@
     <app-page-selector [totalItems]="numberOfElements" [itemsPerPage]="itemsPerPage"
         (pageChange)="onPageChange($event)"></app-page-selector>
 </div>
-
-@if (fileDetailOpen) {
-<app-file-details style="position: absolute; top: 0; left: 0;" [file]="files[indexToOpen]"
-    (closeView)="closeFileDetail()"></app-file-details>
 }
