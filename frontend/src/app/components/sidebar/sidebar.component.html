@@ -1,24 +1,22 @@
 <div class="sidebar">
-    <div class="sidebar-header">
-      <img src="logo.svg" class="logo">
-    </div>
-    <hr>
-    <nav class="sidebar-nav">
-      <ul>
-        <li><a routerLink="/accueil">Accueil</a></li>
-        <li>
-          <a routerLink="/librairie">Librairie</a>
-          <ul>
-            <li><a routerLink="/librairie/web">Web</a></li>
-            <li><a routerLink="/librairie/images">Images</a></li>
-            <li><a routerLink="/librairie/videos">Vidéos</a></li>
-            <li><a routerLink="/librairie/pictos">Pictos</a></li>
-            <li><a routerLink="/librairie/documents">Documents</a></li>
-          </ul>
-        </li>
-        <li><a routerLink="/gestion/utilisateurs">Utilisateurs</a></li>
-        <li><a routerLink="/gestion/roles">Rôles</a></li>
-      </ul>
-    </nav>
+  <div class="sidebar-header">
+    <img src="logo.svg" class="logo">
   </div>
-  
+  <div class="sidebar-nav">
+    <cdk-tree [dataSource]="dataSource" [treeControl]="treeControl">
+      <!-- This is the tree node template for leaf nodes -->
+      <cdk-tree-node *cdkTreeNodeDef="let node" cdkTreeNodePadding
+        [style.display]="shouldRender(node) ? 'flex' : 'none'" [class]="getClass(node)">
+        <img [src]="getLogoPath(node)">
+        <a (click)="selectNode(node)">{{node.name}}</a>
+      </cdk-tree-node>
+      <!-- This is the tree node template for expandable nodes -->
+      <cdk-tree-node *cdkTreeNodeDef="let node; when: hasChild" cdkTreeNodePadding
+        [style.display]="shouldRender(node) ? 'flex' : 'none'" [class]="getClass(node)">
+        <img [src]="getArrowPath(node)">
+        <img [src]="getLogoPath(node)">
+        <a (click)="selectNode(node)">{{node.name}}</a>
+      </cdk-tree-node>
+    </cdk-tree>
+  </div>
+</div>
