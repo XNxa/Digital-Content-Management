@@ -39,3 +39,7 @@ img {
 .next-icon {
   margin-left: 10px;
 }
+
+.checked {
+  background-color: #d7e3fc;
+}

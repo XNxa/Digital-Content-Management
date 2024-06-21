@@ -1,7 +1,7 @@
 <table>
     <thead>
         <tr>
-            <th><input type="checkbox"></th>
+            <th><input style="display: none ;" type="checkbox"></th>
             @for (column of columnsToDisplay; track $index) {
                 <th>{{ column.header }}</th>
             }
@@ -9,8 +9,8 @@
     </thead>
     <tbody>
         @for (row of data; track $index) {
-        <tr>
-            <td><input type="checkbox"></td>
+        <tr [class]="isSelected($index)? 'checked':''">
+            <td><input type="checkbox" (change)="onChecked($index)" [checked]="isSelected($index)"></td>
             @for (column of columnsToDisplay; track $index) {
             <td>
                 <div class="cell">

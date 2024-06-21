@@ -47,7 +47,10 @@
     } @else {
     <app-table class="table"
         [columns]="[{header:'', field:'thumbnail', image:true}, {header: 'NAME', field: 'filename'}, {header: 'DATE', field: 'date'}, {header:'STATUT', field:'status'}, {header: 'TYPE', field: 'type'}, {header: 'POIDS', field: 'printableSize'}]"
-        [data]="files"></app-table>
+        [data]="files"
+        [selected]="selectedFiles"
+        (selectedChange)="fileSelectedList($event)">
+    </app-table>
     }
 </div>
 

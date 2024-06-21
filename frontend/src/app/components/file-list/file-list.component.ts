@@ -241,4 +241,13 @@ export class FileListComponent implements OnInit {
     }
   }
 
+  fileSelectedList($event: Set<number>) {
+    this.selectedFiles = $event;
+    if (this.selectedFiles.size == this.files.length) {
+      this.buttonMultiSelect = 'Full';
+    } else {
+      this.buttonMultiSelect = 'Empty';
+    }
+  }
+
 }
