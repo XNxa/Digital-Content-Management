@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FileHeader } from '../../models/FileHeader';
 import { MimeTypes } from '../../utils/mime-types';
 import { FileApiService } from '../../services/file-api.service';
@@ -25,7 +25,7 @@ export class FileDetailsComponent implements OnInit, OnChanges {
   @Output() next: EventEmitter<void> = new EventEmitter<void>();
 
   type!: string;
-  displayable!: boolean;
+  displaytype!: 'image' | 'video' | undefined;
 
   data!: string;
   currentZoom: number = 1;
@@ -37,28 +37,31 @@ export class FileDetailsComponent implements OnInit, OnChanges {
 
   Status = Status;
 
-  constructor(private api: FileApiService, private snackbar: SnackbarService) { }
-  
-  ngOnInit(): void {
-    this.displayable = this.file.type.includes('image');
+  constructor(private api: FileApiService, private snackbar: SnackbarService, private cd : ChangeDetectorRef) { }
 
-    if (this.displayable) {
-      this.api.getFileData(this.file.filename).subscribe(data => {
-        const img = new Image();
-        img.src = URL.createObjectURL(data);
-        img.onload = () => {
-          this.width = img.width;
-          this.height = img.height;
-        };
-        
-        const reader = new FileReader();
-        reader.readAsDataURL(data);
-        reader.onload = () => {
-          this.data = reader.result as string;
+  ngOnInit(): void {
+    if (this.file.type.startsWith('image')) {
+      this.displaytype = 'image';
+    } else if (this.file.type.startsWith('video')) {
+      this.displaytype = 'video';
+    } else {
+      this.displaytype = undefined;
+    }
+
+    this.api.getFileData(this.file.filename).subscribe({
+      next: blob => {
+        let fr = new FileReader();
+        fr.readAsDataURL(blob);
+        fr.onload = () => {
+          this.data = fr.result as string;
+          this.cd.detectChanges();
         }
-      });
-    };
-    
+      },
+      error: () => {
+        this.snackbar.show('Erreur lors du chargement du fichier');
+      }
+    });
+
     this.type = (MimeTypes.extension(this.file?.type!) || 'unknown').toUpperCase();
   }
 

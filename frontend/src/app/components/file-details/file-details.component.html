@@ -1,12 +1,23 @@
 <div class="file-details-container">
     <div class="preview-section">
         <div class="preview">
-            @if (displayable) {
-            <img src="{{data}}"
-                [style]='"transform: scale(" + currentZoom + ");  transform-origin: " + (currentZoom > 1? "0" : "50") +"% "+ (currentZoom > 1? "0" : "50")+"%;"'>
-            } @else {
-            <p>Aucun aperçu disponible</p>
-            <button class="download-button">Télécharger</button>
+            @switch (displaytype) {
+            @case ('image') {
+            <img [src]="data" [style]='"transform: scale(" + currentZoom + ");
+                transform-origin: " +
+                (currentZoom > 1? "0" : "50") 
+                +"% "
+                + (currentZoom > 1? "0" : "50")+"%;"'>
+            }
+            @case ('video') {
+            <video [src]="data" controls></video>
+            }
+            @default {
+            <div>
+                <p>Aucun aperçu disponible</p>
+                <button class="download-button">Télécharger</button>
+            </div>
+            }
             }
         </div>
 
@@ -46,7 +57,7 @@
             <h2>{{file.filename}}</h2>
             <div class="metadata">
                 <p>Ajouté le: {{file.date}}</p>
-                <p>{{type}}: 1800 Ko</p>
+                <p>{{type}}: {{file.printableSize}}</p>
                 <p>Images > Site web > Dossiers > TODO</p>
             </div>
         </div>
@@ -76,5 +87,5 @@
 </div>
 
 @if (isDialogOpen) {
-    <app-modify-dialog [file]="file" (closeDialog)="isDialogOpen = false"></app-modify-dialog>
+<app-modify-dialog [file]="file" (closeDialog)="isDialogOpen = false"></app-modify-dialog>
 }

@@ -129,3 +129,8 @@
   border-radius: 30px;
   padding: 5px;
 }
+
+video {
+  width: 100%;
+  height: auto;
+}
