@@ -10,6 +10,7 @@ import com.dcm.backend.exceptions.FileNotFoundException;
 import com.dcm.backend.repositories.FileRepository;
 import com.dcm.backend.repositories.KeywordRepository;
 import com.dcm.backend.services.impl.FileServiceImpl;
+import com.dcm.backend.services.impl.KeywordServiceImpl;
 import io.minio.MinioClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -52,6 +53,7 @@ public class FileServiceTest {
 
     @InjectMocks
     private FileServiceImpl fileService;
+    private KeywordServiceImpl keywordService;
 
     @BeforeEach
     void setUp() throws Exception {
@@ -135,7 +137,7 @@ public class FileServiceTest {
         Keyword keyword = new Keyword("test");
         when(keywordRepository.findAll()).thenReturn(Collections.singletonList(keyword));
 
-        List<String> keywords = fileService.getKeywords();
+        List<String> keywords = keywordService.getKeywords();
 
         assertNotNull(keywords);
         assertEquals(1, keywords.size());
