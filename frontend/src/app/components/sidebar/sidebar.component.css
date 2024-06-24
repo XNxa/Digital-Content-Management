@@ -1,4 +1,6 @@
 .sidebar {
+  display: grid;
+  grid-template-rows: 1fr 100fr;
   width: 250px;
   height: 100vh;
   background-color: #f8f9fa;
@@ -12,9 +14,15 @@
   border-bottom: 1px solid #e9ecef;
 }
 
-.node {
+.leaf {
+  padding-left: 26px !important;
+}
+
+.expandable,
+.leaf {
   display: flex;
   align-items: center;
+  justify-content: start;
   border: none;
   border-radius: 5px;
   background-color: none;
@@ -24,11 +32,29 @@
   img {
     padding: 5px;
   }
-
 }
+
 
 .selected {
   border-left: #105DFB 4px solid;
   background-color: #EBF1FD;
   color: #0B2866;
-} 
+}
+
+.title {
+  display: flex;
+  color: var(--text-color);
+  padding: 0px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  margin-left: 16px !important;
+
+  p {
+    margin: 0;
+    padding-left: 12px;
+  }
+}
+
+.usercard {
+  border-top:  1px solid #e9ecef;
+}

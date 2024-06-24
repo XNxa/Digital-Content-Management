@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CdkTreeModule, FlatTreeControl } from '@angular/cdk/tree';
+import { UserCardFooterComponent } from '../../shared/components/user-card-footer/user-card-footer.component';
 
 interface Node {
   expandable: boolean;
@@ -7,7 +8,8 @@ interface Node {
   isExpanded?: boolean;
   logo: string;
   level: number;
-  isSelected?: boolean; // New property for representing selected node
+  isSelected?: boolean;
+  title?: boolean;
 }
 
 const SUB_TREE: Node[] = [
@@ -40,9 +42,16 @@ const SUB_TREE: Node[] = [
 const TREE: Node[] = [
   {
     expandable: false,
-    name: 'Home',
+    name: 'Accueil',
     level: 0,
     logo: 'home',
+  },
+  {
+    expandable: false,
+    name: 'Librairie',
+    level: 0,
+    logo: '',
+    title: true
   },
   {
     expandable: true,
@@ -81,6 +90,13 @@ const TREE: Node[] = [
   ...SUB_TREE.map(node => ({ ...node, level: 1 })),
   {
     expandable: false,
+    name: 'Gestion',
+    logo: '',
+    level: 0,
+    title: true
+  },
+  {
+    expandable: false,
     name: 'Utilisateur',
     logo: 'users',
     level: 0,
@@ -96,7 +112,7 @@ const TREE: Node[] = [
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CdkTreeModule],
+  imports: [CdkTreeModule, UserCardFooterComponent],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.css'
 })
@@ -106,7 +122,7 @@ export class SidebarComponent {
   );
 
   dataSource = TREE.map(node => {
-    node.isSelected = false;
+    node.isSelected = node.name == 'Accueil';
     return node;
   });
 
@@ -144,19 +160,34 @@ export class SidebarComponent {
   }
 
   selectNode(node: Node): void {
-    // Deselect all nodes
-    this.dataSource.forEach(n => n.isSelected = false);
-
-    // Select the clicked node
-    node.isSelected = true;
-
     if (node.expandable) {
-      this.dataSource.forEach(n => { n.isExpanded = false; });
-      node.isExpanded = true;
+      node.isExpanded = !node.isExpanded;
+    } else {
+      // Deselect all nodes
+      this.dataSource.forEach(n => n.isSelected = false);
+  
+  
+      // Select the clicked node
+      node.isSelected = true;
+  
+      if (node.expandable) {
+        this.dataSource.forEach(n => { n.isExpanded = false; });
+        node.isExpanded = true;
+      }
     }
+
   }
 
   getClass(node: Node): string {
-    return node.isSelected ? 'node selected' : 'node';
+    if (node.title) {
+      return 'title';
+    } else {
+      const type = node.expandable ? 'expandable' : 'leaf';
+      return type + (node.isSelected ? ' selected' : '');
+    }
+  }
+
+  isTitle(_:number, node: Node): boolean {
+    return node.title || false;
   }
 }
