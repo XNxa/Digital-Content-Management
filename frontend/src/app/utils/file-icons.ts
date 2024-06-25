@@ -1,5 +1,10 @@
 import { MimeTypes } from "./mime-types";
 
+/**
+ * Returns the icon file path for a given file type.
+ * @param type - The MIME type.
+ * @returns The icon file path.
+ */
 export function getIconFor(type: string): string {
 
     type = MimeTypes.extension(type) || type;

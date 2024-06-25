@@ -1,0 +1,31 @@
+<div class="window">
+    @if (loaded) {
+    <div class="scroll">
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>NOM DU FICHIER</th>
+                    <th>DERNIÈRE MODIFICATION</th>
+                    <th>TAILLE DU FICHIER</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (file of files; track $index) {
+                <tr>
+                    <td>
+                        <img [src]="file.icon" alt="">
+                    </td>
+                    <td>{{ file.name }}</td>
+                    <td>{{ file.date }}</td>
+                    <td>{{ file.size }}</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    }
+    @else {
+        <span class="loading"></span>
+    }
+</div>

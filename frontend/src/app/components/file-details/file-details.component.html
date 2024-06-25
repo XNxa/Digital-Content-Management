@@ -12,6 +12,9 @@
             @case ('video') {
             <video [src]="data" controls></video>
             }
+            @case ('zip') {
+            <app-zip-list [src]="data"></app-zip-list>
+            }
             @default {
             <div>
                 <p>Aucun aperçu disponible</p>

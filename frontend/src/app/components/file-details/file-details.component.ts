@@ -8,11 +8,12 @@ import { ModifyDialogComponent } from '../modify-dialog/modify-dialog.component'
 import { SnackbarService } from '../../shared/components/snackbar/snackbar.service';
 import { Status } from '../../enums/status';
 import { StatusChipComponent } from '../../shared/components/status-chip/status-chip.component';
+import { ZipListComponent } from '../../shared/components/zip-list/zip-list.component';
 
 @Component({
   selector: 'app-file-details',
   standalone: true,
-  imports: [ZoomButtonComponent, IconButtonComponent, ModifyDialogComponent, StatusChipComponent],
+  imports: [ZoomButtonComponent, IconButtonComponent, ModifyDialogComponent, StatusChipComponent, ZipListComponent],
   templateUrl: './file-details.component.html',
   styleUrl: './file-details.component.css',
 })
@@ -25,7 +26,7 @@ export class FileDetailsComponent implements OnInit, OnChanges {
   @Output() next: EventEmitter<void> = new EventEmitter<void>();
 
   type!: string;
-  displaytype!: 'image' | 'video' | undefined;
+  displaytype!: 'image' | 'video' | 'zip' | undefined;
 
   data!: string;
   currentZoom: number = 1;
@@ -37,13 +38,15 @@ export class FileDetailsComponent implements OnInit, OnChanges {
 
   Status = Status;
 
-  constructor(private api: FileApiService, private snackbar: SnackbarService, private cd : ChangeDetectorRef) { }
+  constructor(private api: FileApiService, private snackbar: SnackbarService) { }
 
   ngOnInit(): void {
     if (this.file.type.startsWith('image')) {
       this.displaytype = 'image';
     } else if (this.file.type.startsWith('video')) {
       this.displaytype = 'video';
+    } else if (this.file.type.includes('zip')) {
+      this.displaytype = 'zip';
     } else {
       this.displaytype = undefined;
     }
@@ -54,7 +57,6 @@ export class FileDetailsComponent implements OnInit, OnChanges {
         fr.readAsDataURL(blob);
         fr.onload = () => {
           this.data = fr.result as string;
-          this.cd.detectChanges();
         }
       },
       error: () => {
