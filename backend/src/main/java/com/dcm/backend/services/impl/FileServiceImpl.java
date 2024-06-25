@@ -2,6 +2,7 @@ package com.dcm.backend.services.impl;
 
 import com.dcm.backend.config.MinioConfig;
 import com.dcm.backend.config.MinioProperties;
+import com.dcm.backend.dto.FileFilterDTO;
 import com.dcm.backend.dto.FileHeaderDTO;
 import com.dcm.backend.entities.FileHeader;
 import com.dcm.backend.entities.Keyword;
@@ -55,7 +56,7 @@ public class FileServiceImpl implements FileService {
     private ThumbnailService thumbnailService;
 
     @Override
-    public void upload(InputStream is, @Valid FileHeaderDTO metadata) throws IOException,
+    public void upload(InputStream is, FileHeaderDTO metadata) throws IOException,
             ServerException, InsufficientDataException, ErrorResponseException,
             NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
             XmlParserException, InternalException {
@@ -82,15 +83,11 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public Page<FileHeader> getPage(int page, int size, Optional<String> filename,
-                                    Optional<List<String>> keywords,
-                                    Optional<List<Status>> status) {
-        Pageable pageRequest = PageRequest.of(page, size);
+    public Page<FileHeader> getPage(FileFilterDTO filter) {
+        Pageable pageRequest = PageRequest.of(filter.getPage(), filter.getSize());
 
         FileFilterSpecification spec =
-                new FileFilterSpecification(filename, keywords.map(
-                        k -> k.stream().map(Keyword::new).toList())
-                        , status);
+                new FileFilterSpecification(filter.getFilename(), filter.getKeywords().stream().map(Keyword::new).toList(), filter.getStatus());
 
         return fileRepository.findAll(spec, pageRequest);
     }

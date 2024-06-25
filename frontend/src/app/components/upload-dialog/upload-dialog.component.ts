@@ -103,11 +103,13 @@ export class UploadDialogComponent implements OnInit {
     }
 
     const metadata: FileHeader = {
+      filename: this.selectedFile.name,
       description: this.description,
       version: this.version,
       keywords: this.keywords,
       status: Status.fromString(this.status),
-      type: this.fileType || 'application/octet-stream'
+      type: this.fileType || 'application/octet-stream',
+      size: this.selectedFile.size
     } as FileHeader;
 
     this.api.uploadFile(this.selectedFile, metadata).subscribe({

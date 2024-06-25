@@ -1,5 +1,6 @@
 package com.dcm.backend.services;
 
+import com.dcm.backend.dto.FileFilterDTO;
 import com.dcm.backend.dto.FileHeaderDTO;
 import com.dcm.backend.entities.FileHeader;
 import com.dcm.backend.enumeration.Status;
@@ -49,16 +50,10 @@ public interface FileService {
     /**
      * Returns a page of files headers
      *
-     * @param page     Page number
-     * @param size     Number of files per page
-     * @param filename Name of the file
-     * @param keywords Keywords of the file
-     * @param status   Status of the file
+     * @param filter Filter to apply
      * @return Page of files
      */
-    public Page<FileHeader> getPage(int page, int size, Optional<String> filename,
-                                    Optional<List<String>> keywords,
-                                    Optional<List<Status>> status);
+    public Page<FileHeader> getPage(FileFilterDTO filter);
 
     /**
      * Deletes a file from the Minio server

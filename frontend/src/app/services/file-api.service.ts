@@ -1,9 +1,10 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { FileHeader, convertSizeToPrintable } from '../models/FileHeader';
 import { environment } from '../../environments/environment.development';
 import { Status } from '../enums/status';
+import { HttpTestingController } from '@angular/common/http/testing';
 
 @Injectable({
   providedIn: 'root'
@@ -27,19 +28,16 @@ export class FileApiService {
   }
 
   public getPages(page: number, size: number, filename: string, keywords?: string[], status?: Status[]): Observable<FileHeader[]> {
-    let params = new HttpParams().set('page', page.toString()).set('size', size.toString());
+    
+    const filter = {
+      page: page.toString(),
+      size: size.toString(),
+      filename: filename,
+      keywords: (keywords || []),
+      status: (status || [])
+    };
 
-    if (filename?.length > 0) {
-      params = params.set('filename', filename);
-    }
-    if (keywords && keywords.length > 0) {
-      params = params.set('keywords', keywords.join(','));
-    }
-    if (status && status.length > 0) {
-      params = params.set('status', status.join(','));
-    }
-
-    return this.httpClient.get<FileHeader[]>(`${this.API}/files`, { params }).pipe(
+    return this.httpClient.post<FileHeader[]>(`${this.API}/files`, filter).pipe(
       map((files: FileHeader[]) => {
         return files.map((file: FileHeader) => {
           file.printableSize = convertSizeToPrintable(file.size);

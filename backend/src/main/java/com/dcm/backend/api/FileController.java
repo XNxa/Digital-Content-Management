@@ -1,11 +1,13 @@
 package com.dcm.backend.api;
 
+import com.dcm.backend.dto.FileFilterDTO;
 import com.dcm.backend.dto.FileHeaderDTO;
 import com.dcm.backend.entities.FileHeader;
 import com.dcm.backend.entities.Keyword;
 import com.dcm.backend.enumeration.Status;
 import com.dcm.backend.services.FileService;
 import com.dcm.backend.services.KeywordService;
+import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -35,11 +37,8 @@ public class FileController {
 
     @PostMapping("/upload")
     public void uploadFile(@RequestPart("file") MultipartFile file,
-                           @RequestPart("metadata") FileHeaderDTO metadata)
+                           @RequestPart("metadata") @Valid FileHeaderDTO metadata)
             throws Exception {
-
-        metadata.setFilename(file.getOriginalFilename());
-        metadata.setSize(file.getSize());
 
         fs.upload(file.getInputStream(), metadata);
     }
@@ -49,13 +48,9 @@ public class FileController {
         return fs.count();
     }
 
-    @GetMapping("/files")
-    public List<FileHeaderDTO> getFiles(@RequestParam("page") int page,
-                                        @RequestParam("size") int size,
-                                        @RequestParam("filename") Optional<String> filename,
-                                        @RequestParam("keywords") Optional<List<String>> keywords,
-                                        @RequestParam("status") Optional<List<Status>> status) {
-        Page<FileHeader> p = fs.getPage(page, size, filename, keywords, status);
+    @PostMapping("/files")
+    public List<FileHeaderDTO> getFiles(@RequestBody @Valid FileFilterDTO filter) {
+        Page<FileHeader> p = fs.getPage(filter);
         p.getTotalPages();
 
         return p.stream()
@@ -102,9 +97,8 @@ public class FileController {
 
     @PutMapping("/update")
     public void updateFile(@RequestParam("filename") String filename,
-                           @RequestBody FileHeaderDTO metadata) throws
+                           @RequestBody @Valid FileHeaderDTO metadata) throws
             Exception {
-        System.out.println(metadata);
         fs.update(filename, metadata);
     }
 

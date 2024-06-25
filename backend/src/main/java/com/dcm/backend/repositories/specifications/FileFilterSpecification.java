@@ -12,33 +12,39 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @AllArgsConstructor
 public class FileFilterSpecification implements Specification<FileHeader> {
 
-    Optional<String> filename;
-    Optional<List<Keyword>> keywords;
-    Optional<List<Status>> status;
+    String filename;
+    List<Keyword> keywords;
+    List<Status> status;
 
     @Override
     public Predicate toPredicate(Root<FileHeader> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
         List<Predicate> predicates = new ArrayList<>();
 
-        filename.ifPresent(name -> predicates.add(
-                criteriaBuilder.like(root.get("filename"), "%" + name + "%")));
+        if (!filename.isBlank()) {
+            predicates.add(
+                    criteriaBuilder.like(root.get("filename"), "%" + filename + "%"));
+        }
 
-        keywords.ifPresent(kws -> {
-            for (Keyword kw : kws) {
-                predicates.add(criteriaBuilder.isMember(kw, root.get("keywords")));
+        if (!keywords.isEmpty()) {
+            List<Predicate> keywordPredicates = new ArrayList<>();
+            for (Keyword kw : keywords) {
+                keywordPredicates.add(criteriaBuilder.isMember(kw, root.get("keywords")));
             }
-        });
-        
-        status.ifPresent(sts -> predicates.add(
-                criteriaBuilder.or(sts.stream()
-                        .map(st -> criteriaBuilder.equal(root.get("status"), st))
-                        .toArray(Predicate[]::new))
-        ));
+            predicates.add(criteriaBuilder.or(keywordPredicates.toArray(new Predicate[0])));
+        }
+
+        if (!status.isEmpty()) {
+            List<Predicate> statusPredicates = new ArrayList<>();
+            for (Status sts : status) {
+                statusPredicates.add(criteriaBuilder.equal(root.get("status"), sts));
+            }
+            predicates.add(
+                    criteriaBuilder.or(statusPredicates.toArray(new Predicate[0])));
+        }
 
         return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
     }
