@@ -10,7 +10,7 @@ import { InputComponent } from '../../shared/components/form/input/input.compone
 import { FileApiService } from '../../services/file-api.service';
 import { FileHeader } from '../../models/FileHeader';
 import { SelectComponent } from '../../shared/components/form/select/select.component';
-import { SnackbarService } from '../../services/snackbar.service';
+import { SnackbarService } from '../../shared/components/snackbar/snackbar.service';
 import { DropdownCheckboxComponent } from '../../shared/components/form/dropdown-checkbox/dropdown-checkbox.component';
 import { Status } from '../../enums/status';
 import { lastValueFrom } from 'rxjs';

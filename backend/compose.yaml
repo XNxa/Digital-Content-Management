@@ -1,6 +1,6 @@
 services:
   minio:
-    image: minio/minio
+    image: 'minio/minio'
     ports:
       - '9000:9000'
       - '9001:9001'
@@ -18,3 +18,18 @@ services:
       - 'POSTGRES_USER=myuser'
     ports:
       - '5432'
+
+  keycloak:
+    image: 'keycloak/keycloak'
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_HOSTNAME: localhost
+      KC_HOSTNAME_STRICT: false
+      KC_HOSTNAME_STRICT_HTTPS: false
+
+    ports:
+      - 8090:8100
+    command: start-dev
+
+

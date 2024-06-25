@@ -6,7 +6,7 @@ import { ChipsInputComponent } from '../../shared/components/form/chips-input/ch
 import { FileApiService } from '../../services/file-api.service';
 import { Status } from '../../enums/status';
 import { FileHeader } from '../../models/FileHeader';
-import { SnackbarService } from '../../services/snackbar.service';
+import { SnackbarService } from '../../shared/components/snackbar/snackbar.service';
 import { MimeTypes } from '../../utils/mime-types';
 
 @Component({

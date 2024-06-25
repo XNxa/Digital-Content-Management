@@ -5,7 +5,7 @@ import { FileApiService } from '../../services/file-api.service';
 import { ZoomButtonComponent } from '../../shared/components/buttons/zoom-button/zoom-button.component';
 import { IconButtonComponent } from '../../shared/components/buttons/icon-button/icon-button.component';
 import { ModifyDialogComponent } from '../modify-dialog/modify-dialog.component';
-import { SnackbarService } from '../../services/snackbar.service';
+import { SnackbarService } from '../../shared/components/snackbar/snackbar.service';
 import { Status } from '../../enums/status';
 import { StatusChipComponent } from '../../shared/components/status-chip/status-chip.component';
 
