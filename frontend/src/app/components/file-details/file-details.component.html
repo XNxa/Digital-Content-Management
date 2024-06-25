@@ -16,9 +16,9 @@
             <app-zip-list [src]="data"></app-zip-list>
             }
             @default {
-            <div>
+            <div class="no-preview">
                 <p>Aucun aperçu disponible</p>
-                <button class="download-button">Télécharger</button>
+                <app-icon-text-button title="Télécharger" icon="download" color="blue" (click)="onDownload()"></app-icon-text-button>
             </div>
             }
             }

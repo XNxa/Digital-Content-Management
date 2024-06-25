@@ -31,6 +31,20 @@
   grid-area: middle;
 }
 
+.no-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  justify-self: center;
+  background-color: white;
+  border-radius: 5px;
+  padding: 30px;
+  color: var(--text-color);
+  font-size: large;
+}
+
 .actions {
   grid-area: top;
   display: flex;

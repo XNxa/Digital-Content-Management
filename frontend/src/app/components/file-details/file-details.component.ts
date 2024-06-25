@@ -9,11 +9,12 @@ import { SnackbarService } from '../../shared/components/snackbar/snackbar.servi
 import { Status } from '../../enums/status';
 import { StatusChipComponent } from '../../shared/components/status-chip/status-chip.component';
 import { ZipListComponent } from '../../shared/components/zip-list/zip-list.component';
+import { IconTextButtonComponent } from '../../shared/components/buttons/icon-text-button/icon-text-button.component';
 
 @Component({
   selector: 'app-file-details',
   standalone: true,
-  imports: [ZoomButtonComponent, IconButtonComponent, ModifyDialogComponent, StatusChipComponent, ZipListComponent],
+  imports: [ZoomButtonComponent, IconButtonComponent, IconTextButtonComponent, ModifyDialogComponent, StatusChipComponent, ZipListComponent],
   templateUrl: './file-details.component.html',
   styleUrl: './file-details.component.css',
 })
