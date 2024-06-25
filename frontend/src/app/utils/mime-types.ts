@@ -43,7 +43,7 @@ const EXTRACT_TYPE_REGEXP = /^\s*([^;\s]*)(?:;|\s|$)/;
 const TEXT_TYPE_REGEXP = /^text\//i;
 
 /**
- * A class to get mime types from file extensions or file extensions from mime types.
+ * Represents a utility class for working with MIME types.
  */
 export class MimeTypes {
   private static extensions: { [key: string]: string[] } = {};
@@ -53,6 +53,11 @@ export class MimeTypes {
     this.populateMaps(this.extensions, this.types);
   }
 
+  /**
+   * Returns the charset for the given MIME type.
+   * @param type - The MIME type.
+   * @returns The charset for the given MIME type, or `false` if the type is invalid or no charset is found.
+   */
   static charset(type: string): string | false {
     if (!type || typeof type !== 'string') {
       return false;
@@ -72,6 +77,13 @@ export class MimeTypes {
     return false;
   }
 
+  
+  /**
+   * Returns the content type based on the provided string.
+   * If the string is not a valid content type, it returns false.
+   * @param str - The string to determine the content type from.
+   * @returns The content type string or false if the string is not a valid content type.
+   */
   static contentType(str: string): string | false {
     if (!str || typeof str !== 'string') {
       return false;
@@ -93,6 +105,11 @@ export class MimeTypes {
     return mime;
   }
 
+  /**
+   * Returns the file extension for the given MIME type.
+   * @param type - The MIME type.
+   * @returns The file extension corresponding to the MIME type, or `false` if the type is invalid or no extension is found.
+   */
   static extension(type: string): string | false {
     if (!type || typeof type !== 'string') {
       return false;
@@ -108,6 +125,12 @@ export class MimeTypes {
     return exts[0];
   }
 
+  
+  /**
+   * Looks up the MIME type based on the file extension of the given path.
+   * @param path - The file path.
+   * @returns The MIME type associated with the file extension, or `false` if the path is invalid or the extension is not found.
+   */
   static lookup(path: string): string | false {
     if (!path || typeof path !== 'string') {
       return false;
