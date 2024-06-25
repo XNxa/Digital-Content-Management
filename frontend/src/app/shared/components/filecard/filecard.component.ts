@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FileHeader } from '../../../models/FileHeader';
 import { StatusChipComponent } from '../status-chip/status-chip.component';
 import { Status } from '../../../enums/status';
 import { MimeTypes } from '../../../utils/mime-types';
+import { getIconFor } from '../../../utils/file-icons';
 
 @Component({
   selector: 'app-filecard',
@@ -22,6 +23,7 @@ export class FilecardComponent implements OnInit {
   filename: string = '';
   type: string = '';
   status: Status = Status.ARCHIVE;
+  icon!: string;
 
   ngOnInit(): void {
     if (this.file && this.file?.filename.length > 12) {
@@ -31,6 +33,7 @@ export class FilecardComponent implements OnInit {
     }
 
     this.type = MimeTypes.extension(this.file?.type!) || 'unknown';
+    this.icon = getIconFor(this.type);
 
     if (this.file?.status) {
       this.status = Status.fromString(this.file?.status);

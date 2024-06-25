@@ -33,6 +33,10 @@
   object-fit: cover;
 }
 
+.file-icon {
+  width: 50px;
+}
+
 .file-card-footer {
   display: flex;
   justify-content: space-between;
