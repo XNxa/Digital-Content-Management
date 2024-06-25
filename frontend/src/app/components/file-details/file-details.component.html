@@ -24,9 +24,11 @@
             }
         </div>
 
-        <div class="zoom">
-            <app-zoom-button (onZoom)="zoomChange($event)"></app-zoom-button>
-        </div>
+        @if (displaytype == 'image') {
+            <div class="zoom">
+                <app-zoom-button (onZoom)="zoomChange($event)"></app-zoom-button>
+            </div>
+        }
 
         <div class="actions">
             <app-icon-button icon="send" color="dark" (click)="onSendByEmail()"></app-icon-button>

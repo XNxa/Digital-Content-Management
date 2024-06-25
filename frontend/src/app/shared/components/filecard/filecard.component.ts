@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { FileHeader } from '../../../models/FileHeader';
 import { StatusChipComponent } from '../status-chip/status-chip.component';
 import { Status } from '../../../enums/status';
@@ -12,7 +12,7 @@ import { getIconFor } from '../../../utils/file-icons';
   templateUrl: './filecard.component.html',
   styleUrl: './filecard.component.css'
 })
-export class FilecardComponent implements OnInit {
+export class FilecardComponent implements OnChanges {
 
   @Input() file: FileHeader | undefined;
 
@@ -25,7 +25,7 @@ export class FilecardComponent implements OnInit {
   status: Status = Status.ARCHIVE;
   icon!: string;
 
-  ngOnInit(): void {
+  ngOnChanges(): void {
     if (this.file && this.file?.filename.length > 12) {
       this.filename = this.file.filename.substring(0, 12) + '...';
     } else {
@@ -38,10 +38,6 @@ export class FilecardComponent implements OnInit {
     if (this.file?.status) {
       this.status = Status.fromString(this.file?.status);
     }
-  }
-
-  ngOnChanges(): void {
-    this.ngOnInit();
   }
 
   onFileSelected(event : MouseEvent): void {

@@ -17,7 +17,7 @@ import { ZipListComponent } from '../../shared/components/zip-list/zip-list.comp
   templateUrl: './file-details.component.html',
   styleUrl: './file-details.component.css',
 })
-export class FileDetailsComponent implements OnInit, OnChanges {
+export class FileDetailsComponent implements OnChanges {
   @Input() file!: FileHeader;
 
   @Output() closeView: EventEmitter<void> = new EventEmitter<void>();
@@ -40,7 +40,7 @@ export class FileDetailsComponent implements OnInit, OnChanges {
 
   constructor(private api: FileApiService, private snackbar: SnackbarService) { }
 
-  ngOnInit(): void {
+  ngOnChanges(_changes: SimpleChanges): void {
     if (this.file.type.startsWith('image')) {
       this.displaytype = 'image';
     } else if (this.file.type.startsWith('video')) {
@@ -65,10 +65,6 @@ export class FileDetailsComponent implements OnInit, OnChanges {
     });
 
     this.type = (MimeTypes.extension(this.file?.type!) || 'unknown').toUpperCase();
-  }
-
-  ngOnChanges(_changes: SimpleChanges): void {
-    this.ngOnInit();
   }
 
   openDialog(): void {
