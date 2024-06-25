@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { SnackbarComponent } from "../shared/components/snackbar/snackbar.component";
+import { SnackbarComponent } from "./snackbar.component";
 
 @Injectable({
     providedIn: 'root'
