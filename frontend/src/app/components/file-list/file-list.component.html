@@ -31,8 +31,8 @@
         @if (selectedFiles.size > 0) {
         <app-icon-button color="white" icon="delete" (click)="onDeleteClicked()"></app-icon-button>
         <app-icon-menu-button color="white" icon="menu"
-            [buttonsLabels]="['Dupliquer', 'Télécharger', 'Copier le lien', 'Partager par e-mail']"
-            [buttonsIcons]="['duplicate', 'download', 'link', 'send']"
+            [buttonsLabels]="['Dupliquer', 'Télécharger', 'Partager par e-mail']"
+            [buttonsIcons]="['duplicate', 'download', 'send']"
             (click)="onMenuButtonClicked($event)"></app-icon-menu-button>
         <div class="vertical-separator"></div>
         }

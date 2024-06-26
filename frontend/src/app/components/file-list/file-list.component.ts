@@ -211,13 +211,6 @@ export class FileListComponent implements OnInit {
           });
         }
         break;
-      case 'Copier le lien':
-        this.api.getLink(this.files[[...this.selectedFiles][0]].filename).subscribe(link => {
-          navigator.clipboard.writeText(link).then(() => {
-            this.snackbar.show('Lien copié dans le presse-papier');
-          });
-        });
-        break;
       case 'Partager par e-mail':
         const selectedFiles = [...this.selectedFiles].map(index => this.files[index]);
         const linkPromises = selectedFiles.map(file => lastValueFrom(this.api.getLink(file.filename)));
