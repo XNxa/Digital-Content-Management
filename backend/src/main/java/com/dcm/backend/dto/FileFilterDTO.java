@@ -1,19 +1,19 @@
 package com.dcm.backend.dto;
 
 import com.dcm.backend.enumeration.Status;
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.Optional;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class FileFilterDTO {
 
     @NotNull

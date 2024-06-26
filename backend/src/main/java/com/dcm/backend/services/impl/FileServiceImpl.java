@@ -6,7 +6,6 @@ import com.dcm.backend.dto.FileFilterDTO;
 import com.dcm.backend.dto.FileHeaderDTO;
 import com.dcm.backend.entities.FileHeader;
 import com.dcm.backend.entities.Keyword;
-import com.dcm.backend.enumeration.Status;
 import com.dcm.backend.exceptions.FileNotFoundException;
 import com.dcm.backend.exceptions.NoThumbnailException;
 import com.dcm.backend.repositories.FileRepository;
@@ -17,7 +16,6 @@ import com.dcm.backend.services.ThumbnailService;
 import io.minio.*;
 import io.minio.errors.*;
 import io.minio.http.Method;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
@@ -121,22 +119,6 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public void rename(String oldName, String newName) throws IOException,
-            ServerException, InsufficientDataException, ErrorResponseException,
-            NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
-            XmlParserException, InternalException {
-
-    }
-
-    @Override
-    public void getData(String filename) throws IOException, ServerException,
-            InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException,
-            InvalidKeyException, InvalidResponseException, XmlParserException,
-            InternalException {
-
-    }
-
-    @Override
     public InputStreamResource getFile(String filename) throws ServerException,
             InsufficientDataException, ErrorResponseException, IOException,
             NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
@@ -209,7 +191,8 @@ public class FileServiceImpl implements FileService {
 
         FileHeader newFileHeader = new FileHeader(fileHeader);
         newFileHeader.setFilename("copy_" + fileHeader.getFilename());
-        newFileHeader.setThumbnailName("thumbnail_" + newFileHeader.getFilename());
+        if (fileHeader.getThumbnailName() != null)
+            newFileHeader.setThumbnailName("thumbnail_" + newFileHeader.getFilename());
         newFileHeader.setDate(LocalDate.now().toString());
 
         List<Keyword> newKeywords = fileHeader.getKeywords().stream()
@@ -226,14 +209,16 @@ public class FileServiceImpl implements FileService {
                 .object(newFileHeader.getFilename())
                 .build());
 
-        mc.minioClient().copyObject(CopyObjectArgs.builder()
-                .source(CopySource.builder()
-                        .bucket(mp.getBucketName())
-                        .object(fileHeader.getThumbnailName())
-                        .build())
-                .bucket(mp.getBucketName())
-                .object(newFileHeader.getThumbnailName())
-                .build());
+        if (fileHeader.getThumbnailName() != null) {
+            mc.minioClient().copyObject(CopyObjectArgs.builder()
+                    .source(CopySource.builder()
+                            .bucket(mp.getBucketName())
+                            .object(fileHeader.getThumbnailName())
+                            .build())
+                    .bucket(mp.getBucketName())
+                    .object(newFileHeader.getThumbnailName())
+                    .build());
+        }
 
         fileRepository.save(newFileHeader);
     }
@@ -268,7 +253,7 @@ public class FileServiceImpl implements FileService {
      * Generate a thumbnail for the file if it is an image or a video
      *
      * @param is   InputStream of the file
-     * @param type
+     * @param type String type of the file
      * @return BufferedImage thumbnail or null if the file is not an image or a video
      * @throws IOException if the InputStream is not valid
      */

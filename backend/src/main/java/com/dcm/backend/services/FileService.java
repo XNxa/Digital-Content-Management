@@ -3,7 +3,6 @@ package com.dcm.backend.services;
 import com.dcm.backend.dto.FileFilterDTO;
 import com.dcm.backend.dto.FileHeaderDTO;
 import com.dcm.backend.entities.FileHeader;
-import com.dcm.backend.enumeration.Status;
 import com.dcm.backend.exceptions.FileNotFoundException;
 import com.dcm.backend.exceptions.NoThumbnailException;
 import io.minio.errors.*;
@@ -15,8 +14,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
-import java.util.Optional;
 
 public interface FileService {
 
@@ -73,45 +70,6 @@ public interface FileService {
             InsufficientDataException, ErrorResponseException, IOException,
             NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
             XmlParserException, InternalException;
-
-    /**
-     * Renames a file in the Minio server
-     *
-     * @param oldName Old name of the file
-     * @param newName New name of the file
-     * @throws IOException
-     * @throws ServerException
-     * @throws InsufficientDataException
-     * @throws ErrorResponseException
-     * @throws NoSuchAlgorithmException
-     * @throws InvalidKeyException
-     * @throws InvalidResponseException
-     * @throws XmlParserException
-     * @throws InternalException
-     */
-    public void rename(String oldName, String newName) throws IOException,
-            ServerException, InsufficientDataException, ErrorResponseException,
-            NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
-            XmlParserException, InternalException;
-
-    /**
-     * Gets the data of a file from the Minio server
-     *
-     * @param filename Name of the file
-     * @throws IOException
-     * @throws ServerException
-     * @throws InsufficientDataException
-     * @throws ErrorResponseException
-     * @throws NoSuchAlgorithmException
-     * @throws InvalidKeyException
-     * @throws InvalidResponseException
-     * @throws XmlParserException
-     * @throws InternalException
-     */
-    public void getData(String filename) throws IOException, ServerException,
-            InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException,
-            InvalidKeyException, InvalidResponseException, XmlParserException,
-            InternalException;
 
     /**
      * Gets a file data from the Minio server

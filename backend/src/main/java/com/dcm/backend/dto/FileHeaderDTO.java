@@ -3,9 +3,9 @@ package com.dcm.backend.dto;
 import com.dcm.backend.enumeration.Status;
 import com.dcm.backend.validation.constraints.ValidMimeType;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,6 +14,7 @@ import java.util.Collection;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class FileHeaderDTO {
 
     @NotNull

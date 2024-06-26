@@ -1,5 +1,7 @@
 package com.dcm.backend.api.handler;
 
+import com.dcm.backend.exceptions.FileNotFoundException;
+import com.dcm.backend.exceptions.NoThumbnailException;
 import com.dcm.backend.utils.ErrorMessages;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,27 @@ public class ExceptionHandlers {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseError handleIOException(IOException ex) {
         return new ResponseError(ErrorMessages.ERROR_MESSAGE_INTERNAL_SERVER_ERROR_CODE,
+                ex.getMessage());
+    }
+
+    @ExceptionHandler(FileNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseError handleFileNotFoundException(FileNotFoundException ex) {
+        return new ResponseError(ErrorMessages.ERROR_MESSAGE_FILE_NOT_FOUND_CODE,
+                ex.getMessage());
+    }
+
+    @ExceptionHandler(NoThumbnailException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseError handleNoThumbnailException(NoThumbnailException ex) {
+        return new ResponseError(ErrorMessages.ERROR_MESSAGE_NO_THUMBNAIL_CODE,
+                ex.getMessage());
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseError handleIllegalArgumentException(IllegalArgumentException ex) {
+        return new ResponseError(ErrorMessages.ERROR_MESSAGE_BAD_REQUEST_CODE,
                 ex.getMessage());
     }
 
