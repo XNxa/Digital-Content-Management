@@ -3,6 +3,7 @@ package com.dcm.backend.api.handler;
 import com.dcm.backend.exceptions.FileNotFoundException;
 import com.dcm.backend.exceptions.NoThumbnailException;
 import com.dcm.backend.utils.ErrorMessages;
+import io.minio.errors.MinioException;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -10,11 +11,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
 @ControllerAdvice
 public class ExceptionHandlers {
 
-    @ExceptionHandler(IOException.class)
+    @ExceptionHandler({IOException.class, MinioException.class,
+            NoSuchAlgorithmException.class, InvalidKeyException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseError handleIOException(IOException ex) {
         return new ResponseError(ErrorMessages.ERROR_MESSAGE_INTERNAL_SERVER_ERROR_CODE,
