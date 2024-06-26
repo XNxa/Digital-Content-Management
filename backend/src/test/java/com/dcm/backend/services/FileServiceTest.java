@@ -37,8 +37,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 
@@ -67,7 +65,7 @@ public class FileServiceTest {
     private FileServiceImpl fileService;
 
     @BeforeEach
-    void setUp() throws Exception {
+    void setUp() {
         when(mp.getBucketName()).thenReturn("test");
         when(mc.minioClient()).thenReturn(mockMinioClient);
     }
@@ -165,6 +163,7 @@ public class FileServiceTest {
         }
 
         Page<FileHeader> page = new PageImpl<>(files);
+        //noinspection unchecked
         when(fileRepository.findAll(any(Specification.class),
                 any(Pageable.class))).thenReturn(page);
 
@@ -365,12 +364,26 @@ public class FileServiceTest {
 
         when(mockMinioClient.getPresignedObjectUrl(
                 any(GetPresignedObjectUrlArgs.class))).thenReturn(expectedUrl);
+        when(fileRepository.findByFilename(filename)).thenReturn(Optional.of(
+                new FileHeader(filename, "Test file", "1", Status.PUBLIE,
+                        LocalDate.now().toString(), "text/plain", 123L,
+                        new LinkedList<>())));
 
         String result = fileService.getLink(filename);
 
         assertEquals(expectedUrl, result);
         verify(mockMinioClient, times(1)).getPresignedObjectUrl(
                 any(GetPresignedObjectUrlArgs.class));
+    }
+
+    @Test
+    @SneakyThrows
+    void testGetLinkFail() {
+        String filename = "nonExistentFile.txt";
+        when(fileRepository.findByFilename(filename)).thenReturn(Optional.empty());
+
+        assertThrows(FileNotFoundException.class, () -> fileService.getLink(filename));
+        verify(mockMinioClient, never()).getPresignedObjectUrl(any(GetPresignedObjectUrlArgs.class));
     }
 
     @Test
@@ -419,6 +432,18 @@ public class FileServiceTest {
         assertNotNull(capturedFileHeader.getDate());
 
         verify(mc.minioClient(), times(2)).copyObject(any(CopyObjectArgs.class));
+    }
+
+    @Test
+    @SneakyThrows
+    void testDuplicateFileNotFound() {
+        String filename = "nonexistentFile.txt";
+        when(fileRepository.findByFilename(filename)).thenReturn(Optional.empty());
+
+        assertThrows(FileNotFoundException.class, () -> fileService.duplicate(filename));
+
+        verify(mockMinioClient, never()).copyObject(any(CopyObjectArgs.class));
+        verify(fileRepository, never()).save(any(FileHeader.class));
     }
 
     @Test
@@ -485,9 +510,7 @@ public class FileServiceTest {
 
         when(fileRepository.findByFilename(filename)).thenReturn(Optional.empty());
 
-        assertThrows(FileNotFoundException.class, () -> {
-            fileService.update(filename, metadata);
-        });
+        assertThrows(FileNotFoundException.class, () -> fileService.update(filename, metadata));
 
         verify(mockMinioClient, never()).setObjectTags(any(SetObjectTagsArgs.class));
         verify(fileRepository, never()).save(any(FileHeader.class));
