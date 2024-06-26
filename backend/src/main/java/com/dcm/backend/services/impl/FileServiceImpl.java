@@ -105,6 +105,7 @@ public class FileServiceImpl implements FileService {
                             .bucket(mp.getBucketName())
                             .object(fileHeader.getFilename())
                             .build());
+
             if (fileHeader.getThumbnailName() != null) {
                 mc.minioClient()
                         .removeObject(RemoveObjectArgs.builder()
@@ -171,7 +172,10 @@ public class FileServiceImpl implements FileService {
     public String getLink(String filename) throws ServerException,
             InsufficientDataException, ErrorResponseException, IOException,
             NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
-            XmlParserException, InternalException {
+            XmlParserException, InternalException, FileNotFoundException {
+        if (fileRepository.findByFilename(filename).isEmpty())
+            throw new FileNotFoundException("getLink : " + filename + " not found");
+
         return mc.minioClient().getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
                 .method(Method.GET)
                 .bucket(mp.getBucketName())

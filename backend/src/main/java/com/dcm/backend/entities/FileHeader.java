@@ -48,6 +48,7 @@ public class FileHeader {
         this.keywords = keywords;
     }
 
+    @SuppressWarnings("CopyConstructorMissesField")
     public FileHeader(FileHeader fileHeader) {
         this.filename = fileHeader.getFilename();
         this.thumbnailName = fileHeader.getThumbnailName();

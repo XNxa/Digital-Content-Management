@@ -25,6 +25,7 @@ public class Keyword {
         this.name = key;
     }
 
+    @SuppressWarnings("CopyConstructorMissesField")
     public Keyword(Keyword keyword) {
         this.name = keyword.getName();
     }

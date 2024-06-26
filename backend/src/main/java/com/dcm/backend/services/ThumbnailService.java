@@ -6,8 +6,8 @@ import java.io.InputStream;
 
 public interface ThumbnailService {
 
-    public static int WIDTH = 200;
-    public static int HEIGHT = 300;
+    int WIDTH = 200;
+    int HEIGHT = 300;
 
     /**
      * Generate a thumbnail of the given image with the given width and height.
@@ -19,8 +19,8 @@ public interface ThumbnailService {
      * @throws IOException If the image cannot be read.
      * @throws IllegalArgumentException If the InputStream is null.
      */
-    public BufferedImage generateImageThumbnail(InputStream image, int width,
-                                                int height) throws IOException;
+    BufferedImage generateImageThumbnail(InputStream image, int width,
+                                         int height) throws IOException;
 
     /**
      * Generate a thumbnail of the given video with the given width and height.
@@ -30,26 +30,24 @@ public interface ThumbnailService {
      * @param height The height of the thumbnail.
      * @return The thumbnail image.
      */
-    public BufferedImage generateVideoThumbnail(InputStream video, int width,
-                                                int height) throws
+    BufferedImage generateVideoThumbnail(InputStream video, int width,
+                                         int height) throws
             IOException;
 
 
     /**
      * Check if the given format is an image.
      *
-     * @param format
      * @return true if the format is an image, false otherwise.
      */
-    public boolean isImage(String format);
+    boolean isImage(String format);
 
     /**
      * Check if the given format is a video.
      *
-     * @param format
      * @return true if the format is a video, false otherwise.
      */
-    public boolean isVideo(String format);
+    boolean isVideo(String format);
 
     /**
      * Get an InputStream from a BufferedImage.
@@ -58,6 +56,6 @@ public interface ThumbnailService {
      * @param format The format of the image.
      * @return The InputStream of the BufferedImage.
      */
-    public InputStream getInputStreamFromBufferedImage(BufferedImage image,
-                                                       String format) throws IOException;
+    InputStream getInputStreamFromBufferedImage(BufferedImage image,
+                                                String format) throws IOException;
 }

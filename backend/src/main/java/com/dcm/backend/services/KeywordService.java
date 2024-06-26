@@ -12,17 +12,17 @@ public interface KeywordService {
      * @param keyword Keyword to get
      * @return Keyword
      */
-    public Keyword getOrAddKeyword(String keyword);
+    Keyword getOrAddKeyword(String keyword);
 
     /**
      * Gets all previously defined keywords
      *
      * @return List of keywords
      */
-    public List<String> getKeywords();
+    List<String> getKeywords();
 
     /**
      * Deletes all keywords that are not associated with any file
      */
-    public void deleteUnusedKeywords();
+    void deleteUnusedKeywords();
 }

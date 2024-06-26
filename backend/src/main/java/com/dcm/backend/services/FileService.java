@@ -22,17 +22,8 @@ public interface FileService {
      *
      * @param is       InputStream of the file
      * @param metadata Metadata of the file
-     * @throws IOException
-     * @throws ServerException
-     * @throws InsufficientDataException
-     * @throws ErrorResponseException
-     * @throws NoSuchAlgorithmException
-     * @throws InvalidKeyException
-     * @throws InvalidResponseException
-     * @throws XmlParserException
-     * @throws InternalException
      */
-    public void upload(InputStream is, FileHeaderDTO metadata) throws IOException,
+    void upload(InputStream is, FileHeaderDTO metadata) throws IOException,
             ServerException, InsufficientDataException, ErrorResponseException,
             NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
             XmlParserException, InternalException;
@@ -42,7 +33,7 @@ public interface FileService {
      *
      * @return Number of files
      */
-    public long count();
+    long count();
 
     /**
      * Returns a page of files headers
@@ -50,23 +41,14 @@ public interface FileService {
      * @param filter Filter to apply
      * @return Page of files
      */
-    public Page<FileHeader> getPage(FileFilterDTO filter);
+    Page<FileHeader> getPage(FileFilterDTO filter);
 
     /**
      * Deletes a file from the Minio server
      *
      * @param filename Name of the file
-     * @throws IOException
-     * @throws ServerException
-     * @throws InsufficientDataException
-     * @throws ErrorResponseException
-     * @throws NoSuchAlgorithmException
-     * @throws InvalidKeyException
-     * @throws InvalidResponseException
-     * @throws XmlParserException
-     * @throws InternalException
      */
-    public void delete(String[] filename) throws FileNotFoundException, ServerException,
+    void delete(String[] filename) throws FileNotFoundException, ServerException,
             InsufficientDataException, ErrorResponseException, IOException,
             NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
             XmlParserException, InternalException;
@@ -78,7 +60,7 @@ public interface FileService {
      * @return InputStreamResource of the file
      * @throws FileNotFoundException If the file is not found
      */
-    public InputStreamResource getFile(String filename) throws ServerException,
+    InputStreamResource getFile(String filename) throws ServerException,
             InsufficientDataException, ErrorResponseException, IOException,
             NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
             XmlParserException, InternalException, FileNotFoundException;
@@ -91,7 +73,7 @@ public interface FileService {
      * @throws FileNotFoundException If the file is not found
      * @throws NoThumbnailException  If the file has no thumbnail
      */
-    public InputStreamResource getThumbnail(String filename) throws ServerException,
+    InputStreamResource getThumbnail(String filename) throws ServerException,
             InsufficientDataException, ErrorResponseException, IOException,
             NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
             XmlParserException, InternalException, FileNotFoundException,
@@ -104,18 +86,17 @@ public interface FileService {
      * @return MediaType of the file
      * @throws FileNotFoundException If the file is not found
      */
-    public MediaType getFileType(String filename) throws FileNotFoundException;
+    MediaType getFileType(String filename) throws FileNotFoundException;
 
     /**
      * Gets the link of a file
      *
      * @param filename Name of the file
-     * @return
      */
-    public String getLink(String filename) throws ServerException,
+    String getLink(String filename) throws ServerException,
             InsufficientDataException, ErrorResponseException, IOException,
             NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
-            XmlParserException, InternalException;
+            XmlParserException, InternalException, FileNotFoundException;
 
     /**
      * Duplicates a file
@@ -124,7 +105,7 @@ public interface FileService {
      * @throws FileNotFoundException If the file is
      *                               not found
      */
-    public void duplicate(String filename) throws FileNotFoundException, ServerException,
+    void duplicate(String filename) throws FileNotFoundException, ServerException,
             InsufficientDataException, ErrorResponseException, IOException,
             NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
             XmlParserException, InternalException;
@@ -136,7 +117,7 @@ public interface FileService {
      * @param filename Name of the file
      * @param metadata Metadata of the file
      */
-    public void update(String filename, FileHeaderDTO metadata) throws
+    void update(String filename, FileHeaderDTO metadata) throws
             FileNotFoundException, ServerException, InsufficientDataException,
             ErrorResponseException, IOException, NoSuchAlgorithmException,
             InvalidKeyException, InvalidResponseException, XmlParserException,

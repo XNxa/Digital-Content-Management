@@ -4,7 +4,6 @@ import com.dcm.backend.dto.FileFilterDTO;
 import com.dcm.backend.dto.FileHeaderDTO;
 import com.dcm.backend.entities.FileHeader;
 import com.dcm.backend.entities.Keyword;
-import com.dcm.backend.enumeration.Status;
 import com.dcm.backend.services.FileService;
 import com.dcm.backend.services.KeywordService;
 import jakarta.validation.Valid;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController

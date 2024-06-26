@@ -30,7 +30,6 @@ public class ThumbnailServiceImpl implements ThumbnailService {
             IOException {
 
         FFmpegFrameGrabber frameGrabber = new FFmpegFrameGrabber(video);
-        int frame = 0;
 
         frameGrabber.start();
 
@@ -49,20 +48,14 @@ public class ThumbnailServiceImpl implements ThumbnailService {
 
     @Override
     public boolean isImage(String format) {
-        if (format.contains("png") || format.contains("gif") || format.contains(
+        return format.contains("png") || format.contains("gif") || format.contains(
                 "jpeg") || format.contains("bmp") || format.contains(
-                "jpg") || format.contains("wbmp")) {
-            return true;
-        }
-        return false;
+                "jpg") || format.contains("wbmp");
     }
 
     @Override
     public boolean isVideo(String format) {
-        if (format.contains("video")) {
-            return true;
-        }
-        return false;
+        return format.contains("video");
     }
 
     @Override
@@ -76,14 +69,13 @@ public class ThumbnailServiceImpl implements ThumbnailService {
     }
 
     private BufferedImage generateImageThumbnail(BufferedImage image, int width,
-                                                 int height) throws IOException {
-        BufferedImage img = image;
+                                                 int height) {
 
         BufferedImage res =
-                Scalr.resize(img, Scalr.Method.SPEED, Scalr.Mode.AUTOMATIC,
+                Scalr.resize(image, Scalr.Method.SPEED, Scalr.Mode.AUTOMATIC,
                         width, height);
 
-        img.flush();
+        image.flush();
         return res;
     }
 
