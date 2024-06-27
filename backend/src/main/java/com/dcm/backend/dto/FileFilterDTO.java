@@ -25,6 +25,10 @@ public class FileFilterDTO {
     @Size(max = 255)
     private String filename;
 
+    @Size(max = 255)
+    @NotNull
+    private String category;
+
     private List<String> keywords;
 
     private List<Status> status;

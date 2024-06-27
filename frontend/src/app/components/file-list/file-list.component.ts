@@ -16,7 +16,7 @@ import { Status } from '../../enums/status';
 import { lastValueFrom } from 'rxjs';
 import { FileDetailsComponent } from '../file-details/file-details.component';
 import { ActivatedRoute, Router } from '@angular/router';
-import { getNameFromPath } from '../../models/Tabs';
+import { getCategoryFromPath, getNameFromPath } from '../../models/Tabs';
 
 @Component({
   selector: 'app-file-list',
@@ -110,7 +110,6 @@ export class FileListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.refreshFileList();
     this.route.params.subscribe(params => {
       const currentUrl = this.router.url;
       const urlSegments = currentUrl.split('/');
@@ -118,6 +117,7 @@ export class FileListComponent implements OnInit {
       this.typeFolder = params['type'];
       this.displayableFolder = getNameFromPath(this.folder);
       this.displayableTypeFolder = getNameFromPath(this.typeFolder);
+      this.refreshFileList();
     });
   }
 
@@ -155,6 +155,7 @@ export class FileListComponent implements OnInit {
       this.currentPage - 1,
       this.itemsPerPage,
       this.folder + '/' + this.filenameSearched,
+      getCategoryFromPath(this.typeFolder),
       this.keywordsSearched,
       this.statusSearched.map(s => Status.fromString(s))
     ).subscribe(files => {

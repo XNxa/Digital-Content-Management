@@ -85,7 +85,9 @@ public class FileServiceImpl implements FileService {
         Pageable pageRequest = PageRequest.of(filter.getPage(), filter.getSize());
 
         FileFilterSpecification spec =
-                new FileFilterSpecification(filter.getFilename(), filter.getKeywords().stream().map(Keyword::new).toList(), filter.getStatus());
+                new FileFilterSpecification(filter.getFilename(),
+                        filter.getKeywords().stream().map(Keyword::new).toList(),
+                        filter.getStatus(), filter.getCategory());
 
         return fileRepository.findAll(spec, pageRequest);
     }

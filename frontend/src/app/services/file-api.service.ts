@@ -4,7 +4,7 @@ import { Observable, map } from 'rxjs';
 import { FileHeader, convertSizeToPrintable } from '../models/FileHeader';
 import { environment } from '../../environments/environment.development';
 import { Status } from '../enums/status';
-import { HttpTestingController } from '@angular/common/http/testing';
+import { FileCategory } from '../models/Tabs';
 
 @Injectable({
   providedIn: 'root'
@@ -27,15 +27,15 @@ export class FileApiService {
     return this.httpClient.get<number>(`${this.API}/count`);
   }
 
-  public getPages(page: number, size: number, filename: string, keywords?: string[], status?: Status[]): Observable<FileHeader[]> {
+  public getPages(page: number, size: number, filename: string, type: FileCategory, keywords?: string[], status?: Status[]): Observable<FileHeader[]> {
     const filter = {
       page: page.toString(),
       size: size.toString(),
       filename: filename,
       keywords: (keywords || []),
-      status: (status || [])
+      status: (status || []),
+      category: type,
     };
-
     return this.httpClient.post<FileHeader[]>(`${this.API}/files`, filter).pipe(
       map((files: FileHeader[]) => {
         return files.map((file: FileHeader) => {
