@@ -20,16 +20,16 @@ export class FilecardComponent implements OnChanges {
   @Output() fileCheckedChange = new EventEmitter();
   @Output() fileClicked = new EventEmitter();
 
-  filename: string = '';
+  printableFilename: string = '';
   type: string = '';
   status: Status = Status.ARCHIVE;
   icon!: string;
 
   ngOnChanges(): void {
-    if (this.file && this.file?.filename.length > 12) {
-      this.filename = this.file.filename.substring(0, 12) + '...';
+    if (this.file && this.file?.printableFilename.length > 12) {
+      this.printableFilename = this.file.printableFilename.substring(0, 12) + '...';
     } else {
-      this.filename = this.file?.filename!;
+      this.printableFilename = this.file?.printableFilename!;
     }
 
     this.type = MimeTypes.extension(this.file?.type!) || 'unknown';

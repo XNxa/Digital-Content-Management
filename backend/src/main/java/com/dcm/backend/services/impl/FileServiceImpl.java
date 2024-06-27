@@ -194,9 +194,18 @@ public class FileServiceImpl implements FileService {
         );
 
         FileHeader newFileHeader = new FileHeader(fileHeader);
-        newFileHeader.setFilename("copy_" + fileHeader.getFilename());
+
+        String newName = fileHeader.getFilename();
+        if (newName.contains(".")) {
+            newName = newName.substring(0, newName.lastIndexOf('.')) + "_copy" +
+                    newName.substring(newName.lastIndexOf('.'));
+        } else {
+            newName += "_copy";
+        }
+
+        newFileHeader.setFilename(newName);
         if (fileHeader.getThumbnailName() != null)
-            newFileHeader.setThumbnailName("thumbnail_" + newFileHeader.getFilename());
+            newFileHeader.setThumbnailName("thumbnail/" + newFileHeader.getFilename());
         newFileHeader.setDate(LocalDate.now().toString());
 
         List<Keyword> newKeywords = fileHeader.getKeywords().stream()
@@ -318,7 +327,7 @@ public class FileServiceImpl implements FileService {
                     thumbnailService.getInputStreamFromBufferedImage(thumbnail, "png");
             mc.minioClient().putObject(PutObjectArgs.builder()
                     .bucket(mp.getBucketName())
-                    .object("thumbnail_" + metadata.getFilename())
+                    .object("thumbnail/" + metadata.getFilename())
                     .stream(thumbnailInputStream, -1, 5_000_000_000L)
                     .contentType("image/png")
                     .build());
@@ -337,7 +346,7 @@ public class FileServiceImpl implements FileService {
                 metadata.getVersion(), metadata.getStatus(), LocalDate.now().toString(),
                 metadata.getType(), metadata.getSize(), keywordCollection);
         if (thumbnail != null) {
-            f.setThumbnailName("thumbnail_" + metadata.getFilename());
+            f.setThumbnailName("thumbnail/" + metadata.getFilename());
         }
         fileRepository.save(f);
     }

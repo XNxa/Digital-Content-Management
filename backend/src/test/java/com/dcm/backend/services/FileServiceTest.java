@@ -195,7 +195,7 @@ public class FileServiceTest {
     void testDeleteImage() {
         FileHeader fileHeader = FileHeader.builder()
                 .filename("testfile.png")
-                .thumbnailName("thumbnail_testfile.png")
+                .thumbnailName("thumbnail/testfile.png")
                 .description("Test file")
                 .version("1")
                 .status(Status.PUBLIE)
@@ -269,7 +269,7 @@ public class FileServiceTest {
     @SneakyThrows
     void testGetThumbnailExists() {
         String filename = "existingFile.jpg";
-        String thumbnailName = "thumbnail_existingFile.jpg";
+        String thumbnailName = "thumbnail/existingFile.jpg";
         FileHeader existingFileHeader = FileHeader.builder()
                 .filename(filename)
                 .thumbnailName(thumbnailName)
@@ -416,7 +416,7 @@ public class FileServiceTest {
                 Status.PUBLIE, LocalDate.now().toString(),
                 "image/jpeg", 123L,
                 List.of(new Keyword("keyword1")));
-        originalFileHeader.setThumbnailName("thumbnail_originalFile.jpg");
+        originalFileHeader.setThumbnailName("thumbnail/originalFile.jpg");
 
         when(fileRepository.findByFilename(filename)).thenReturn(Optional.of(originalFileHeader));
 
@@ -427,7 +427,7 @@ public class FileServiceTest {
 
         FileHeader capturedFileHeader = fileHeaderCaptor.getValue();
         assertEquals("copy_originalFile.jpg", capturedFileHeader.getFilename());
-        assertEquals("thumbnail_copy_originalFile.jpg",
+        assertEquals("thumbnail/copy_originalFile.jpg",
                 capturedFileHeader.getThumbnailName());
         assertNotNull(capturedFileHeader.getDate());
 
@@ -453,7 +453,7 @@ public class FileServiceTest {
                 Status.PUBLIE, LocalDate.now().toString(),
                 "text/plain", 123L,
                 List.of(new Keyword("keyword1")));
-        originalFileHeader.setThumbnailName("thumbnail_originalFile.jpg");
+        originalFileHeader.setThumbnailName("thumbnail/originalFile.jpg");
 
         when(fileRepository.findByFilename(filename)).thenReturn(Optional.of(originalFileHeader));
         when(mockMinioClient.copyObject(any(CopyObjectArgs.class))).thenThrow(

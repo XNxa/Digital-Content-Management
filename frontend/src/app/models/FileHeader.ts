@@ -1,6 +1,7 @@
 export interface FileHeader {
     id: string;
     filename: string;
+    printableFilename: string;
     thumbnailName: string;
     thumbnail: string | undefined;
     description: string;

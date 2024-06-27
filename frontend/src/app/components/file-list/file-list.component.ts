@@ -90,10 +90,15 @@ export class FileListComponent implements OnInit {
   /** Button state for the multi-select button. */
   buttonMultiSelect: 'Empty' | 'Full' = 'Empty';
 
+  /** Folder selected */
   folder!: string;
-  typeFolder!: string;
   displayableFolder!: string;
+
+  /** Type of media selected */
+  typeFolder!: string;
   displayableTypeFolder!: string;
+
+
 
   constructor(private api: FileApiService, private snackbar: SnackbarService, private route: ActivatedRoute, private router: Router) {
     this.api.getNumberOfElement().subscribe(n => {
@@ -146,7 +151,13 @@ export class FileListComponent implements OnInit {
   /** Fetch file list from the server. Get files of current page only. */
   refreshFileList(): void {
     // Get the files for the current page and search criteria
-    this.api.getPages(this.currentPage - 1, this.itemsPerPage, this.filenameSearched, this.keywordsSearched, this.statusSearched.map(s => Status.fromString(s))).subscribe(files => {
+    this.api.getPages(
+      this.currentPage - 1,
+      this.itemsPerPage,
+      this.folder + '/' + this.filenameSearched,
+      this.keywordsSearched,
+      this.statusSearched.map(s => Status.fromString(s))
+    ).subscribe(files => {
       this.files = files;
       for (let file of this.files) {
         if (file.thumbnailName != null) {

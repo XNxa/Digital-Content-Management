@@ -13,7 +13,7 @@
 </div>
 
 @if (isDialogOpen) {
-<app-upload-dialog (closeDialog)="onCloseDialog()"></app-upload-dialog>
+<app-upload-dialog [folder]="folder" (closeDialog)="onCloseDialog()"></app-upload-dialog>
 }
 
 <div class="search-area">
@@ -54,7 +54,7 @@
     }
     } @else {
     <app-table class="table"
-        [columns]="[{header:'', field:'thumbnail', image:true}, {header: 'NAME', field: 'filename'}, {header: 'DATE', field: 'date'}, {header:'STATUT', field:'status'}, {header: 'TYPE', field: 'type'}, {header: 'POIDS', field: 'printableSize'}]"
+        [columns]="[{header:'', field:'thumbnail', image:true}, {header: 'NAME', field: 'printableFilename'}, {header: 'DATE', field: 'date'}, {header:'STATUT', field:'status'}, {header: 'TYPE', field: 'type'}, {header: 'POIDS', field: 'printableSize'}]"
         [data]="files" [selected]="selectedFiles" (selectedChange)="fileSelectedList($event)">
     </app-table>
     }

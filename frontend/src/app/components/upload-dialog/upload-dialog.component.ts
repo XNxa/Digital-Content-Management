@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { IconTextButtonComponent } from '../../shared/components/buttons/icon-text-button/icon-text-button.component';
 import { LongInputComponent } from '../../shared/components/form/long-input/long-input.component';
 import { SelectComponent } from '../../shared/components/form/select/select.component';
@@ -25,6 +25,7 @@ export class UploadDialogComponent implements OnInit {
   title = "Importer un ficher";
   @Output() closeDialog: EventEmitter<void> = new EventEmitter<void>();
 
+  @Input() folder!: string;
   selectedFile: File | undefined;
   description: string = '';
   version: string = 'VF'
@@ -37,7 +38,7 @@ export class UploadDialogComponent implements OnInit {
   status: string = Status.printableString(Status.PLANIFIE);
   
   fileType: string | undefined;
-
+  
   constructor(private api: FileApiService, private snackbar: SnackbarService) { }
 
   ngOnInit(): void {
@@ -103,7 +104,7 @@ export class UploadDialogComponent implements OnInit {
     }
 
     const metadata: FileHeader = {
-      filename: this.selectedFile.name,
+      filename: this.folder + '/' + this.selectedFile.name,
       description: this.description,
       version: this.version,
       keywords: this.keywords,

@@ -28,7 +28,6 @@ export class FileApiService {
   }
 
   public getPages(page: number, size: number, filename: string, keywords?: string[], status?: Status[]): Observable<FileHeader[]> {
-    
     const filter = {
       page: page.toString(),
       size: size.toString(),
@@ -40,6 +39,7 @@ export class FileApiService {
     return this.httpClient.post<FileHeader[]>(`${this.API}/files`, filter).pipe(
       map((files: FileHeader[]) => {
         return files.map((file: FileHeader) => {
+          file.printableFilename = file.filename.split('/').pop() || '';
           file.printableSize = convertSizeToPrintable(file.size);
           return file;
         }, this);
