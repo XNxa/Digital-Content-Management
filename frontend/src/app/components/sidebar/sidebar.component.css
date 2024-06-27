@@ -14,8 +14,14 @@
   border-bottom: 1px solid #e9ecef;
 }
 
+.sidebar-nav {
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #0B2866 #f8f9fa;
+}
+
 .no-parent {
-  padding-left: 26px!important;
+  padding-left: 26px !important;
 }
 
 .expandable,
@@ -28,9 +34,11 @@
   background-color: none;
   color: #8D9CAD;
   margin: 10px;
+
   img {
     padding: 5px;
   }
+
   user-select: none;
 }
 
@@ -55,5 +63,5 @@
 }
 
 .usercard {
-  border-top:  1px solid #e9ecef;
+  border-top: 1px solid #e9ecef;
 }
