@@ -402,7 +402,7 @@ public class FileServiceTest {
         verify(fileRepository).save(fileHeaderCaptor.capture());
 
         FileHeader capturedFileHeader = fileHeaderCaptor.getValue();
-        assertEquals("copy_originalFile.txt", capturedFileHeader.getFilename());
+        assertEquals("originalFile_copy.txt", capturedFileHeader.getFilename());
         assertNull(capturedFileHeader.getThumbnailName());
         assertNotNull(capturedFileHeader.getDate());
 
@@ -426,8 +426,8 @@ public class FileServiceTest {
         verify(fileRepository).save(fileHeaderCaptor.capture());
 
         FileHeader capturedFileHeader = fileHeaderCaptor.getValue();
-        assertEquals("copy_originalFile.jpg", capturedFileHeader.getFilename());
-        assertEquals("thumbnail/copy_originalFile.jpg",
+        assertEquals("originalFile_copy.jpg", capturedFileHeader.getFilename());
+        assertEquals("thumbnail/originalFile_copy.jpg",
                 capturedFileHeader.getThumbnailName());
         assertNotNull(capturedFileHeader.getDate());
 

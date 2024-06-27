@@ -93,6 +93,7 @@ public class FileApiTest {
                 .filename("")
                 .status(List.of())
                 .keywords(List.of())
+                .category("doc")
                 .build();
         String jsonFilter = objectMapper.writeValueAsString(filter);
 
