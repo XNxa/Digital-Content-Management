@@ -14,7 +14,7 @@ export const routes: Routes = [
                 pathMatch: 'full'
             },
             {
-                path: 'accueil',
+                path: 'home',
                 component: ZoomButtonComponent, //TODO
             },
             {
@@ -22,7 +22,7 @@ export const routes: Routes = [
                 component: ZoomButtonComponent, //TODO
             },
             {
-                path: 'utilisateurs',
+                path: 'users',
                 component: ZoomButtonComponent, //TODO
             },
             ...getRoutesForTabs()

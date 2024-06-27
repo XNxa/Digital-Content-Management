@@ -14,8 +14,8 @@
   border-bottom: 1px solid #e9ecef;
 }
 
-.leaf {
-  padding-left: 26px !important;
+.no-parent {
+  padding-left: 26px!important;
 }
 
 .expandable,
@@ -28,12 +28,11 @@
   background-color: none;
   color: #8D9CAD;
   margin: 10px;
-
   img {
     padding: 5px;
   }
+  user-select: none;
 }
-
 
 .selected {
   border-left: #105DFB 4px solid;

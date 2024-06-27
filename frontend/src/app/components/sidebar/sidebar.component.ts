@@ -62,15 +62,18 @@ export class SidebarComponent {
     } else {
       this.dataSource.forEach(n => n.isSelected = false);
       node.isSelected = true;
-      this.navigateTo(node);
     }
+    this.navigateTo(node);
   }
 
   getClass(node: Node): string {
     if (node.title) {
       return 'title';
     } else {
-      const type = node.expandable ? 'expandable' : 'leaf';
+      let type = node.expandable ? 'expandable' : 'leaf';
+      if (type == 'leaf' && !this.getParentNode(node)) {
+        type += ' no-parent';
+      }
       return type + (node.isSelected ? ' selected' : '');
     }
   }
@@ -84,9 +87,9 @@ export class SidebarComponent {
     if (parent) {
       this.router.navigate([getRouteForNode(parent), node.name.toLowerCase()]);
     } else {
-      this.router.navigate([getRouteForNode(node)]);
+      if (!node.expandable)
+        this.router.navigate([getRouteForNode(node)]);
     }
   }
-
 
 }
