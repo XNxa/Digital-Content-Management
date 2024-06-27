@@ -18,7 +18,10 @@ export class SidebarComponent {
   );
 
   dataSource = TREE.map(node => {
-    node.isSelected = node.name == 'Accueil';
+    if (node.name == 'Accueil') {
+      node.isSelected = true;
+      this.router.navigate([getRouteForNode(node)]);
+    }
     return node;
   });
 
@@ -85,7 +88,7 @@ export class SidebarComponent {
   navigateTo(node: Node): void {
     let parent = this.getParentNode(node);
     if (parent) {
-      this.router.navigate([getRouteForNode(parent), node.name.toLowerCase()]);
+      this.router.navigate([getRouteForNode(parent), getRouteForNode(node)]);
     } else {
       if (!node.expandable)
         this.router.navigate([getRouteForNode(node)]);
