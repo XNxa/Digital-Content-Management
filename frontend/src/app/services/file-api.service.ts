@@ -11,7 +11,7 @@ import { FileCategory } from '../models/Tabs';
 })
 export class FileApiService {
 
-  private API = environment.api;
+  private API = environment.api + '/file';
 
   constructor(private httpClient: HttpClient) { }
 

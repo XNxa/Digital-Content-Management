@@ -1,5 +1,6 @@
 import { Route } from "@angular/router";
 import { FileListComponent } from "../components/file-list/file-list.component";
+import { AuthGuard } from "../auth.guard";
 
 export interface Node {
     expandable: boolean;
@@ -127,7 +128,8 @@ export function getRoutesForTabs(): Route[] {
     return TREE.filter(node => node.expandable).map(node => {
         return {
             path: `${getRouteForNode(node)}/:type`,
-            component: FileListComponent
+            component: FileListComponent,
+            canActivate: [AuthGuard]
         };
     });
 }

@@ -1,3 +1,6 @@
+server:
+  port: 8081
+
 spring:
   application:
     name: backend
@@ -12,9 +15,28 @@ spring:
     multipart:
       max-file-size: 50MB
       max-request-size: 50MB
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/dcm
+          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+
 
 minio:
   endpoint: http://localhost:9000
   accessKey: admin
   secretKey: password
   bucketName: main
+
+mes:
+  keycloak:
+    realm: dcm
+    auth-server-url: http://localhost:8080
+    principal-attribute: preferred_username
+    enable-feign-interceptor: true
+    unprotectedpaths:
+      - paths:
+          - /actuator/**
+        method: GET
+      - paths: /public/**

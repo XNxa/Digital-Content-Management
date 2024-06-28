@@ -121,6 +121,20 @@
             <version>3.2.0</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.keycloak/keycloak-admin-client -->
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-admin-client</artifactId>
+            <version>25.0.1</version>
+        </dependency>
+
+        <!-- Tool to intergrate spring boot with Keycloak -->
+        <dependency>
+            <groupId>ma.gov.mes.framework</groupId>
+            <artifactId>mes-keycloak-starter</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+
     </dependencies>
 
     <build>

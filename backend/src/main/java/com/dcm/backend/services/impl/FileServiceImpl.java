@@ -262,6 +262,7 @@ public class FileServiceImpl implements FileService {
                 .build());
 
         fileRepository.save(fileHeader);
+        keywordService.deleteUnusedKeywords();
     }
 
     /**

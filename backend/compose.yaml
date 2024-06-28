@@ -29,7 +29,6 @@ services:
       KC_HOSTNAME_STRICT_HTTPS: false
 
     ports:
-      - 8090:8100
+      - 8080:8080
     command: start-dev
-
 
