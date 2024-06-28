@@ -38,5 +38,6 @@ mes:
     unprotectedpaths:
       - paths:
           - /actuator/**
+          - /api/user/**
         method: GET
       - paths: /public/**
