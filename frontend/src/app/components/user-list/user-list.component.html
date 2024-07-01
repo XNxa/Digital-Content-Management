@@ -1,0 +1,39 @@
+<div class="header">
+    <h1>Gestion des utilisateurs</h1>
+    <app-icon-text-button title="Ajouter un nouvel utilisateur" icon="add"
+        (click)="isDialogOpen = true"></app-icon-text-button>
+</div>
+
+@if (isDialogOpen) {
+}
+
+<div class="search-area">
+    <app-input class="search-element" label="Nom & prénom" placeholder="Saisissez un nom et/ou prénom" [border]="false"
+    [(value)]="usernameSearched" (valueChange)="refreshUserList()"></app-input>
+</div>
+
+<div class="header">
+    <h2>Liste des utilisateurs</h2>
+    <div class="action-buttons">
+        <app-icon-button color='white' icon="update" (click)="refreshUserList()"></app-icon-button>
+    </div>
+</div>
+
+<div class="file-grid">
+    <app-table class="table"
+        [columns]="[
+            {header: 'FIRSTNAME', field: 'firstname'}, 
+            {header: 'LASTNAME', field: 'lastname'},
+            {header: 'FONCTION', field: 'function'},
+            {header:'EMAIL', field:'email'},
+            {header: 'ROLE', field: 'role'},
+            {header: 'STATUT', field: 'Statut'}
+        ]"
+        [data]="users" [selected]="selectedUsers" (selectedChange)="fileSelectedList($event)">
+    </app-table>
+</div>
+
+<div class="footer">
+    <app-page-selector [totalItems]="numberOfElements" [itemsPerPage]="itemsPerPage"
+        (pageChange)="onPageChange($event)"></app-page-selector>
+</div>

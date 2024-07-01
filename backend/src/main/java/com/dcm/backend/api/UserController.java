@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 
 @RestController
-@RequestMapping("/public/api/user")
+@RequestMapping("/api/user")
 @CrossOrigin
 public class UserController {
 
@@ -22,7 +22,7 @@ public class UserController {
         return userService.count();
     }
 
-    @GetMapping("/list")
+    @PostMapping("/list")
     public Collection<UserDTO> listUsers(
             @RequestParam(value = "firstResult", defaultValue = "0", required = false) int firstResult,
             @RequestParam(value = "maxResults", defaultValue = "10", required = false) int maxResults,
