@@ -28,7 +28,7 @@ export class UploadDialogComponent implements OnInit {
 
   @Input() folder!: string;
   selectedFile: File | undefined;
-  description: string = '';
+  description = new FormControl('');
   version: string = 'VF'
   keywords = new FormControl<string[]>([]);
   currentStep = 1;
@@ -106,7 +106,7 @@ export class UploadDialogComponent implements OnInit {
 
     const metadata: FileHeader = {
       filename: this.folder + '/' + this.selectedFile.name,
-      description: this.description,
+      description: this.description.value,
       version: this.version,
       keywords: this.keywords.value,
       status: Status.fromString(this.status),

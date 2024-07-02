@@ -22,7 +22,7 @@ export class ModifyDialogComponent {
   @Input() file!: FileHeader;
   @Output() closeDialog: EventEmitter<void> = new EventEmitter<void>();
 
-  description: string = '';
+  description = new FormControl('');
   version: string = 'VF'
   keywords = new FormControl<string[]>([]);
   status: string = '';
@@ -35,7 +35,7 @@ export class ModifyDialogComponent {
   constructor(private api: FileApiService, private snackbar: SnackbarService) { }
 
   ngOnInit(): void {
-    this.description = this.file?.description || '';
+    this.description.setValue(this.file?.description || '');
     this.version = this.file.version;
     this.keywords.setValue([...this.file.keywords]);
     this.status = Status.printableString(Status.fromString(this.file.status));
@@ -63,7 +63,7 @@ export class ModifyDialogComponent {
 
   save(): void {
     const metadata = this.file;
-    metadata.description = this.description;
+    metadata.description = this.description.value || '';
     metadata.version = this.version;
     metadata.keywords = this.keywords.value || [];
     metadata.status = Status.fromString(this.status);
