@@ -1,0 +1,42 @@
+div {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    color: var(--text-color);
+    margin-top: 5px;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.toggle-switch {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    width: 55px;
+    height: 30px;
+    background-color: #ccc;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.toggle-knob {
+    width: 24px;
+    height: 24px;
+    background-color: white;
+    margin-left: 3px;
+    margin-right: 3px;
+    border-radius: 100%;
+    transition: transform 0.3s;
+}
+
+.toggle-switch.on {
+    background-color: #5EC37F;
+}
+
+.toggle-switch.on .toggle-knob {
+    transform: translateX(25px);
+}
