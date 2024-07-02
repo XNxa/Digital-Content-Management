@@ -29,14 +29,14 @@ export class UploadDialogComponent implements OnInit {
   @Input() folder!: string;
   selectedFile: File | undefined;
   description = new FormControl('');
-  version: string = 'VF'
+  version = new FormControl('VF');
   keywords = new FormControl<string[]>([]);
   currentStep = 1;
 
   keywordsSuggestions: string[] = [];
 
   readonly statusOptions = Status.getStringList();
-  status: string = Status.printableString(Status.PLANIFIE);
+  status = new FormControl(Status.printableString(Status.PLANIFIE));
   
   fileType: string | undefined;
   
@@ -107,9 +107,9 @@ export class UploadDialogComponent implements OnInit {
     const metadata: FileHeader = {
       filename: this.folder + '/' + this.selectedFile.name,
       description: this.description.value,
-      version: this.version,
+      version: this.version.value,
       keywords: this.keywords.value,
-      status: Status.fromString(this.status),
+      status: Status.fromString(this.status.value || ''),
       type: this.fileType || 'application/octet-stream',
       size: this.selectedFile.size
     } as FileHeader;

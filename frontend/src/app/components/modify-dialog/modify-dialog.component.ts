@@ -23,9 +23,9 @@ export class ModifyDialogComponent {
   @Output() closeDialog: EventEmitter<void> = new EventEmitter<void>();
 
   description = new FormControl('');
-  version: string = 'VF'
+  version = new FormControl('VF');
   keywords = new FormControl<string[]>([]);
-  status: string = '';
+  status = new FormControl('');
   fileType: string | undefined;
   thumbnail: string | undefined;
 
@@ -36,9 +36,9 @@ export class ModifyDialogComponent {
 
   ngOnInit(): void {
     this.description.setValue(this.file?.description || '');
-    this.version = this.file.version;
+    this.version.setValue(this.file.version);
     this.keywords.setValue([...this.file.keywords]);
-    this.status = Status.printableString(Status.fromString(this.file.status));
+    this.status.setValue(Status.printableString(Status.fromString(this.file.status)));
     this.fileType = this.file.type;
 
     if (this.fileType.includes('image')) {
@@ -64,9 +64,9 @@ export class ModifyDialogComponent {
   save(): void {
     const metadata = this.file;
     metadata.description = this.description.value || '';
-    metadata.version = this.version;
+    metadata.version = this.version.value || '';
     metadata.keywords = this.keywords.value || [];
-    metadata.status = Status.fromString(this.status);
+    metadata.status = Status.fromString(this.status.value || '');
 
     this.api.update(this.file.filename, metadata).subscribe({
       next: () => {
