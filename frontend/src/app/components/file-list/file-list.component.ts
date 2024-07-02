@@ -73,11 +73,11 @@ export class FileListComponent implements OnInit {
 
   /** Array of keywords being searched. 
    * Binded to the search field */
-  keywordsSearched: string[] = [];
+  keywordsSearched = new FormControl<string[]>([]);
 
   /** Array of status strings being searched. 
    * Binded to the search field */
-  statusSearched: string[] = [];
+  statusSearched = new FormControl<string[]>([]);
 
   /** Files currently selected */
   selectedFiles: Set<number> = new Set<number>();
@@ -157,8 +157,8 @@ export class FileListComponent implements OnInit {
       this.itemsPerPage,
       this.folder + '/' + this.filenameSearched.value,
       getCategoryFromPath(this.typeFolder),
-      this.keywordsSearched,
-      this.statusSearched.map(s => Status.fromString(s))
+      (this.keywordsSearched.value || undefined),
+      (this.statusSearched.value || []).map(s => Status.fromString(s))
     ).subscribe(files => {
       this.files = files;
       for (let file of this.files) {

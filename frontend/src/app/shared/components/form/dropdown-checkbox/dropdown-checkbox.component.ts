@@ -1,5 +1,5 @@
 import { AfterContentInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule } from '@angular/forms';
 
 @Component({
   standalone: true,
@@ -13,8 +13,8 @@ export class DropdownCheckboxComponent {
   @Input() placeholder: string = '';
   @Input() options: string[] = [];
 
-  @Input() value: string[] = [];
-  @Output() valueChange: EventEmitter<string[]> = new EventEmitter<string[]>();
+  @Input() value!: FormControl<string[] | null>;
+  @Output() valueChange: EventEmitter<FormControl<string[] | null>> = new EventEmitter<FormControl<string[] | null>>();
 
   selectedChips: string[] = [];
   dropdownOpen: boolean = false;
@@ -32,13 +32,15 @@ export class DropdownCheckboxComponent {
     } else {
       this.selectedChips.push(option);
     }
-    this.valueChange.emit(this.selectedChips);
+    this.value.setValue(this.selectedChips);
+    this.valueChange.emit(this.value);
   }
 
   removeChip(index: number): void {
     this.selectedChips.splice(index, 1);
     this.filterOptions();
-    this.valueChange.emit(this.selectedChips);
+    this.value.setValue(this.selectedChips);
+    this.valueChange.emit(this.value);
   }
 
   toggleDropdown(): void {
