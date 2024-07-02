@@ -7,6 +7,7 @@ import { IconTextButtonComponent } from '../../shared/components/buttons/icon-te
 import { LongInputComponent } from '../../shared/components/form/long-input/long-input.component';
 import { SelectComponent } from '../../shared/components/form/select/select.component';
 import { ChipsInputComponent } from '../../shared/components/form/chips-input/chips-input.component';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-modify-dialog',
@@ -23,7 +24,7 @@ export class ModifyDialogComponent {
 
   description: string = '';
   version: string = 'VF'
-  keywords: string[] = [];
+  keywords = new FormControl<string[]>([]);
   status: string = '';
   fileType: string | undefined;
   thumbnail: string | undefined;
@@ -36,7 +37,7 @@ export class ModifyDialogComponent {
   ngOnInit(): void {
     this.description = this.file?.description || '';
     this.version = this.file.version;
-    this.keywords = [...this.file.keywords];
+    this.keywords.setValue([...this.file.keywords]);
     this.status = Status.printableString(Status.fromString(this.file.status));
     this.fileType = this.file.type;
 
@@ -64,7 +65,7 @@ export class ModifyDialogComponent {
     const metadata = this.file;
     metadata.description = this.description;
     metadata.version = this.version;
-    metadata.keywords = this.keywords;
+    metadata.keywords = this.keywords.value || [];
     metadata.status = Status.fromString(this.status);
 
     this.api.update(this.file.filename, metadata).subscribe({

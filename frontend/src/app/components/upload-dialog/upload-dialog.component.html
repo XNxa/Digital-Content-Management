@@ -56,7 +56,7 @@
         <app-select class="version" label="Version" [options]="['VF', 'VA']" [(value)]="version"></app-select>
         <app-select class="status" label="Statut" [options]="statusOptions" [(value)]="status"></app-select>
       </div>
-      <app-chips-input label="Mots-Clés" hint="(Maximum 20)" [maxKeywords]="20" [(keywords)]="keywords" [suggestions]="keywordsSuggestions" ></app-chips-input>
+      <app-chips-input label="Mots-Clés" hint="(Maximum 20)" [(keywords)]="keywords" [suggestions]="keywordsSuggestions" ></app-chips-input>
     </div>
     <div class="dialog-footer">
       <app-icon-text-button title="Annuler" icon="close" color="white" (click)="cancel()"></app-icon-text-button>

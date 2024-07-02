@@ -8,6 +8,7 @@ import { Status } from '../../enums/status';
 import { FileHeader } from '../../models/FileHeader';
 import { SnackbarService } from '../../shared/components/snackbar/snackbar.service';
 import { MimeTypes } from '../../utils/mime-types';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-upload-dialog',
@@ -29,7 +30,7 @@ export class UploadDialogComponent implements OnInit {
   selectedFile: File | undefined;
   description: string = '';
   version: string = 'VF'
-  keywords: string[] = [];
+  keywords = new FormControl<string[]>([]);
   currentStep = 1;
 
   keywordsSuggestions: string[] = [];
@@ -107,7 +108,7 @@ export class UploadDialogComponent implements OnInit {
       filename: this.folder + '/' + this.selectedFile.name,
       description: this.description,
       version: this.version,
-      keywords: this.keywords,
+      keywords: this.keywords.value,
       status: Status.fromString(this.status),
       type: this.fileType || 'application/octet-stream',
       size: this.selectedFile.size
