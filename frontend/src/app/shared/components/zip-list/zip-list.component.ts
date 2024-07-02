@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import JSZip from 'jszip';
 import { convertSizeToPrintable } from '../../../models/FileHeader';
 import { getIconFor } from '../../../utils/file-icons';
