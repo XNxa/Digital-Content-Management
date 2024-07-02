@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-input',
   standalone: true,
-  imports: [FormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './input.component.html',
   styleUrl: './input.component.css'
 })
@@ -12,15 +12,15 @@ export class InputComponent {
   @Input() label: string = '';
   @Input() placeholder: string = '';
   @Input() type: 'text' | 'password' = 'text';
-  @Input() value: string = '';
+  @Input() value!: FormControl<string | null>;
   @Input() border = true;
-  @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
+  @Output() valueChange: EventEmitter<FormControl<string | null>> = new EventEmitter<FormControl<string | null>>();
+  @Output() onChange: EventEmitter<any> = new EventEmitter<any>();
 
   isPasswordVisible: boolean = false;
 
   onInput(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    this.valueChange.emit(input.value);
+    this.onChange.emit();
   }
 
   togglePasswordVisibility(): void {

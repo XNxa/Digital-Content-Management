@@ -17,6 +17,7 @@ import { lastValueFrom } from 'rxjs';
 import { FileDetailsComponent } from '../file-details/file-details.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { getCategoryFromPath, getNameFromPath } from '../../models/Tabs';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-file-list',
@@ -68,7 +69,7 @@ export class FileListComponent implements OnInit {
 
   /** The filename being searched. 
    * Binded to the search field */
-  filenameSearched: string = '';
+  filenameSearched = new FormControl('');;
 
   /** Array of keywords being searched. 
    * Binded to the search field */
@@ -154,7 +155,7 @@ export class FileListComponent implements OnInit {
     this.api.getPages(
       this.currentPage - 1,
       this.itemsPerPage,
-      this.folder + '/' + this.filenameSearched,
+      this.folder + '/' + this.filenameSearched.value,
       getCategoryFromPath(this.typeFolder),
       this.keywordsSearched,
       this.statusSearched.map(s => Status.fromString(s))

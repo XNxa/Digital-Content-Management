@@ -18,7 +18,7 @@
 
 <div class="search-area">
     <app-input class="search-element" label="ID du fichier" placeholder="Saisissez l'ID du fichier" [border]="false"
-        [(value)]="filenameSearched" (valueChange)="refreshFileList()"></app-input>
+        [(value)]="filenameSearched" (onChange)="refreshFileList()"></app-input>
     <app-dropdown-checkbox class="search-element" label="Mots-clés" placeholder="Selectionnez des tags"
         [options]="keywords" [(value)]="keywordsSearched"></app-dropdown-checkbox>
     <app-dropdown-checkbox class="search-element" label="Statut" placeholder="Selectionnez un statut" [options]="status"

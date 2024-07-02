@@ -2,9 +2,9 @@
     <label>{{ label }}</label>
     <div [class]="border ? 'input-wrapper': 'no-border'">
     <input 
-        [type]="isPasswordVisible || value.length == 0 ? 'text' : type" 
+        [type]="isPasswordVisible || ((value.value || '').length) == 0 ? 'text' : type" 
         [placeholder]="placeholder" 
-        [value]="value" 
+        [formControl]="value"
         (input)="onInput($event)"
         [attr.aria-label]="label"
     >

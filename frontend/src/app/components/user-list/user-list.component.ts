@@ -9,6 +9,7 @@ import { PageSelectorComponent } from "../../shared/components/page-selector/pag
 import { InputComponent } from '../../shared/components/form/input/input.component';
 import { UserApiService } from '../../services/user-api.service';
 import { User } from '../../models/User';
+import { FormControl } from '@angular/forms';
 
 @Component({
     selector: 'app-user-list',
@@ -33,7 +34,7 @@ export class UserListComponent implements OnInit {
 
     isDialogOpen: boolean = false;
 
-    usernameSearched: string = '';
+    usernameSearched = new FormControl('');
 
     users!: User[];
 
