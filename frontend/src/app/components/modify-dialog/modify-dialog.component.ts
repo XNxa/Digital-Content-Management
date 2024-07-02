@@ -48,8 +48,7 @@ export class ModifyDialogComponent {
     this.api.getKeywords().subscribe({
       next: (keywords) => {
         this.keywordsSuggestions = keywords;
-      },
-      error: () => console.error()
+      }
     });
   }
 
@@ -71,9 +70,6 @@ export class ModifyDialogComponent {
     this.api.update(this.file.filename, metadata).subscribe({
       next: () => {
         this.snackbar.show('Fichier modifié avec succès');
-      },
-      error: () => {
-        this.snackbar.show('Erreur lors de la modification du fichier');
       }
     });
 

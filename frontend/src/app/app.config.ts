@@ -6,6 +6,7 @@ import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@a
 
 import { KeycloakBearerInterceptor, KeycloakService } from 'keycloak-angular';
 import { environment } from '../environments/environment.development';
+import { ErrorHandlerInterceptor } from './core/error-handler.interceptor';
 
 export const initializeKeycloak = (keycloak: KeycloakService) => async () =>
   keycloak.init({
@@ -44,5 +45,10 @@ export const appConfig: ApplicationConfig = {
       useClass: KeycloakBearerInterceptor,
       multi: true
     },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ErrorHandlerInterceptor,
+      multi: true
+    }
   ]
 };

@@ -59,9 +59,6 @@ export class FileDetailsComponent implements OnChanges {
         fr.onload = () => {
           this.data = fr.result as string;
         }
-      },
-      error: () => {
-        this.snackbar.show('Erreur lors du chargement du fichier');
       }
     });
 
@@ -100,9 +97,6 @@ export class FileDetailsComponent implements OnChanges {
         a.download = this.file.filename;
         a.click();
         URL.revokeObjectURL(url);
-      },
-      error: () => {
-        this.snackbar.show('Erreur lors du téléchargement');
       }
     });
   }
@@ -111,9 +105,6 @@ export class FileDetailsComponent implements OnChanges {
     this.api.duplicate(this.file.filename).subscribe({
       next: () => {
         this.snackbar.show('Fichier dupliqué avec succès');
-      },
-      error: () => {
-        this.snackbar.show('Erreur lors de la duplication du fichier');
       }
     });
   }
@@ -122,9 +113,6 @@ export class FileDetailsComponent implements OnChanges {
     this.api.delete([this.file.filename]).subscribe({
       next: () => {
         this.snackbar.show('Fichiers supprimés avec succès');
-      },
-      error: () => {
-        this.snackbar.show('Erreur lors de la suppression des fichiers');
       }
     });
     this.next.emit();

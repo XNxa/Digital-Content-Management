@@ -46,8 +46,7 @@ export class UploadDialogComponent implements OnInit {
     this.api.getKeywords().subscribe({
       next: (keywords) => {
         this.keywordsSuggestions = keywords;
-      },
-      error: () => console.error()
+      }
     });
   }
 
@@ -119,11 +118,9 @@ export class UploadDialogComponent implements OnInit {
         this.api.getKeywords().subscribe({
           next: (keywords) => {
             this.keywordsSuggestions = keywords;
-          },
-          error: () => console.error()
+          }
         });
-      },
-      error: () => console.error()
+      }
     });
 
     this.selectedFile = undefined;

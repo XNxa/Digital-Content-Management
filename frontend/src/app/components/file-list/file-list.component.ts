@@ -189,9 +189,6 @@ export class FileListComponent implements OnInit {
         this.api.getKeywords().subscribe(keywords => {
           this.keywords = keywords;
         });
-      },
-      error: () => {
-        this.snackbar.show('Erreur lors de la suppression des fichiers');
       }
     });
   }
@@ -215,9 +212,6 @@ export class FileListComponent implements OnInit {
           this.api.duplicate(filename).subscribe({
             next: () => {
               this.snackbar.show('Fichier dupliqué avec succès');
-            },
-            error: () => {
-              this.snackbar.show('Erreur lors de la duplication du fichier');
             }
           });
         });
@@ -232,9 +226,6 @@ export class FileListComponent implements OnInit {
               a.download = this.files[index].filename;
               a.click();
               URL.revokeObjectURL(url);
-            },
-            error: () => {
-              this.snackbar.show('Erreur lors du téléchargement');
             }
           });
         }

@@ -8,6 +8,7 @@ import lombok.Data;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.io.IOException;
@@ -20,6 +21,7 @@ public class ExceptionHandlers {
     @ExceptionHandler({IOException.class, MinioException.class,
             NoSuchAlgorithmException.class, InvalidKeyException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
     public ResponseError handleIOException(IOException ex) {
         return new ResponseError(ErrorMessages.ERROR_MESSAGE_INTERNAL_SERVER_ERROR_CODE,
                 ex.getMessage());
@@ -27,6 +29,7 @@ public class ExceptionHandlers {
 
     @ExceptionHandler(FileNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
     public ResponseError handleFileNotFoundException(FileNotFoundException ex) {
         return new ResponseError(ErrorMessages.ERROR_MESSAGE_FILE_NOT_FOUND_CODE,
                 ex.getMessage());
@@ -34,6 +37,7 @@ public class ExceptionHandlers {
 
     @ExceptionHandler(NoThumbnailException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
     public ResponseError handleNoThumbnailException(NoThumbnailException ex) {
         return new ResponseError(ErrorMessages.ERROR_MESSAGE_NO_THUMBNAIL_CODE,
                 ex.getMessage());
@@ -41,6 +45,7 @@ public class ExceptionHandlers {
 
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
     public ResponseError handleIllegalArgumentException(IllegalArgumentException ex) {
         return new ResponseError(ErrorMessages.ERROR_MESSAGE_BAD_REQUEST_CODE,
                 ex.getMessage());
