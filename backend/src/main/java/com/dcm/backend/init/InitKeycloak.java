@@ -1,3 +1,5 @@
+package com.dcm.backend.init;
+
 import jakarta.ws.rs.ProcessingException;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
@@ -6,11 +8,13 @@ import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.RealmRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.userprofile.config.UPAttribute;
+import org.keycloak.representations.userprofile.config.UPAttributePermissions;
 import org.keycloak.representations.userprofile.config.UPConfig;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 /**
  * This is a script to initialize Keycloak with the necessary configuration for the application.
@@ -20,6 +24,20 @@ import java.util.Scanner;
 public class InitKeycloak {
 
     private static final String REALMNAME = "dcm";
+
+    private static final String[] permissions =
+            {"import", "modify", "duplicate", "download", "copy_link", "share", "delete"};
+
+    private static final String[] folders = {"web", "mobile", "sm", "plv", "campagnes"};
+
+    private static final String[] roles =
+            {"user_add", "user_modify", "user_delete", "role_add", "role_modify",
+                    "role_delete",};
+
+    public static final String URL = "http://localhost:4200";
+
+    public static final String URLstar = URL + "/*";
+
 
     public static void main(String[] args) {
 
@@ -99,10 +117,9 @@ public class InitKeycloak {
         ClientRepresentation frontendClient = new ClientRepresentation();
         frontendClient.setClientId("frontend-" + REALMNAME);
         frontendClient.setName("frontend");
-        frontendClient.setBaseUrl("http://localhost:4200");
-        frontendClient.setRedirectUris(List.of("http://localhost:4200/*"));
-        frontendClient.setAttributes(
-                Map.of("post.logout.redirect.uris", "http://localhost:4200/*"));
+        frontendClient.setBaseUrl(URL);
+        frontendClient.setRedirectUris(List.of(URLstar));
+        frontendClient.setAttributes(Map.of("post.logout.redirect.uris", URLstar));
         frontendClient.setWebOrigins(List.of("*"));
         frontendClient.setPublicClient(true);
         frontendClient.setDirectAccessGrantsEnabled(true);
@@ -125,22 +142,29 @@ public class InitKeycloak {
                 keycloak.realm(REALMNAME).users().userProfile().getConfiguration();
         List<UPAttribute> upAttributes = upConfig.getAttributes();
 
+        UPAttributePermissions upAttributePermissions = new UPAttributePermissions();
+        upAttributePermissions.setEdit(Set.of("admin"));
+        upAttributePermissions.setView(Set.of("admin", "user"));
+
         UPAttribute role = new UPAttribute();
         role.setName("role");
         role.setDisplayName("Role");
         role.setGroup("user-metadata");
+        role.setPermissions(upAttributePermissions);
         upAttributes.add(role);
 
         UPAttribute function = new UPAttribute();
         function.setName("function");
         function.setDisplayName("Fonction");
         function.setGroup("user-metadata");
+        function.setPermissions(upAttributePermissions);
         upAttributes.add(function);
 
         UPAttribute statut = new UPAttribute();
         statut.setName("statut");
         statut.setDisplayName("Statut");
         statut.setGroup("user-metadata");
+        statut.setPermissions(upAttributePermissions);
         statut.addValidation("options", Map.of("options", List.of("active", "inactive")));
         upAttributes.add(statut);
         upConfig.setAttributes(upAttributes);
@@ -149,11 +173,6 @@ public class InitKeycloak {
     }
 
     private static void createRoles(Keycloak keycloak) {
-        final String[] permissions =
-                {"import", "modify", "duplicate", "download", "copy_link", "share",
-                        "delete"};
-
-        final String[] folders = {"web", "mobile", "sm", "plv", "campagnes"};
 
         for (String folder : folders) {
             for (String permission : permissions) {
@@ -163,15 +182,12 @@ public class InitKeycloak {
             }
         }
 
-        final String[] roles =
-                {"user_add", "user_modify", "user_delete", "role_add", "role_modify",
-                        "role_delete",};
-
         for (String role : roles) {
             RoleRepresentation r = new RoleRepresentation();
             r.setName(role);
             keycloak.realm(REALMNAME).roles().create(r);
         }
     }
+
 }
 

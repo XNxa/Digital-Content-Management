@@ -14,12 +14,11 @@ public class KeycloakConfig {
     @Bean
     Keycloak keycloak() {
         return KeycloakBuilder.builder()
-                .serverUrl(keycloakProperties().getAuthServerUrl())
-                .realm(keycloakProperties().getRealm())
+                .serverUrl("http://localhost:8080")
+                .realm("master")
                 .grantType(OAuth2Constants.PASSWORD)
-                .clientId("backend-dcm")
-                .clientSecret("3S2OnwYhj0fwEZS4SIeOExd9bFfMi9El")
-                .username("admin@test.fr")
+                .clientId("admin-cli")
+                .username("admin")
                 .password("admin")
                 .build();
     }
