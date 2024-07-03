@@ -1,17 +1,13 @@
 <div class="input-container">
     <label>{{ label }}</label>
     <div [class]="border ? 'input-wrapper-border': 'no-border'">
-    <input 
-        [type]="isPasswordVisible || ((value.value || '').length) == 0 ? 'text' : type" 
-        [placeholder]="placeholder" 
-        [formControl]="value"
-        (input)="onInput($event)"
-        [attr.aria-label]="label"
-    >
-    @if (type == 'password') {
+        <input [type]="isPasswordVisible || ((value.value || '').length) == 0 ? 'text' : type"
+            [placeholder]="placeholder" [formControl]="value" (input)="onInput($event)" [attr.aria-label]="label">
+        @if (type == 'password') {
         <button (click)="togglePasswordVisibility()" type="button">
             <img [src]="isPasswordVisible ? 'icons/eye-open.svg' : 'icons/eye-close.svg'">
         </button>
-    }
+        }
     </div>
+    <app-error-message [form]="value"></app-error-message>
 </div>

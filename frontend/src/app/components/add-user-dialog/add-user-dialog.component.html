@@ -55,11 +55,12 @@
             <app-input label="Mot de passe" type="password" [(value)]="password"></app-input>
             <app-input label="Confirmer le mot de passe" type="password" [(value)]="passwordConfirmation"></app-input>
         </div>
+        <app-error-message style="margin-top: 5px;" [form]="group3"></app-error-message>
 
         <div class="dialog-footer">
             <app-icon-text-button title="Annuler" icon="close" color="white" (click)="cancel()"></app-icon-text-button>
             <app-icon-text-button title="Précédent" icon="back" (click)="previousStep()"></app-icon-text-button>
-            <app-icon-text-button title="Suivant" icon="forward" (click)="nextStep()"></app-icon-text-button>
+            <app-icon-text-button title="Enregistrer" icon="check" (click)="save()"></app-icon-text-button>
         </div>
         }
         }
