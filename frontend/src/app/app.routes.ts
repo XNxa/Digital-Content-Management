@@ -18,7 +18,7 @@ export const routes: Routes = [
             },
             {
                 path: 'home',
-                component: AddUserDialogComponent, //TODO
+                component: ZoomButtonComponent, //TODO
             },
             {
                 path: 'roles',

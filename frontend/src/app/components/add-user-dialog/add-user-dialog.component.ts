@@ -48,7 +48,6 @@ export class AddUserDialogComponent {
 
   passwordsMatchValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      console.log('passwordsMatchValidator', control);
       const password = control.get('password');
       const passwordConfirmation = control.get('passwordConfirmation');
 

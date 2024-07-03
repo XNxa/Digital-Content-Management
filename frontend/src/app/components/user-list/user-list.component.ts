@@ -10,6 +10,8 @@ import { InputComponent } from '../../shared/components/form/input/input.compone
 import { UserApiService } from '../../services/user-api.service';
 import { User } from '../../models/User';
 import { FormControl } from '@angular/forms';
+import { AddUserDialogComponent } from '../add-user-dialog/add-user-dialog.component';
+import { first } from 'rxjs';
 
 @Component({
     selector: 'app-user-list',
@@ -24,6 +26,7 @@ import { FormControl } from '@angular/forms';
         InputComponent,
         TableComponent,
         PageSelectorComponent,
+        AddUserDialogComponent
     ]
 })
 export class UserListComponent implements OnInit {
@@ -32,9 +35,12 @@ export class UserListComponent implements OnInit {
 
     itemsPerPage: number = 10;
 
+    currentPage: number = 1;
+
     isDialogOpen: boolean = false;
 
-    usernameSearched = new FormControl('');
+    firstnameSearched = new FormControl('');
+    lastnameSearched = new FormControl('');
 
     users!: User[];
 
@@ -43,12 +49,20 @@ export class UserListComponent implements OnInit {
     constructor(private api: UserApiService) { }
 
     ngOnInit(): void {
+        this.refreshUserList();
+    }
+
+    valueIfPresent(value: string | null): string | undefined {
+        return value ? (value.length > 0 ? value : undefined) : undefined;
+    }
+
+    refreshUserList() {
         this.api.getNumberOfUser().subscribe((count: number) => {
             this.numberOfElements = count;
         });
-        this.api.getUsers(0, this.itemsPerPage, {
-            firstname: undefined,
-            lastname: undefined,
+        this.api.getUsers((this.currentPage - 1) * this.itemsPerPage, this.itemsPerPage, {
+            firstname: this.valueIfPresent(this.firstnameSearched.value),
+            lastname: this.valueIfPresent(this.lastnameSearched.value),
             function: undefined,
             email: undefined,
             role: undefined,
@@ -59,16 +73,16 @@ export class UserListComponent implements OnInit {
         });
     }
 
-    refreshUserList() {
-        throw new Error('Method not implemented.');
-    }
-
     fileSelectedList($event: Set<number>) {
         throw new Error('Method not implemented.');
     }
 
     onPageChange($event: number) {
-        throw new Error('Method not implemented.');
+        this.currentPage = $event;
+        this.refreshUserList();
     }
 
+    closeDialog() {
+        this.isDialogOpen = false;
+    }
 }

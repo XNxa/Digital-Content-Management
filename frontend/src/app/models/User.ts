@@ -15,5 +15,5 @@ export interface UserFilter {
     email: string | undefined;
     role: string | undefined; 
     statut: 'active' | 'inactive' | undefined;
-    password: string | undefined;
+    password: undefined;
 }

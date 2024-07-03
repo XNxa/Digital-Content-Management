@@ -1,4 +1,4 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { environment } from "../../environments/environment.development";
@@ -18,15 +18,8 @@ export class UserApiService {
     }
 
     public getUsers(firstResult: number, maxResults: number, filter: UserFilter): Observable<User[]> {
-        return this.http.post<User[]>(`${this.API}/list`,
-            {
-                params: {
-                    firstResult: firstResult,
-                    maxResults: maxResults
-                },
-                body: filter
-            }
-        );
+        const params = new HttpParams().set('firstResult', firstResult.toString()).set('maxResults', maxResults.toString());
+        return this.http.post<User[]>(`${this.API}/list`, filter, { params });
     }
 
     public createUser(user: User): Observable<void> {

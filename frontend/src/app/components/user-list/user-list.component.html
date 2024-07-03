@@ -5,11 +5,14 @@
 </div>
 
 @if (isDialogOpen) {
+    <app-add-user-dialog (close)="closeDialog()"></app-add-user-dialog>
 }
 
 <div class="search-area">
-    <app-input class="search-element" label="Nom & prénom" placeholder="Saisissez un nom et/ou prénom" [border]="false"
-    [(value)]="usernameSearched" (valueChange)="refreshUserList()"></app-input>
+    <app-input class="search-element" label="Prénom" placeholder="Saisissez un prénom" [border]="false"
+    [(value)]="firstnameSearched" (onChange)="refreshUserList()"></app-input>
+    <app-input class="search-element" label="Nom" placeholder="Saisissez un nom" [border]="false"
+    [(value)]="lastnameSearched" (onChange)="refreshUserList()"></app-input>
 </div>
 
 <div class="header">
