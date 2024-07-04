@@ -29,7 +29,7 @@ export class AddUserDialogComponent {
   email = new FormControl('', [Validators.required, Validators.email, Validators.maxLength(255)]);
 
   role = new FormControl('', [Validators.required]);
-  statut = new FormControl(false);
+  statut = false;
 
   password = new FormControl('', [Validators.required, Validators.minLength(8)]);
   passwordConfirmation = new FormControl('', [Validators.required, Validators.minLength(8)]);
@@ -40,7 +40,7 @@ export class AddUserDialogComponent {
 
   constructor(private api : UserApiService) {
     this.group1 = new FormGroup({ firstname: this.firstname, lastname: this.lastname, function: this.function, email: this.email });
-    this.group2 = new FormGroup({ role: this.role, statut: this.statut });
+    this.group2 = new FormGroup({ role: this.role });
     this.group3 = new FormGroup({ password: this.password, passwordConfirmation: this.passwordConfirmation }, {
       validators: this.passwordsMatchValidator()
     });
@@ -91,7 +91,7 @@ export class AddUserDialogComponent {
         function: this.function.value!,
         email: this.email.value!,
         role: this.role.value!,
-        statut: this.statut.value ? 'active' : 'inactive',
+        statut: this.statut ? 'active' : 'inactive',
         password: this.password.value!
       };
       this.api.createUser(user).subscribe(() => {

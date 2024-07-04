@@ -1,6 +1,4 @@
-import { O } from '@angular/cdk/keycodes';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-toggle-button',
@@ -12,11 +10,11 @@ import { FormControl } from '@angular/forms';
 export class ToggleButtonComponent {
   
   @Input() label: string = '';
-  @Input() checked!: FormControl<boolean | null> ;
-  @Output() checkedChange = new EventEmitter<FormControl<boolean | null>>();
+  @Input() checked!: boolean;
+  @Output() checkedChange = new EventEmitter<boolean>();
   
   toggle() {
-    this.checked.setValue(!this.checked.value);
+    this.checked = !this.checked;
     this.checkedChange.emit(this.checked);
   }
 }
