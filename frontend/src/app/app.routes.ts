@@ -5,6 +5,8 @@ import { ZoomButtonComponent } from './shared/components/buttons/zoom-button/zoo
 import { UserListComponent } from './components/user-list/user-list.component';
 import { AuthGuard } from './auth.guard';
 import { AddUserDialogComponent } from './components/add-user-dialog/add-user-dialog.component';
+import { RoleListComponent } from './components/role-list/role-list.component';
+import { NewRoleComponent } from './components/new-role/new-role.component';
 
 export const routes: Routes = [
     {
@@ -22,11 +24,12 @@ export const routes: Routes = [
             },
             {
                 path: 'roles',
-                component: ZoomButtonComponent, //TODO
+                component: NewRoleComponent, 
+                canActivate: [AuthGuard]
             },
             {
                 path: 'users',
-                component: UserListComponent, //TODO
+                component: UserListComponent,
                 canActivate: [AuthGuard]
             },
             ...getRoutesForTabs()

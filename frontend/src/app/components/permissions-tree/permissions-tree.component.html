@@ -1,0 +1,33 @@
+<div class="tree">
+    <cdk-tree [dataSource]="dataSource" [treeControl]="treeControl">
+    
+        <cdk-tree-node *cdkTreeNodeDef="let node; when isFolder" cdkTreeNodePadding 
+        class="folder">
+    
+            <button (click)="node.expanded = !node.expanded">
+                {{treeControl.isExpanded(node) ? 'v' : '>'}}
+            </button>
+            {{node.name}}
+            <app-toggle-button class="toggle" [noTitle]="true"></app-toggle-button>
+    
+        </cdk-tree-node>
+    
+        <cdk-tree-node *cdkTreeNodeDef="let node; when isSubfolder" cdkTreeNodePadding
+        class="subfolder" [style.display]="shouldRender(node) ? 'flex' : 'none'">
+    
+            <button (click)="node.expanded = !node.expanded">
+                {{treeControl.isExpanded(node) ? 'v' : '>'}}
+            </button>
+            {{node.name}}
+            <app-toggle-button class="toggle" [noTitle]="true"></app-toggle-button>
+    
+        </cdk-tree-node>
+    
+        <cdk-tree-node *cdkTreeNodeDef="let node; when isLeaf" cdkTreeNodePadding
+        class="leaf" [style.display]="shouldRender(node) ? 'flex' : 'none'">
+            {{node.name}}
+            <app-toggle-button class="toggle" [noTitle]="true"></app-toggle-button>
+        </cdk-tree-node>
+    
+    </cdk-tree>
+</div>

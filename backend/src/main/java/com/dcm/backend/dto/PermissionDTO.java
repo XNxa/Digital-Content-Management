@@ -13,4 +13,7 @@ public class PermissionDTO {
 
     private String permission;
 
+    // won't be send to frontend
+    private int position;
+
 }

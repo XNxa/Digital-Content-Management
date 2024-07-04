@@ -168,19 +168,27 @@ public class RoleServiceImpl implements RoleService {
                         // ignore roles without DisplayName
                         return null;
                     }
-                    if (attr.size() == 3) {
+                    if (attr.size() == 4) {
                         permissionDTO.setFolder(attr.get(0));
                         permissionDTO.setSubfolder(attr.get(1));
                         permissionDTO.setName(attr.get(2));
+                        permissionDTO.setPosition(Integer.parseInt(attr.get(3)));
                     } else {
-                        assert attr.size() == 2;
+                        assert attr.size() == 3;
                         permissionDTO.setFolder(attr.get(0));
                         permissionDTO.setSubfolder("");
                         permissionDTO.setName(attr.get(1));
+                        permissionDTO.setPosition(Integer.parseInt(attr.get(2)));
                     }
                     return permissionDTO;
                 })
                 .filter(Objects::nonNull)
+                .sorted((p1, p2) -> {
+                    if (p1.getPosition() == p2.getPosition()) {
+                        return 0;
+                    }
+                    return p1.getPosition() < p2.getPosition() ? -1 : 1;
+                })
                 .toList();
     }
 }

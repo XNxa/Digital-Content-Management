@@ -196,6 +196,8 @@ public class InitKeycloak {
 
     private static void createRoles(Keycloak keycloak) {
 
+        int position = 0;
+
         for (int i = 0; i < FOLDER.length; i++) {
             String folder = FOLDER[i];
             for (int j = 0; j < SUBFOLDER.length; j++) {
@@ -206,7 +208,7 @@ public class InitKeycloak {
                     r.setName(folder + "_" + subfolder + "_" + permission);
                     r.setAttributes(Map.of("DisplayName",
                             List.of(DISPLAY_FOLDERS[i], DISPLAY_SUBFOLDERS[j],
-                                    DISPLAY_PERMISSIONS[k])));
+                                    DISPLAY_PERMISSIONS[k], String.valueOf(position++))));
                     keycloak.realm(REALMNAME).roles().create(r);
                 }
             }
@@ -217,7 +219,7 @@ public class InitKeycloak {
             RoleRepresentation r = new RoleRepresentation();
             r.setName(role);
             r.setAttributes(Map.of("DisplayName", List.of(FOLDERS_OTHER_ROLES[i],
-                    DISPLAY_OTHER_ROLES[i])));
+                    DISPLAY_OTHER_ROLES[i], String.valueOf(position++))));
             keycloak.realm(REALMNAME).roles().create(r);
         }
     }
