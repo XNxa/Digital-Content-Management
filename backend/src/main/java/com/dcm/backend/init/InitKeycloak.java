@@ -25,14 +25,36 @@ public class InitKeycloak {
 
     private static final String REALMNAME = "dcm";
 
-    private static final String[] permissions =
+    private static final String[] PERMISSIONS =
             {"import", "modify", "duplicate", "download", "copy_link", "share", "delete"};
 
-    private static final String[] folders = {"web", "mobile", "sm", "plv", "campagnes"};
+    private static final String[] DISPLAY_PERMISSIONS =
+            {"Importer un fichier", "Modifier les informations d'un fichier",
+                    "Dupliquer un fichier", "Télécharger un fichier",
+                    "Copier le lien d'un fichier", "Partager par e-mail un fichier",
+                    "Supprimer un fichier"};
 
-    private static final String[] roles =
+    private static final String[] FOLDER = {"web", "mobile", "sm", "plv", "campagnes"};
+
+    private static final String[] DISPLAY_FOLDERS =
+            {"Web", "Mobile", "SM", "P.L.V", "Campagnes"};
+
+    private static final String[] SUBFOLDER = {"images", "videos", "pictos", "docs"};
+
+    private static final String[] DISPLAY_SUBFOLDERS =
+            {"Images", "Vidéos", "Pictos", "Documents"};
+
+    private static final String[] OTHER_ROLES =
             {"user_add", "user_modify", "user_delete", "role_add", "role_modify",
                     "role_delete",};
+
+    private static final String[] DISPLAY_OTHER_ROLES =
+            {"Ajouter un nouvel utilisateur", "Modifier le profil de l'utilisateur",
+                    "Supprimer un utilisateur", "Ajouter un nouveau rôle",
+                    "Modifier un rôle", "Supprimer un rôle"};
+
+    private static final String[] FOLDERS_OTHER_ROLES =
+            {"Utilisateurs", "Utilisateurs", "Utilisateurs", "Rôles", "Rôles", "Rôles"};
 
     public static final String URL = "http://localhost:4200";
 
@@ -174,20 +196,30 @@ public class InitKeycloak {
 
     private static void createRoles(Keycloak keycloak) {
 
-        for (String folder : folders) {
-            for (String permission : permissions) {
-                RoleRepresentation r = new RoleRepresentation();
-                r.setName(folder + "_" + permission);
-                keycloak.realm(REALMNAME).roles().create(r);
+        for (int i = 0; i < FOLDER.length; i++) {
+            String folder = FOLDER[i];
+            for (int j = 0; j < SUBFOLDER.length; j++) {
+                String subfolder = SUBFOLDER[j];
+                for (int k = 0; k < PERMISSIONS.length; k++) {
+                    String permission = PERMISSIONS[k];
+                    RoleRepresentation r = new RoleRepresentation();
+                    r.setName(folder + "_" + subfolder + "_" + permission);
+                    r.setAttributes(Map.of("DisplayName",
+                            List.of(DISPLAY_FOLDERS[i], DISPLAY_SUBFOLDERS[j],
+                                    DISPLAY_PERMISSIONS[k])));
+                    keycloak.realm(REALMNAME).roles().create(r);
+                }
             }
         }
 
-        for (String role : roles) {
+        for (int i = 0; i < OTHER_ROLES.length; i++) {
+            String role = OTHER_ROLES[i];
             RoleRepresentation r = new RoleRepresentation();
             r.setName(role);
+            r.setAttributes(Map.of("DisplayName", List.of(FOLDERS_OTHER_ROLES[i],
+                    DISPLAY_OTHER_ROLES[i])));
             keycloak.realm(REALMNAME).roles().create(r);
         }
     }
-
 }
 
