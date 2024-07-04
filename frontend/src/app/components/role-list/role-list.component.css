@@ -1,0 +1,33 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.search-area {
+    display: flex;
+    gap: 10px;
+}
+
+.action-buttons {
+    display: flex;
+    column-gap: 10px;
+}
+
+.file-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.table {
+    width: 100%;
+}
+
+.footer {
+    padding: 5px;
+}
+
+.search-element {
+    flex: 1;
+}
