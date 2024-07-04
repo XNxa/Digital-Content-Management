@@ -11,6 +11,7 @@ export class ToggleButtonComponent {
   
   @Input() label: string = '';
   @Input() checked!: boolean;
+  @Input() noTitle: boolean = false;
   @Output() checkedChange = new EventEmitter<boolean>();
   
   toggle() {
