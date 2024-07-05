@@ -5,7 +5,14 @@ table {
   border-spacing: 0; 
   border: 0px solid #dddddd; 
   border-radius: 10px; 
-  overflow: hidden; 
+  overflow: hidden;
+  user-select: none;
+}
+
+tbody {
+  tr:hover {
+    background-color: #d7e3fc;
+  }
 }
 
 th,

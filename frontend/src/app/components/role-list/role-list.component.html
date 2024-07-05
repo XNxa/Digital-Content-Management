@@ -21,7 +21,10 @@
             {header: 'NOM DU RÔLE', field: 'name'}, 
             {header: 'STATUT', field: 'statut'}
         ]"
-        [data]="roles" [selected]="selectedRoles" (selectedChange)="roleSelectedList($event)">
+        [data]="roles" 
+        [selected]="selectedRoles"
+        (selectedChange)="roleSelectedList($event)"
+        (rowClicked)="modifyRole($event)">
     </app-table>
 </div>
 

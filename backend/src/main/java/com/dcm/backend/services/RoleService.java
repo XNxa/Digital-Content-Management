@@ -46,4 +46,11 @@ public interface RoleService {
      * @return the permissions
      */
     Collection<PermissionDTO> getPermissions();
+
+    /**
+     * Get a role
+     * @param id the id of the role
+     * @return the role
+     */
+    RoleDTO getRole(String id);
 }

@@ -17,13 +17,14 @@ export class TableComponent<Column extends C> {
   @Input() columns: Column[] = [];
   @Input() data: any[] = [];
 
-  @Input() selected : Set<number> = new Set();
+  @Input() selected: Set<number> = new Set();
   @Output() selectedChange = new EventEmitter<Set<number>>();
+
+  @Output() rowClicked = new EventEmitter<number>();
 
   imageColumnPresent = false;
   imageColumn = {} as Column;
   columnsToDisplay = this.columns;
-
 
   constructor() { }
 
@@ -41,5 +42,9 @@ export class TableComponent<Column extends C> {
 
   isSelected(row: number): boolean {
     return this.selected.has(row);
+  }
+
+  onRowClicked(row: number) {
+    this.rowClicked.emit(row);
   }
 }

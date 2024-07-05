@@ -21,6 +21,10 @@ export class RoleApiService {
             });
     }
 
+    public getRole(id: string): Observable<Role> {
+        return this.http.get<Role>(`${this.API}/role`, { params: { id: id } });
+    }
+
     public countRoles(): Observable<number> {
         return this.http.get<number>(`${this.API}/count`);
     }

@@ -9,7 +9,7 @@
     </thead>
     <tbody>
         @for (row of data; track $index) {
-        <tr [class]="isSelected($index)? 'checked':''">
+        <tr [class]="isSelected($index)? 'checked':''" (click)="onRowClicked($index)">
             <td><input type="checkbox" (change)="onChecked($index)" [checked]="isSelected($index)"></td>
             @for (column of columnsToDisplay; track $index) {
             <td>

@@ -37,6 +37,7 @@ export class NewRoleComponent {
         console.log(this.group.valid);
         if (this.group.valid) {
             this.api.createRole({
+                id: undefined,
                 name: this.roleName.value!,
                 state: this.roleState,
                 description: this.roleDescription.value!,

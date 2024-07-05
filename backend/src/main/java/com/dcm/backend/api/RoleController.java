@@ -29,6 +29,11 @@ public class RoleController {
         return roleService.getRoles(firstResult, maxResults, filter);
     }
 
+    @GetMapping("role")
+    public RoleDTO getRole(@RequestParam("id") String id) {
+        return roleService.getRole(id);
+    }
+
     @DeleteMapping("/delete")
     public void deleteRole(@RequestParam("name") String name) {
         roleService.deleteRole(name);

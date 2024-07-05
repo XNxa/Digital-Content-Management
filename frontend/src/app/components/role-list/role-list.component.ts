@@ -17,7 +17,6 @@ import { Router } from '@angular/router';
   imports: [TableComponent, PageSelectorComponent, IconButtonComponent, IconTextButtonComponent, SelectComponent]
 })
 export class RoleListComponent implements OnInit {
-
   selectedRoles: Set<number> = new Set<number>();
 
   roles!: Role[];
@@ -54,5 +53,9 @@ export class RoleListComponent implements OnInit {
   onPageChange($event: number) {
     this.currentPage = $event;
     this.refreshRoleList();
+  }
+
+  modifyRole($event: number) {
+    this.router.navigate(['role', this.roles[$event].id]);
   }
 }

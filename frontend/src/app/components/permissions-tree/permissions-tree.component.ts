@@ -1,5 +1,5 @@
 import { CdkTreeModule, FlatTreeControl } from '@angular/cdk/tree';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { AfterContentInit, AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { RoleApiService } from '../../services/role-api.service';
 import { Permission } from '../../models/Permission';
 import { ToggleButtonComponent } from '../../shared/components/buttons/toggle-button/toggle-button.component';
@@ -22,8 +22,10 @@ export interface PermissionNode {
   templateUrl: './permissions-tree.component.html',
   styleUrl: './permissions-tree.component.css'
 })
-export class PermissionsTreeComponent implements OnInit {
+export class PermissionsTreeComponent implements OnInit, OnChanges {
 
+  @Input() initialPermissions: Set<string> | undefined;
+  @Input() disabled: boolean = false;
   @Output() selectedPermissions: EventEmitter<Set<string>> = new EventEmitter<Set<string>>();
 
   treeControl = new FlatTreeControl<PermissionNode>(
@@ -43,6 +45,21 @@ export class PermissionsTreeComponent implements OnInit {
     this.api.getPermissions().subscribe(permissions => {
       this.buildDataSource(permissions);
     });
+  }
+
+  ngOnChanges(_changes: SimpleChanges): void {
+    console.log(this.initialPermissions);
+    if (this.dataSource && this.initialPermissions) {
+      for (let i = this.dataSource.length - 1; i >= 0; i--) {
+        const node = this.dataSource[i];
+        if (node.permission) {
+          node.toggle = this.initialPermissions.has(node.permission);
+        }
+        if (node.children) {
+          node.toggle = node.children.every(child => child.toggle);
+        }
+      }
+    }
   }
 
   buildDataSource(permissions: Permission[]): void {
@@ -71,7 +88,7 @@ export class PermissionsTreeComponent implements OnInit {
       } else {
         const noSubfolderKey = `${permission.folder}/no-subfolder`;
         if (!map.has(noSubfolderKey)) {
-          const noSubfolderNode: PermissionNode = { name: '', expandable: false, expanded: true, level: 1, toggle:false, hidden: true };
+          const noSubfolderNode: PermissionNode = { name: '', expandable: false, expanded: true, level: 1, toggle: false, hidden: true };
           map.set(noSubfolderKey, noSubfolderNode);
           folderNode.children = folderNode.children || [];
           folderNode.children.push(noSubfolderNode);
@@ -139,7 +156,7 @@ export class PermissionsTreeComponent implements OnInit {
       if (!node.toggle) {
         node.toggle = true;
         node.children!.forEach(child => {
-          child.toggle = true; 
+          child.toggle = true;
           child.children!.forEach(grandchild => grandchild.toggle = true);
         });
       } else {

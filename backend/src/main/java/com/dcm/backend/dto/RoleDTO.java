@@ -9,6 +9,8 @@ import java.util.Collection;
 @Data
 public class RoleDTO {
 
+    private String id;
+
     @NotNull
     @NotEmpty
     private String name;

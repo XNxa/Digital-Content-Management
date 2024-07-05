@@ -45,6 +45,7 @@ public class RoleServiceImpl implements RoleService {
                     roleDTO.setDescription(attr.get("description").get(0));
                     roleDTO.setState(Boolean.parseBoolean(attr.get("state").get(0)));
                     roleDTO.setPermissions(groupRepresentation.getRealmRoles());
+                    roleDTO.setId(groupRepresentation.getId());
                     return roleDTO;
                 })
                 .toList();
@@ -190,5 +191,21 @@ public class RoleServiceImpl implements RoleService {
                     return p1.getPosition() < p2.getPosition() ? -1 : 1;
                 })
                 .toList();
+    }
+
+    @Override
+    public RoleDTO getRole(String id) {
+        GroupRepresentation g = keycloak.realm(keycloakProperties.getRealm())
+                .groups()
+                .group(id)
+                .toRepresentation();
+
+        RoleDTO roleDTO = new RoleDTO();
+        roleDTO.setName(g.getName());
+        roleDTO.setDescription(g.getAttributes().get("description").get(0));
+        roleDTO.setState(Boolean.parseBoolean(g.getAttributes().get("state").get(0)));
+        roleDTO.setPermissions(g.getRealmRoles());
+        roleDTO.setId(g.getId());
+        return roleDTO;
     }
 }

@@ -7,6 +7,7 @@ import { AuthGuard } from './auth.guard';
 import { AddUserDialogComponent } from './components/add-user-dialog/add-user-dialog.component';
 import { RoleListComponent } from './components/role-list/role-list.component';
 import { NewRoleComponent } from './components/new-role/new-role.component';
+import { ModifyRoleComponent } from './components/modify-role/modify-role.component';
 
 export const routes: Routes = [
     {
@@ -25,6 +26,11 @@ export const routes: Routes = [
             {
                 path: 'roles',
                 component: RoleListComponent, 
+                canActivate: [AuthGuard]
+            },
+            {
+                path: 'role/:id',
+                component: ModifyRoleComponent,
                 canActivate: [AuthGuard]
             },
             {
