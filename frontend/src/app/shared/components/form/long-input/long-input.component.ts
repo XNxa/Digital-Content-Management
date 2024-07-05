@@ -15,6 +15,7 @@ export class LongInputComponent {
   @Input() value!: FormControl<string | null>;
   @Input() border = true;
   @Input() rows: number = 3;
+  @Input() disabled: boolean = false;
   @Output() valueChange: EventEmitter<FormControl<string | null>> = new EventEmitter<FormControl<string | null>>();
 
   isPasswordVisible: boolean = false;

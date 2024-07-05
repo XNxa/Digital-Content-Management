@@ -63,3 +63,7 @@ input:focus {
 input[type="password"] {
   letter-spacing: 2px;
 }
+
+.disabled {
+  background-color: #f5f5f5;
+}

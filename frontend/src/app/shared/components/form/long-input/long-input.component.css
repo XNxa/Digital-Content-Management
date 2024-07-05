@@ -40,3 +40,7 @@ span {
   font-weight: normal;
   font-size: small;
 }
+
+.disabled {
+  background-color: #f5f5f5;
+}

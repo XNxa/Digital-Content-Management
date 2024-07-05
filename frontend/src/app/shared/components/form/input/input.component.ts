@@ -15,6 +15,7 @@ export class InputComponent {
   @Input() type: 'text' | 'password' = 'text';
   @Input() value!: FormControl<string | null>;
   @Input() border = true;
+  @Input() disabled = false;
   @Output() valueChange: EventEmitter<FormControl<string | null>> = new EventEmitter<FormControl<string | null>>();
   @Output() onChange: EventEmitter<any> = new EventEmitter<any>();
 

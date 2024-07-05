@@ -1,10 +1,9 @@
 <div class="input-container">
     <label>{{ label }} <span>{{hint}}</span></label>
-    <textarea [class]="border ? 'input-border' : 'no-border'"
-        [placeholder]="placeholder" 
-        [formControl]="value" 
-        (input)="onInput($event)"
-        [attr.aria-label]="label"
-        [rows]="rows"
-    ></textarea>
+    @if (disabled) {
+    <textarea [class]="border ? 'input-border disabled' : 'no-border disabled'"  [value]="value.value" disabled [rows]="rows"></textarea>
+    } @else {
+    <textarea [class]="border ? 'input-border' : 'no-border'" [placeholder]="placeholder" [formControl]="value"
+        (input)="onInput($event)" [attr.aria-label]="label" [rows]="rows"></textarea>
+    }
 </div>
