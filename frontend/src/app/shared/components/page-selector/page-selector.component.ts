@@ -13,7 +13,7 @@ export class PageSelectorComponent implements OnChanges{
   @Output() pageChange = new EventEmitter<number>();
 
   currentPage: number = 1;
-  totalPages!: number;
+  totalPages: number = 1;
   pages!: number[];
 
   ngOnChanges(): void {

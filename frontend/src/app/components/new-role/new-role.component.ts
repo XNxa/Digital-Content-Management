@@ -4,8 +4,10 @@ import { InputComponent } from "../../shared/components/form/input/input.compone
 import { ToggleButtonComponent } from "../../shared/components/buttons/toggle-button/toggle-button.component";
 import { LongInputComponent } from "../../shared/components/form/long-input/long-input.component";
 import { PermissionsTreeComponent } from "../permissions-tree/permissions-tree.component";
-import { FormControl } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
+import { RoleApiService } from '../../services/role-api.service';
+import { routes } from '../../app.routes';
 
 @Component({
     selector: 'app-new-role',
@@ -22,13 +24,33 @@ import { RouterModule } from '@angular/router';
     ]
 })
 export class NewRoleComponent {
-    roleName = new FormControl('');
+    roleName = new FormControl('', Validators.required);
     roleState = false;
-    roleDescription = new FormControl('');
+    roleDescription = new FormControl('', Validators.maxLength(255));
+    rolePermissions = new Set<string>();
+
+    group: FormGroup = new FormGroup({ roleName: this.roleName, roleDescription: this.roleDescription });
+
+    constructor(private api: RoleApiService, private router: Router) { }
 
     save() {
-        throw new Error('Method not implemented.');
+        console.log(this.group.valid);
+        if (this.group.valid) {
+            this.api.createRole({
+                name: this.roleName.value!,
+                state: this.roleState,
+                description: this.roleDescription.value!,
+                permissions: Array.from(this.rolePermissions)
+            }).subscribe(() => {
+                this.router.navigate(['/roles']);
+            });
+        }
     }
+
+    permissionsSelected(permissions: Set<string>): void {
+        this.rolePermissions = permissions
+    }
+
     cancel() {
         throw new Error('Method not implemented.');
     }

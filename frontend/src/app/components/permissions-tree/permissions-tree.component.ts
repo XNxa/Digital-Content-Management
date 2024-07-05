@@ -1,5 +1,5 @@
 import { CdkTreeModule, FlatTreeControl } from '@angular/cdk/tree';
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { RoleApiService } from '../../services/role-api.service';
 import { Permission } from '../../models/Permission';
 import { ToggleButtonComponent } from '../../shared/components/buttons/toggle-button/toggle-button.component';
@@ -23,6 +23,9 @@ export interface PermissionNode {
   styleUrl: './permissions-tree.component.css'
 })
 export class PermissionsTreeComponent implements OnInit {
+
+  @Output() selectedPermissions: EventEmitter<Set<string>> = new EventEmitter<Set<string>>();
+
   treeControl = new FlatTreeControl<PermissionNode>(
     node => node.level, node => node.expandable
   );
@@ -127,6 +130,8 @@ export class PermissionsTreeComponent implements OnInit {
     this.dataSource.forEach(node => {
       node.toggle = value;
     });
+
+    this.selectedPermissions.emit(new Set(this.dataSource.filter(node => node.toggle).map(node => node.permission!)));
   }
 
   toggle(node: PermissionNode): void {
@@ -174,6 +179,8 @@ export class PermissionsTreeComponent implements OnInit {
         }
       }
     }
+
+    this.selectedPermissions.emit(new Set(this.dataSource.filter(node => node.toggle).map(node => node.permission!)));
   }
 }
 
