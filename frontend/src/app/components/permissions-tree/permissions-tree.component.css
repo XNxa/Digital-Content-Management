@@ -1,5 +1,35 @@
+.select {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.left-button, .right-button {
+    border: #105DFB 1px solid;
+    color: #105DFB;
+    background-color: white;
+    padding: 6px 10px;
+    font-weight: 500;
+}
+
+.left-button {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.right-button {
+    border-left: 0px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.right-button:hover, .left-button:hover {
+    background-color: #D7E3FC;
+}
+
 .tree {
     width: 100%;
+    user-select: none;
 }
 
 .line {
@@ -34,4 +64,18 @@ cdk-tree-node {
     margin: 15px;
     margin-left: auto;
     margin-right: 30px;
+}
+
+cdk-tree-node:first-child {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+cdk-tree-node:last-child, .last {
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+img {
+    margin: 10px;
 }

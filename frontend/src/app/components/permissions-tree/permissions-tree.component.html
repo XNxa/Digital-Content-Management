@@ -1,33 +1,42 @@
+<div class="select">
+    <h4>Tous les privilèges</h4>
+    <div>
+        <button class="left-button" (click)="setAll(true)">Tous</button>
+        <button class="right-button" (click)="setAll(false)">Aucun</button>
+    </div>
+</div>
+
 <div class="tree">
     <cdk-tree [dataSource]="dataSource" [treeControl]="treeControl">
-    
-        <cdk-tree-node *cdkTreeNodeDef="let node; when isFolder" cdkTreeNodePadding 
-        class="folder">
-    
-            <button (click)="node.expanded = !node.expanded">
-                {{treeControl.isExpanded(node) ? 'v' : '>'}}
-            </button>
+
+        <cdk-tree-node *cdkTreeNodeDef="let node; when isFolder" cdkTreeNodePadding [class]="getFolderClass(node)"
+            (click)="nodeClicked(node)">
+
+            <img
+                [src]="node.expanded ? 'icons/permissions-tree/down_white.svg' : 'icons/permissions-tree/right_white.svg'" />
             {{node.name}}
-            <app-toggle-button class="toggle" [noTitle]="true"></app-toggle-button>
-    
+            <app-toggle-button [checked]="node.toggle" (checkedChange)="toggle(node)" class="toggle" [noTitle]="true"></app-toggle-button>
+
         </cdk-tree-node>
-    
-        <cdk-tree-node *cdkTreeNodeDef="let node; when isSubfolder" cdkTreeNodePadding
-        class="subfolder" [style.display]="shouldRender(node) ? 'flex' : 'none'">
-    
-            <button (click)="node.expanded = !node.expanded">
-                {{treeControl.isExpanded(node) ? 'v' : '>'}}
-            </button>
+
+        <cdk-tree-node *cdkTreeNodeDef="let node; when isSubfolder" cdkTreeNodePadding class="subfolder"
+            [style.display]="shouldRender(node) ? 'flex' : 'none'" (click)="nodeClicked(node)">
+
+            <img
+                [src]="node.expanded ? 'icons/permissions-tree/down_blue.svg' : 'icons/permissions-tree/right_blue.svg'" />
             {{node.name}}
-            <app-toggle-button class="toggle" [noTitle]="true"></app-toggle-button>
-    
+            <app-toggle-button [checked]="node.toggle" (checkedChange)="toggle(node)" class="toggle" [noTitle]="true"></app-toggle-button>
+
         </cdk-tree-node>
-    
-        <cdk-tree-node *cdkTreeNodeDef="let node; when isLeaf" cdkTreeNodePadding
-        class="leaf" [style.display]="shouldRender(node) ? 'flex' : 'none'">
+
+        <cdk-tree-node *cdkTreeNodeDef="let node; when isLeaf" cdkTreeNodePadding class="leaf"
+            [style.display]="shouldRender(node) ? 'flex' : 'none'">
             {{node.name}}
-            <app-toggle-button class="toggle" [noTitle]="true"></app-toggle-button>
+            <app-toggle-button [checked]="node.toggle" (checkedChange)="toggle(node)" class="toggle" [noTitle]="true"></app-toggle-button>
         </cdk-tree-node>
-    
+
+        <cdk-tree-node *cdkTreeNodeDef="let node; when isHiddenSubfolder" style='display: none'>
+        </cdk-tree-node>
+
     </cdk-tree>
 </div>

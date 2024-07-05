@@ -4,7 +4,6 @@ import { RoleApiService } from '../../services/role-api.service';
 import { Permission } from '../../models/Permission';
 import { ToggleButtonComponent } from '../../shared/components/buttons/toggle-button/toggle-button.component';
 
-
 export interface PermissionNode {
   level: number;
   name: string;
@@ -12,6 +11,8 @@ export interface PermissionNode {
   expanded?: boolean;
   permission?: string;
   children?: PermissionNode[];
+  hidden?: boolean;
+  toggle: boolean;
 }
 
 @Component({
@@ -29,7 +30,8 @@ export class PermissionsTreeComponent implements OnInit {
   dataSource!: PermissionNode[];
 
   isFolder = (_: number, node: PermissionNode) => node.level == 0;
-  isSubfolder = (_: number, node: PermissionNode) => node.level == 1;
+  isSubfolder = (_: number, node: PermissionNode) => node.level == 1 && !node.hidden;
+  isHiddenSubfolder = (_: number, node: PermissionNode) => node.level == 1 && node.hidden!;
   isLeaf = (_: number, node: PermissionNode) => node.level == 2;
 
   constructor(private api: RoleApiService) { }
@@ -46,7 +48,7 @@ export class PermissionsTreeComponent implements OnInit {
 
     permissions.forEach(permission => {
       if (!map.has(permission.folder)) {
-        const folderNode: PermissionNode = { name: permission.folder, expandable: true, level: 0 };
+        const folderNode: PermissionNode = { name: permission.folder, expandable: true, toggle: false, level: 0 };
         map.set(permission.folder, folderNode);
         tree.push(folderNode);
       }
@@ -55,17 +57,25 @@ export class PermissionsTreeComponent implements OnInit {
       if (permission.subfolder) {
         const subfolderKey = `${permission.folder}/${permission.subfolder}`;
         if (!map.has(subfolderKey)) {
-          const subfolderNode: PermissionNode = { name: permission.subfolder, expandable: true, level: 1 };
+          const subfolderNode: PermissionNode = { name: permission.subfolder, expandable: true, toggle: false, level: 1 };
           map.set(subfolderKey, subfolderNode);
           folderNode.children = folderNode.children || [];
           folderNode.children.push(subfolderNode);
         }
         const subfolderNode = map.get(subfolderKey)!;
         subfolderNode.children = subfolderNode.children || [];
-        subfolderNode.children.push({ name: permission.name, permission: permission.permission, expandable: false, level: 2 });
+        subfolderNode.children.push({ name: permission.name, permission: permission.permission, expandable: false, toggle: false, level: 2 });
       } else {
-        folderNode.children = folderNode.children || [];
-        folderNode.children.push({ name: permission.name, permission: permission.permission, expandable: false, level: 1 });
+        const noSubfolderKey = `${permission.folder}/no-subfolder`;
+        if (!map.has(noSubfolderKey)) {
+          const noSubfolderNode: PermissionNode = { name: '', expandable: false, expanded: true, level: 1, toggle:false, hidden: true };
+          map.set(noSubfolderKey, noSubfolderNode);
+          folderNode.children = folderNode.children || [];
+          folderNode.children.push(noSubfolderNode);
+        }
+        const noSubfolderNode = map.get(noSubfolderKey)!;
+        noSubfolderNode.children = noSubfolderNode.children || [];
+        noSubfolderNode.children.push({ name: permission.name, permission: permission.permission, expandable: false, toggle: false, level: 2 });
       }
     });
 
@@ -105,4 +115,65 @@ export class PermissionsTreeComponent implements OnInit {
     return true;
   }
 
+  nodeClicked(node: PermissionNode): void {
+    node.expanded = !node.expanded;
+  }
+
+  getFolderClass(node: PermissionNode): string {
+    return 'folder' + (!node.expanded && node.name == 'Rôles' ? ' last' : '');
+  }
+
+  setAll(value: boolean): void {
+    this.dataSource.forEach(node => {
+      node.toggle = value;
+    });
+  }
+
+  toggle(node: PermissionNode): void {
+    if (node.level == 0) {
+      if (!node.toggle) {
+        node.toggle = true;
+        node.children!.forEach(child => {
+          child.toggle = true; 
+          child.children!.forEach(grandchild => grandchild.toggle = true);
+        });
+      } else {
+        node.toggle = false;
+      }
+    }
+    else if (node.level == 1) {
+      if (!node.toggle) {
+        node.toggle = true;
+        node.children!.forEach(child => child.toggle = true);
+        let parent = this.getParentNode(node);
+        if (parent!.children!.every(child => child.toggle)) {
+          parent!.toggle = true;
+        }
+      } else {
+        node.toggle = false;
+        let parent = this.getParentNode(node);
+        parent!.toggle = false;
+      }
+    }
+    else {
+      if (node.toggle) {
+        node.toggle = false;
+        let parent = this.getParentNode(node);
+        while (parent) {
+          parent.toggle = false;
+          parent = this.getParentNode(parent);
+        }
+      } else {
+        node.toggle = true;
+        let parent = this.getParentNode(node);
+        while (parent) {
+          if (parent.children!.every(child => child.toggle)) {
+            parent.toggle = true;
+          }
+          parent = this.getParentNode(parent);
+        }
+      }
+    }
+  }
 }
+

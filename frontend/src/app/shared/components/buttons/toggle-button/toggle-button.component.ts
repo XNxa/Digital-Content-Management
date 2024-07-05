@@ -14,7 +14,8 @@ export class ToggleButtonComponent {
   @Input() noTitle: boolean = false;
   @Output() checkedChange = new EventEmitter<boolean>();
   
-  toggle() {
+  toggle($event: MouseEvent) {
+    $event.stopPropagation();
     this.checked = !this.checked;
     this.checkedChange.emit(this.checked);
   }

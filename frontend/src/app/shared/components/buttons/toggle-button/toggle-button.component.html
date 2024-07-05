@@ -2,7 +2,7 @@
     @if (!noTitle) {
         <label>{{ label }}</label>
     }
-    <div class="toggle-switch" [class.on]="checked" (click)="toggle()">
+    <div class="toggle-switch" [class.on]="checked" (click)="toggle($event)">
         <div class="toggle-knob" [class.on]="checked"></div>
     </div>
 </div>
