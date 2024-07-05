@@ -7,6 +7,7 @@ import { Role } from '../../models/Role';
 import { RoleApiService } from '../../services/role-api.service';
 import { SelectComponent } from '../../shared/components/form/select/select.component';
 import { FormControl } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-role-list',
@@ -27,7 +28,7 @@ export class RoleListComponent implements OnInit {
   statutOptions = ["", "Actif", "Inactif"];
   selectedStatut = new FormControl('');
 
-  constructor(private api: RoleApiService) { }
+  constructor(private api: RoleApiService, private router: Router) { }
 
   ngOnInit(): void {
     this.refreshRoleList();
@@ -47,7 +48,7 @@ export class RoleListComponent implements OnInit {
   }
 
   addNewRole() {
-    
+    this.router.navigate(['roles/add']);
   }
 
   onPageChange($event: number) {

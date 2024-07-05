@@ -24,7 +24,12 @@ export const routes: Routes = [
             },
             {
                 path: 'roles',
-                component: NewRoleComponent, 
+                component: RoleListComponent, 
+                canActivate: [AuthGuard]
+            },
+            {
+                path: 'roles/add',
+                component: NewRoleComponent,
                 canActivate: [AuthGuard]
             },
             {

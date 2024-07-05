@@ -1,16 +1,24 @@
+<a routerLink="/roles">
+    <img src="icons/blue_arrow.svg"> Retour à la liste
+</a>
+
 <div class="header">
     <h1>Gestion des rôles</h1>
-    <app-icon-text-button title="Enregistrer" icon="check" (click)="save()"></app-icon-text-button>
-    <app-icon-text-button title="Annuler" icon="close" (click)="cancel()"></app-icon-text-button>
+    <div class="actions">
+        <app-icon-text-button color="white" title="Annuler" icon="close" (click)="cancel()"></app-icon-text-button>
+        <app-icon-text-button title="Enregistrer" icon="check" (click)="save()"></app-icon-text-button>
+    </div>
 </div>
 
-<div>
-    <h3>
-        Informations
-    </h3>
-    <app-input label="Nom du rôle" placeholder="Saisissez le nom du rôle" [(value)]="roleName"></app-input>
-    <app-toggle-button label="État" [(checked)]="roleState"></app-toggle-button>
-    <app-long-input label="Description" [rows]="5" [(value)]="roleDescription"></app-long-input>
+<div class="informations">
+    <h3>Informations</h3>
+    <div class="form">
+        <div class="left-form">
+            <app-input label="Nom du rôle" placeholder="Saisissez le nom du rôle" [(value)]="roleName"></app-input>
+            <app-toggle-button label="État" [(checked)]="roleState"></app-toggle-button>
+        </div>
+        <app-long-input class="right-form" label="Description" [rows]="6" [(value)]="roleDescription"></app-long-input>
+    </div>
 </div>
 
 <h2>
