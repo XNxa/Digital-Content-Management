@@ -81,7 +81,7 @@ public class FileController {
 
     @SneakyThrows
     @DeleteMapping("/delete")
-    @PreAuthorize("hasRole(@util.buildPermission(#metadata, " +
+    @PreAuthorize("hasRole(@util.buildPermission(#filenames[0], " +
             "'delete'))")
     public void deleteFile(@RequestParam("filename") String[] filenames) {
         fs.delete(filenames);
@@ -89,8 +89,8 @@ public class FileController {
 
     @SneakyThrows
     @GetMapping("/link")
-    @PreAuthorize("hasRole(@util.buildPermission(#metadata, " +
-            "'share')) or hasRole(@util.buildPermission(#metadata, " +
+    @PreAuthorize("hasRole(@util.buildPermission(#filename, " +
+            "'share')) or hasRole(@util.buildPermission(#filename, " +
             "'copy_link'))")
     public String getLink(@RequestParam("filename") String filename) {
         return fs.getLink(filename);
@@ -98,7 +98,7 @@ public class FileController {
 
     @SneakyThrows
     @PostMapping("/duplicate")
-    @PreAuthorize("hasRole(@util.buildPermission(#metadata, " +
+    @PreAuthorize("hasRole(@util.buildPermission(#filename, " +
             "'duplicate'))")
     public void duplicateFile(@RequestParam("filename") String filename) {
         fs.duplicate(filename);
@@ -106,7 +106,7 @@ public class FileController {
 
     @SneakyThrows
     @PutMapping("/update")
-    @PreAuthorize("hasRole(@util.buildPermission(#metadata, " +
+    @PreAuthorize("hasRole(@util.buildPermission(#filename, " +
             "'modify'))")
     public void updateFile(@RequestParam("filename") String filename,
                            @RequestBody @Valid FileHeaderDTO metadata) {
