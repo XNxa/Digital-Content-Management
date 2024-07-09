@@ -13,6 +13,11 @@ export class ErrorHandlerInterceptor implements HttpInterceptor {
         return next.handle(req).pipe(
             tap({
                 error: (error : HttpErrorResponse) => {
+                    if (error.status == 403) {
+                        this.snackbar.show('You are not authorized to access this resource');
+                        return;
+                    }
+
                     this.snackbar.show(error.error.code + ' : ' + error.error.message);
                 }
             })
