@@ -95,7 +95,7 @@ export const TREE: Node[] = [
     {
         expandable: true,
         name: 'Campagnes',
-        path: 'campaigns',
+        path: 'campagnes',
         logo: 'campagnes',
         level: 0,
     },

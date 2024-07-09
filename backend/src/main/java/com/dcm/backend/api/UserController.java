@@ -5,6 +5,7 @@ import com.dcm.backend.exceptions.UserNotFoundException;
 import com.dcm.backend.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -35,16 +36,20 @@ public class UserController {
         return userService.getUser(id);
     }
 
+    @PreAuthorize("hasRole('user_add')")
     @PostMapping("/create")
     public void createUser(@RequestBody @Valid UserDTO user) {
         userService.create(user);
     }
 
+    @PreAuthorize("hasRole('user_delete')")
     @DeleteMapping("/delete")
     public void deleteUser(@RequestParam("id") String id) {
+        System.out.println("Deleting user with id: " + id);
         userService.delete(id);
     }
 
+    @PreAuthorize("hasRole('user_modify')")
     @PutMapping("/update")
     public void updateUser(@RequestBody @Valid UserDTO user) throws
             UserNotFoundException {

@@ -14,6 +14,7 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,6 +38,8 @@ public class FileController {
 
     @SneakyThrows
     @PostMapping("/upload")
+    @PreAuthorize("hasRole(@util.buildPermission(#metadata, " +
+            "'import'))")
     public void uploadFile(@RequestPart("file") MultipartFile file,
                            @RequestPart("metadata") @Valid FileHeaderDTO metadata) {
         fs.upload(file.getInputStream(), metadata);
@@ -78,24 +81,33 @@ public class FileController {
 
     @SneakyThrows
     @DeleteMapping("/delete")
+    @PreAuthorize("hasRole(@util.buildPermission(#metadata, " +
+            "'delete'))")
     public void deleteFile(@RequestParam("filename") String[] filenames) {
         fs.delete(filenames);
     }
 
     @SneakyThrows
     @GetMapping("/link")
+    @PreAuthorize("hasRole(@util.buildPermission(#metadata, " +
+            "'share')) or hasRole(@util.buildPermission(#metadata, " +
+            "'copy_link'))")
     public String getLink(@RequestParam("filename") String filename) {
         return fs.getLink(filename);
     }
 
     @SneakyThrows
     @PostMapping("/duplicate")
+    @PreAuthorize("hasRole(@util.buildPermission(#metadata, " +
+            "'duplicate'))")
     public void duplicateFile(@RequestParam("filename") String filename) {
         fs.duplicate(filename);
     }
 
     @SneakyThrows
     @PutMapping("/update")
+    @PreAuthorize("hasRole(@util.buildPermission(#metadata, " +
+            "'modify'))")
     public void updateFile(@RequestParam("filename") String filename,
                            @RequestBody @Valid FileHeaderDTO metadata) {
         fs.update(filename, metadata);
