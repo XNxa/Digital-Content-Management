@@ -47,4 +47,8 @@ export class TableComponent<Column extends C> {
   onRowClicked(row: number) {
     this.rowClicked.emit(row);
   }
+
+  stopPropagation($event: MouseEvent) {
+    $event.stopPropagation();
+  }
 }

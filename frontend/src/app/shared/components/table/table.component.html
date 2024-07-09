@@ -10,7 +10,7 @@
     <tbody>
         @for (row of data; track $index) {
         <tr [class]="isSelected($index)? 'checked':''" (click)="onRowClicked($index)">
-            <td><input type="checkbox" (change)="onChecked($index)" [checked]="isSelected($index)"></td>
+            <td><input type="checkbox" (change)="onChecked($index)" [checked]="isSelected($index)" (click)="stopPropagation($event)"></td>
             @for (column of columnsToDisplay; track $index) {
             <td>
                 <div class="cell">

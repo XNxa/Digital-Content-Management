@@ -18,6 +18,8 @@ import { Role } from '../../models/Role';
 })
 export class ModifyRoleComponent implements OnInit {
 
+  role!: Role;
+
   mode: 'consult' | 'modify' = 'consult';
 
   initialPermissions: Set<string> | undefined = undefined;
@@ -34,6 +36,7 @@ export class ModifyRoleComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.api.getRole(params['id']).subscribe(role => {
+        this.role = role;
         this.roleName.setValue(role.name);
         this.roleState = role.state;
         this.roleDescription.setValue(role.description);
@@ -43,16 +46,20 @@ export class ModifyRoleComponent implements OnInit {
   }
 
   save() {
-    console.log(this.group.valid);
     if (this.group.valid) {
-      this.api.createRole({
-        id: undefined,
+      this.api.updateRole({
+        id: this.role.id!,
         name: this.roleName.value!,
         state: this.roleState,
         description: this.roleDescription.value!,
         permissions: Array.from(this.rolePermissions),
       }).subscribe(() => {
-        this.router.navigate(['/roles']);
+        this.mode = 'consult';
+        this.initialPermissions = this.rolePermissions;
+        this.role.permissions = Array.from(this.rolePermissions);
+        this.role.name = this.roleName.value!;
+        this.role.state = this.roleState;
+        this.role.description = this.roleDescription.value!;
       });
     }
   }
@@ -62,14 +69,20 @@ export class ModifyRoleComponent implements OnInit {
   }
 
   cancel() {
-    throw new Error('Method not implemented.');
+    this.roleName.setValue(this.role.name);
+    this.roleDescription.setValue(this.role.description);
+    this.roleState = this.role.state;
+    this.rolePermissions = this.initialPermissions!;
+    this.mode = 'consult';
   }
 
   modify() {
-    throw new Error('Method not implemented.');
+    this.mode = 'modify';
   }
 
   deleteRole() {
-    throw new Error('Method not implemented.');
+    this.api.deleteRole(this.role.id!).subscribe(() => {
+      this.router.navigate(['/roles']);
+    });
   }
 }

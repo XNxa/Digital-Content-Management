@@ -1,10 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { ErrorMessageComponent } from '../error-message/error-message.component';
 
 @Component({
   selector: 'app-select',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, ErrorMessageComponent],
   templateUrl: './select.component.html',
   styleUrl: './select.component.css'
 })
@@ -27,6 +28,7 @@ export class SelectComponent implements OnInit {
         this.options.unshift(this.value.value);
       }
     }
+    this.value.setValue(this.options[0]);
   }
 
   onInput(_event: Event): void {

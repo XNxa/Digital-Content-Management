@@ -48,7 +48,6 @@ export class PermissionsTreeComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(_changes: SimpleChanges): void {
-    console.log(this.initialPermissions);
     if (this.dataSource && this.initialPermissions) {
       for (let i = this.dataSource.length - 1; i >= 0; i--) {
         const node = this.dataSource[i];

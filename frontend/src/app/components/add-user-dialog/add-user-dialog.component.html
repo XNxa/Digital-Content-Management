@@ -40,7 +40,7 @@
         }
         @case (2) {
         <div class="inputs-container">
-            <app-input label="Rôle" [border]="true" placeholder="Saisissez un rôle" [(value)]="role"></app-input>
+            <app-select label="Rôle" [border]="true" [options]="roleOptions" placeholder="Saisissez un rôle" [(value)]="role"></app-select>
             <app-toggle-button label="Statut" [(checked)]="statut"></app-toggle-button>
         </div>
 

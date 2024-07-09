@@ -29,14 +29,19 @@ public class RoleController {
         return roleService.getRoles(firstResult, maxResults, filter);
     }
 
+    @GetMapping("/actives")
+    public Collection<String> listActiveRoles() {
+        return roleService.getActiveRoles();
+    }
+
     @GetMapping("role")
     public RoleDTO getRole(@RequestParam("id") String id) {
         return roleService.getRole(id);
     }
 
     @DeleteMapping("/delete")
-    public void deleteRole(@RequestParam("name") String name) {
-        roleService.deleteRole(name);
+    public void deleteRole(@RequestParam("id") String id) {
+        roleService.deleteRole(id);
     }
 
     @PutMapping("/update")

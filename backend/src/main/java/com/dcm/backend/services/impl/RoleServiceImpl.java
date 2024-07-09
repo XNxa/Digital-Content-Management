@@ -52,18 +52,11 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public void deleteRole(String name) {
+    public void deleteRole(String id) {
         keycloak.realm(keycloakProperties.getRealm())
                 .groups()
-                .groups()
-                .stream()
-                .filter(groupRepresentation -> groupRepresentation.getName().equals(name))
-                .findFirst()
-                .ifPresent(groupRepresentation -> keycloak.realm(
-                                keycloakProperties.getRealm())
-                        .groups()
-                        .group(groupRepresentation.getId())
-                        .remove());
+                .group(id)
+                .remove();
     }
 
     @Override
@@ -71,11 +64,8 @@ public class RoleServiceImpl implements RoleService {
         GroupRepresentation groupRepresentation =
                 keycloak.realm(keycloakProperties.getRealm())
                         .groups()
-                        .groups()
-                        .stream()
-                        .filter(group -> group.getName().equals(roleDTO.getName()))
-                        .findFirst()
-                        .orElseThrow(); // TODO: custom exception
+                        .group(roleDTO.getId())
+                        .toRepresentation();
 
         groupRepresentation.setAttributes(
                 Map.of("description", List.of(roleDTO.getDescription()), "state",
@@ -207,5 +197,26 @@ public class RoleServiceImpl implements RoleService {
         roleDTO.setPermissions(g.getRealmRoles());
         roleDTO.setId(g.getId());
         return roleDTO;
+    }
+
+    @Override
+    public Collection<String> getActiveRoles() {
+        return keycloak.realm(keycloakProperties.getRealm())
+                .groups()
+                .groups("", 0, Math.toIntExact(this.countRoles()), false)
+                .stream()
+                .filter(groupRepresentation -> {
+                    if (groupRepresentation.getAttributes() == null) {
+                        return false;
+                    }
+                    List<String> attr = groupRepresentation.getAttributes().get("state");
+                    if (attr == null) {
+                        return false;
+                    }
+                    return Boolean.parseBoolean(attr.get(0));
+                })
+                .map(GroupRepresentation::getName)
+                .toList();
+
     }
 }

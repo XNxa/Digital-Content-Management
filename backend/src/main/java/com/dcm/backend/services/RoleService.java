@@ -25,9 +25,9 @@ public interface RoleService {
 
     /**
      * Delete a role
-     * @param name the name of the role
+     * @param id keycloak id of the role
      */
-    void deleteRole(String name);
+    void deleteRole(String id);
 
     /**
      * Update a role
@@ -53,4 +53,11 @@ public interface RoleService {
      * @return the role
      */
     RoleDTO getRole(String id);
+
+    /**
+     * Get active roles
+     *
+     * @return the active roles
+     */
+    Collection<String> getActiveRoles();
 }

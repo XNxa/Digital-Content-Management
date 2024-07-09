@@ -29,8 +29,8 @@ export class RoleApiService {
         return this.http.get<number>(`${this.API}/count`);
     }
 
-    public deleteRole(name: string): Observable<void> {
-        return this.http.delete<void>(`${this.API}/delete`, { params: { name: name } });
+    public deleteRole(id: string): Observable<void> {
+        return this.http.delete<void>(`${this.API}/delete`, { params: { id: id } });
     }
 
     public updateRole(role: Role): Observable<void> {
@@ -43,5 +43,9 @@ export class RoleApiService {
 
     public getPermissions(): Observable<Permission[]> {
         return this.http.get<Permission[]>(`${this.API}/permissions`);
+    }
+
+    public getActiveRoles(): Observable<string[]> {
+        return this.http.get<string[]>(`${this.API}/actives`);
     }
 }

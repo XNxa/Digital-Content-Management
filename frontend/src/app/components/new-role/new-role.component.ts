@@ -34,7 +34,6 @@ export class NewRoleComponent {
     constructor(private api: RoleApiService, private router: Router) { }
 
     save() {
-        console.log(this.group.valid);
         if (this.group.valid) {
             this.api.createRole({
                 id: undefined,

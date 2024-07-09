@@ -38,10 +38,7 @@
     display: flex;
     gap: 10px;
 
-    app-input {
-        flex: 1;
-    }
-    app-toggle-button {
+    app-input, app-toggle-button, app-select {
         flex: 1;
     }
 }
