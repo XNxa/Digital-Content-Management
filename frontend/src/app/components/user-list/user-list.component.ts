@@ -11,7 +11,7 @@ import { UserApiService } from '../../services/user-api.service';
 import { User } from '../../models/User';
 import { FormControl } from '@angular/forms';
 import { AddUserDialogComponent } from '../add-user-dialog/add-user-dialog.component';
-import { first } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-user-list',
@@ -30,7 +30,6 @@ import { first } from 'rxjs';
     ]
 })
 export class UserListComponent implements OnInit {
-
     numberOfElements!: number;
 
     itemsPerPage: number = 10;
@@ -46,7 +45,7 @@ export class UserListComponent implements OnInit {
 
     selectedUsers: Set<number> = new Set<number>();
 
-    constructor(private api: UserApiService) { }
+    constructor(private api: UserApiService, private router: Router) { }
 
     ngOnInit(): void {
         this.refreshUserList();
@@ -84,5 +83,9 @@ export class UserListComponent implements OnInit {
 
     closeDialog() {
         this.isDialogOpen = false;
+    }
+
+    clickedRow($event: number) {
+        this.router.navigate(['user', this.users[$event].id]);
     }
 }

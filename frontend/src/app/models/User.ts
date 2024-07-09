@@ -1,4 +1,5 @@
 export interface User {
+    id: string | undefined;
     firstname: string;
     lastname: string;
     function: string;

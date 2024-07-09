@@ -11,6 +11,8 @@ import lombok.Data;
 @Builder
 public class UserDTO {
 
+    private String id;
+
     @NotNull
     @Size(max = 255)
     private String firstname;

@@ -59,6 +59,7 @@ public class UserServiceImpl implements UserService {
                         queryBuilder.toString())
                 .stream()
                 .map(userRepresentation -> UserDTO.builder()
+                        .id(userRepresentation.getId())
                         .email(userRepresentation.getEmail())
                         .firstname(userRepresentation.getFirstName())
                         .lastname(userRepresentation.getLastName())
@@ -92,17 +93,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void delete(String email) throws UserNotFoundException {
-        List<UserRepresentation> users =
-                keycloak.realm(keycloakProperties.getRealm()).users().search(email);
-
-        if (users.isEmpty()) {
-            throw new UserNotFoundException("User not found : " + email);
-        }
-
+    public void delete(String id) {
         keycloak.realm(keycloakProperties.getRealm())
                 .users()
-                .delete(users.get(0).getId());
+                .delete(id);
     }
 
     @Override
@@ -137,6 +131,24 @@ public class UserServiceImpl implements UserService {
                 .users()
                 .get(userRepresentation.getId())
                 .update(userRepresentation);
+    }
+
+    @Override
+    public UserDTO getUser(String id) {
+        UserRepresentation u = keycloak.realm(keycloakProperties.getRealm())
+                .users()
+                .get(id)
+                .toRepresentation();
+
+        return UserDTO.builder()
+                .id(u.getId())
+                .email(u.getEmail())
+                .firstname(u.getFirstName())
+                .lastname(u.getLastName())
+                .function(u.getAttributes().get("function").get(0))
+                .role(u.getAttributes().get("role").get(0))
+                .statut(u.getAttributes().get("statut").get(0))
+                .build();
     }
 }
 

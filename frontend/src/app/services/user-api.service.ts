@@ -26,15 +26,23 @@ export class UserApiService {
         return this.http.post<void>(`${this.API}/create`, user);
     }
 
-    public deleteUser(email: string): Observable<void> {
+    public deleteUser(id: string): Observable<void> {
         return this.http.delete<void>(`${this.API}/delete}`, {
             params: {
-                email: email
+                id: id
             }
         });
     }
 
     public updateUser(user: User): Observable<void> {
         return this.http.put<void>(`${this.API}/update`, user);
+    }
+
+    public getUser(id: string): Observable<User> {
+        return this.http.get<User>(`${this.API}/user`, {
+            params: {
+                id: id
+            }
+        });
     }
 }

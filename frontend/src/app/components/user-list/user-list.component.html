@@ -5,14 +5,14 @@
 </div>
 
 @if (isDialogOpen) {
-    <app-add-user-dialog (close)="closeDialog()"></app-add-user-dialog>
+<app-add-user-dialog (close)="closeDialog()"></app-add-user-dialog>
 }
 
 <div class="search-area">
     <app-input class="search-element" label="Prénom" placeholder="Saisissez un prénom" [border]="false"
-    [(value)]="firstnameSearched" (onChange)="refreshUserList()"></app-input>
+        [(value)]="firstnameSearched" (onChange)="refreshUserList()"></app-input>
     <app-input class="search-element" label="Nom" placeholder="Saisissez un nom" [border]="false"
-    [(value)]="lastnameSearched" (onChange)="refreshUserList()"></app-input>
+        [(value)]="lastnameSearched" (onChange)="refreshUserList()"></app-input>
 </div>
 
 <div class="header">
@@ -23,16 +23,15 @@
 </div>
 
 <div class="file-grid">
-    <app-table class="table"
-        [columns]="[
+    <app-table class="table" [columns]="[
             {header: 'FIRSTNAME', field: 'firstname'}, 
             {header: 'LASTNAME', field: 'lastname'},
             {header: 'FONCTION', field: 'function'},
             {header:'EMAIL', field:'email'},
             {header: 'ROLE', field: 'role'},
             {header: 'STATUT', field: 'Statut'}
-        ]"
-        [data]="users" [selected]="selectedUsers" (selectedChange)="fileSelectedList($event)">
+        ]" [data]="users" [selected]="selectedUsers" (selectedChange)="fileSelectedList($event)"
+        (rowClicked)="clickedRow($event)">
     </app-table>
 </div>
 

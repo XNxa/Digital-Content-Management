@@ -29,10 +29,10 @@ public interface UserService {
     void create(UserDTO user);
 
     /**
-     * Delete a user by email
-     * @param email the email
+     * Delete a user by id
+     * @param id the keycloak id of the user
      */
-    void delete(String email) throws UserNotFoundException;
+    void delete(String id);
 
     /**
      * Update a user
@@ -40,4 +40,10 @@ public interface UserService {
      */
     void update(UserDTO user) throws UserNotFoundException;
 
+    /**
+     * Get a user by id
+     * @param id the keycloak id of the user
+     * @return the user
+     */
+    UserDTO getUser(String id);
 }

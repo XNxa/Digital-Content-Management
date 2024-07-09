@@ -14,21 +14,24 @@ export class SelectComponent implements OnInit {
   @Input() hint: string = '';
   @Input() options!: string[];
   @Input() border = true;
+  @Input() disabled = false;
   @Input() value!: FormControl<string | null>;
   @Output() valueChange: EventEmitter<FormControl<string | null>> = new EventEmitter<FormControl<string | null>>();
 
   ngOnInit(): void {
-    const i = this.options.findIndex((option) => option == this.value.value);
-    if (i == -1) {
-      if (this.value.value)
-        this.options.unshift(this.value.value);
-    } else if (i != 0) {
-      if (this.value.value) {
-        this.options.splice(i, 1);
-        this.options.unshift(this.value.value);
+    if (this.options) {
+      const i = this.options.findIndex((option) => option == this.value.value);
+      if (i == -1) {
+        if (this.value.value)
+          this.options.unshift(this.value.value);
+      } else if (i != 0) {
+        if (this.value.value) {
+          this.options.splice(i, 1);
+          this.options.unshift(this.value.value);
+        }
       }
+      this.value.setValue(this.options[0]);
     }
-    this.value.setValue(this.options[0]);
   }
 
   onInput(_event: Event): void {

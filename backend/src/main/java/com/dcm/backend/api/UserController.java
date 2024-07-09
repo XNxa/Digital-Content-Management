@@ -30,15 +30,19 @@ public class UserController {
         return userService.list(firstResult, maxResults, filter);
     }
 
+    @GetMapping("/user")
+    public UserDTO getUser(@RequestParam("id") String id) {
+        return userService.getUser(id);
+    }
+
     @PostMapping("/create")
     public void createUser(@RequestBody @Valid UserDTO user) {
         userService.create(user);
     }
 
     @DeleteMapping("/delete")
-    public void deleteUser(@RequestParam("email") String email) throws
-            UserNotFoundException {
-        userService.delete(email);
+    public void deleteUser(@RequestParam("id") String id) {
+        userService.delete(id);
     }
 
     @PutMapping("/update")

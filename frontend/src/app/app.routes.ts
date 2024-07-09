@@ -8,6 +8,7 @@ import { AddUserDialogComponent } from './components/add-user-dialog/add-user-di
 import { RoleListComponent } from './components/role-list/role-list.component';
 import { NewRoleComponent } from './components/new-role/new-role.component';
 import { ModifyRoleComponent } from './components/modify-role/modify-role.component';
+import { ModifyUserComponent } from './components/modify-user/modify-user.component';
 
 export const routes: Routes = [
     {
@@ -41,6 +42,11 @@ export const routes: Routes = [
             {
                 path: 'users',
                 component: UserListComponent,
+                canActivate: [AuthGuard]
+            },
+            {
+                path: 'user/:id',
+                component: ModifyUserComponent,
                 canActivate: [AuthGuard]
             },
             ...getRoutesForTabs()

@@ -95,13 +95,14 @@ export class AddUserDialogComponent implements OnInit {
     this.group3.markAllAsTouched();
     if (this.group3.valid) {
       const user: User = {
+        id: undefined,
         firstname: this.firstname.value!,
         lastname: this.lastname.value!,
         function: this.function.value!,
         email: this.email.value!,
         role: this.role.value!,
         statut: this.statut ? 'active' : 'inactive',
-        password: this.password.value!
+        password: this.password.value!,
       };
       this.userapi.createUser(user).subscribe(() => {
         this.close.emit();

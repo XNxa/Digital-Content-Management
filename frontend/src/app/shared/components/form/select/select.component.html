@@ -1,13 +1,18 @@
 <div class="input-container">
     <label>{{ label }} <span>{{hint}}</span></label>
-    <select [class]="border ? 'input-border' : 'no-border'"
-        [formControl]="value"
-        (input)="onInput($event)"
-        [attr.aria-label]="label"
-    >
-    @for (item of options; track $index) {
+    @if (disabled) {
+    <select [class]="border ? 'input-border disabled' : 'no-border disabled'" [formControl]="value">
+        @for (item of options; track $index) {
         <option>{{item}}</option>
-    }
+        }
     </select>
+    }
+    @else
+    {<select [class]="border ? 'input-border' : 'no-border'" [formControl]="value" (input)="onInput($event)"
+        [attr.aria-label]="label">
+        @for (item of options; track $index) {
+        <option>{{item}}</option>
+        }
+    </select>}
     <app-error-message [form]="value"></app-error-message>
 </div>
