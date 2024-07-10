@@ -46,7 +46,7 @@ export class FileListComponent implements OnInit {
   readonly viewtitle: string = "Fichiers";
 
   /** The number of items to display per page. */
-  readonly itemsPerPage: number = 16;
+  readonly itemsPerPage: number = 15;
 
   /** Array of status strings. */
   readonly status: string[] = Status.getStringList();
@@ -103,14 +103,7 @@ export class FileListComponent implements OnInit {
 
 
 
-  constructor(private api: FileApiService, private snackbar: SnackbarService, private route: ActivatedRoute, private router: Router) {
-    this.api.getNumberOfElement().subscribe(n => {
-      this.numberOfElements = n;
-    });
-    this.api.getKeywords().subscribe(keywords => {
-      this.keywords = keywords;
-    });
-  }
+  constructor(private api: FileApiService, private snackbar: SnackbarService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -138,6 +131,7 @@ export class FileListComponent implements OnInit {
   */
   onPageChange(pageNumber: number): void {
     this.currentPage = pageNumber
+    this.selectedFiles.clear();
     this.refreshFileList();
   }
 
@@ -176,6 +170,10 @@ export class FileListComponent implements OnInit {
     // Refresh the list of keywords
     this.api.getKeywords().subscribe(keywords => {
       this.keywords = keywords;
+    });
+
+    this.api.getNumberOfElement().subscribe(n => {
+      this.numberOfElements = n;
     });
   }
 

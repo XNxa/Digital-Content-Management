@@ -197,12 +197,20 @@ public class FileServiceImpl implements FileService {
 
         FileHeader newFileHeader = new FileHeader(fileHeader);
 
-        String newName = fileHeader.getFilename();
-        if (newName.contains(".")) {
-            newName = newName.substring(0, newName.lastIndexOf('.')) + "_copy" +
-                    newName.substring(newName.lastIndexOf('.'));
-        } else {
-            newName += "_copy";
+        String baseName = fileHeader.getFilename();
+        String extension = "";
+        if (baseName.contains(".")) {
+            baseName = fileHeader.getFilename().substring(0,
+                    fileHeader.getFilename().lastIndexOf('.'));
+            extension = fileHeader.getFilename().substring(fileHeader.getFilename().lastIndexOf('.'));
+        }
+
+        String newName = baseName + "_copy" + extension;
+        int copyCounter = 1;
+
+        while (fileRepository.findByFilename(newName).isPresent()) {
+            newName = baseName + "_copy" + copyCounter + extension;
+            copyCounter++;
         }
 
         newFileHeader.setFilename(newName);
