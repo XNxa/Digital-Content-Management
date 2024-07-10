@@ -53,10 +53,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void deleteRole(String id) {
-        keycloak.realm(keycloakProperties.getRealm())
-                .groups()
-                .group(id)
-                .remove();
+        keycloak.realm(keycloakProperties.getRealm()).groups().group(id).remove();
     }
 
     @Override
@@ -72,6 +69,11 @@ public class RoleServiceImpl implements RoleService {
                 Map.of("description", List.of(roleDTO.getDescription()), "state",
                         List.of(String.valueOf(roleDTO.isState()))));
 
+        keycloak.realm(keycloakProperties.getRealm())
+                .groups()
+                .group(groupRepresentation.getId())
+                .update(groupRepresentation);
+
         List<RoleRepresentation> roles = keycloak.realm(keycloakProperties.getRealm())
                 .roles()
                 .list()
@@ -79,7 +81,7 @@ public class RoleServiceImpl implements RoleService {
                 .filter(roleRepresentation -> roleDTO.getPermissions()
                         .contains(roleRepresentation.getName()))
                 .toList();
-
+        
         List<RoleRepresentation> rolesToRemove =
                 keycloak.realm(keycloakProperties.getRealm())
                         .groups()
@@ -87,11 +89,6 @@ public class RoleServiceImpl implements RoleService {
                         .roles()
                         .realmLevel()
                         .listAll();
-
-        keycloak.realm(keycloakProperties.getRealm())
-                .groups()
-                .group(groupRepresentation.getId())
-                .update(groupRepresentation);
 
         keycloak.realm(keycloakProperties.getRealm())
                 .groups()
@@ -112,7 +109,8 @@ public class RoleServiceImpl implements RoleService {
                 .group(groupRepresentation.getId())
                 .members()
                 .forEach(userRepresentation -> {
-                    userRepresentation.getAttributes().put("role", List.of(roleDTO.getName()));
+                    userRepresentation.getAttributes()
+                            .put("role", List.of(roleDTO.getName()));
                     keycloak.realm(keycloakProperties.getRealm())
                             .users()
                             .get(userRepresentation.getId())

@@ -41,6 +41,7 @@ export class ModifyRoleComponent implements OnInit {
         this.roleState = role.state;
         this.roleDescription.setValue(role.description);
         this.initialPermissions = new Set(role.permissions);
+        this.rolePermissions = new Set(role.permissions);
       });
     });
   }
