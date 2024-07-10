@@ -9,7 +9,7 @@
 @else {
 <div class="header">
     <h1>{{this.displayableFolder}} / {{this.displayableTypeFolder}}</h1>
-    <app-icon-text-button [permission]="folder+'_'+typeFolder+'_'+'import'" title="Importer un fichier" icon="upload"
+    <app-icon-text-button [permission]="[folder+'_'+typeFolder+'_'+'import']" title="Importer un fichier" icon="upload"
         (click)="isDialogOpen = true"></app-icon-text-button>
 </div>
 
@@ -30,17 +30,17 @@
     <h2>{{viewtitle}}</h2>
     <div class="action-buttons">
         @if (selectedFiles.size > 0) {
-        <app-icon-button [permission]="folder+'_'+typeFolder+'_'+'delete'" color="white" icon="delete" (click)="onDeleteClicked()"></app-icon-button>
+        <app-icon-button [permission]="[folder+'_'+typeFolder+'_'+'delete']" color="white" icon="delete" (click)="onDeleteClicked()"></app-icon-button>
         <app-icon-menu-button icon="menu">
-            <button [permission]="folder+'_'+typeFolder+'_'+'duplicate'" class="white external" (click)="onDuplicate()">
+            <button [permission]="[folder+'_'+typeFolder+'_'+'duplicate']" class="white external" (click)="onDuplicate()">
                 <img class="external" src='icons/blue/duplicate.svg' />
                 <span>Dupliquer</span>    
             </button>
-            <button [permission]="folder+'_'+typeFolder+'_'+'download'" class="white external" (click)="onDownload()">
+            <button [permission]="[folder+'_'+typeFolder+'_'+'download']" class="white external" (click)="onDownload()">
                 <img class="external" src='icons/blue/download.svg' />
                 <span>Télécharger</span>    
             </button>
-            <button [permission]="folder+'_'+typeFolder+'_'+'share'" class="white external" (click)="onShare()">
+            <button [permission]="[folder+'_'+typeFolder+'_'+'share']" class="white external" (click)="onShare()">
                 <img class="external" src='icons/blue/send.svg' />
                 <span>Partager par e-mail</span>    
             </button>

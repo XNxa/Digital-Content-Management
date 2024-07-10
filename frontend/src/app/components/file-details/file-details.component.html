@@ -31,10 +31,10 @@
         }
 
         <div class="actions">
-            <app-icon-button [permission]="folder+'_'+typeFolder+'_'+'share'" icon="send" color="dark" (click)="onSendByEmail()"></app-icon-button>
-            <app-icon-button [permission]="folder+'_'+typeFolder+'_'+'copy_link'" icon="link" color="dark" (click)="onGetLink()"></app-icon-button>
-            <app-icon-button [permission]="folder+'_'+typeFolder+'_'+'download'" icon="download" color="dark" (click)="onDownload()"></app-icon-button>
-            <app-icon-button [permission]="folder+'_'+typeFolder+'_'+'duplicate'" icon="duplicate" color="dark" (click)="onDuplicate()"></app-icon-button>
+            <app-icon-button [permission]="[folder+'_'+typeFolder+'_'+'share']" icon="send" color="dark" (click)="onSendByEmail()"></app-icon-button>
+            <app-icon-button [permission]="[folder+'_'+typeFolder+'_'+'copy_link']" icon="link" color="dark" (click)="onGetLink()"></app-icon-button>
+            <app-icon-button [permission]="[folder+'_'+typeFolder+'_'+'download']" icon="download" color="dark" (click)="onDownload()"></app-icon-button>
+            <app-icon-button [permission]="[folder+'_'+typeFolder+'_'+'duplicate']" icon="duplicate" color="dark" (click)="onDuplicate()"></app-icon-button>
         </div>
 
         <div class="left">
@@ -53,8 +53,8 @@
     <div class="details-section">
 
         <div class="other-actions">
-            <app-icon-button [permission]="folder+'_'+typeFolder+'_'+'delete'" icon="delete" color="white" (click)="onDelete()"></app-icon-button>
-            <app-icon-button [permission]="folder+'_'+typeFolder+'_'+'modify'" icon="modify" color="white" (click)="openDialog()"></app-icon-button>
+            <app-icon-button [permission]="[folder+'_'+typeFolder+'_'+'delete']" icon="delete" color="white" (click)="onDelete()"></app-icon-button>
+            <app-icon-button [permission]="[folder+'_'+typeFolder+'_'+'modify']" icon="modify" color="white" (click)="openDialog()"></app-icon-button>
             <app-icon-button icon="close" color="white" (click)="onClose()"></app-icon-button>
         </div>
 
