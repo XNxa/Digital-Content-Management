@@ -6,6 +6,7 @@ import com.dcm.backend.services.UserService;
 import ma.gov.mes.framework.keycloak.KeycloakProperties;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.idm.CredentialRepresentation;
+import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -82,6 +83,7 @@ public class UserServiceImpl implements UserService {
                 Map.of("function", List.of(user.getFunction()), "role",
                         List.of(user.getRole()), "statut", List.of(user.getStatut()));
         userRepresentation.setAttributes(attributes);
+        userRepresentation.setGroups(List.of(user.getRole()));
 
         CredentialRepresentation credentials = new CredentialRepresentation();
         credentials.setType(CredentialRepresentation.PASSWORD);
@@ -94,9 +96,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(String id) {
-        keycloak.realm(keycloakProperties.getRealm())
-                .users()
-                .delete(id);
+        keycloak.realm(keycloakProperties.getRealm()).users().delete(id);
     }
 
     @Override
@@ -109,6 +109,21 @@ public class UserServiceImpl implements UserService {
             throw new UserNotFoundException("User not found : " + user.getEmail());
         }
 
+        List<GroupRepresentation> oldGroups =
+                keycloak.realm(keycloakProperties.getRealm())
+                        .users()
+                        .get(users.get(0).getId())
+                        .groups();
+
+        List<GroupRepresentation> newGroups =
+                keycloak.realm(keycloakProperties.getRealm())
+                        .groups()
+                        .groups()
+                        .stream()
+                        .filter(groupRepresentation -> groupRepresentation.getName()
+                                .equals(user.getRole()))
+                        .toList();
+
         UserRepresentation userRepresentation = users.get(0);
         userRepresentation.setEmail(user.getEmail());
         userRepresentation.setFirstName(user.getFirstname());
@@ -118,6 +133,16 @@ public class UserServiceImpl implements UserService {
                 Map.of("function", List.of(user.getFunction()), "role",
                         List.of(user.getRole()), "statut", List.of(user.getStatut()));
         userRepresentation.setAttributes(attributes);
+
+        keycloak.realm(keycloakProperties.getRealm())
+                .users()
+                .get(userRepresentation.getId())
+                .leaveGroup(oldGroups.get(0).getId());
+
+        keycloak.realm(keycloakProperties.getRealm())
+                .users()
+                .get(userRepresentation.getId())
+                .joinGroup(newGroups.get(0).getId());
 
         if (user.getPassword() != null) {
             CredentialRepresentation credentials = new CredentialRepresentation();
@@ -138,7 +163,16 @@ public class UserServiceImpl implements UserService {
         UserRepresentation u = keycloak.realm(keycloakProperties.getRealm())
                 .users()
                 .get(id)
-                .toRepresentation();
+                .toRepresentation(true);
+
+        String group = keycloak.realm(keycloakProperties.getRealm())
+                .users()
+                .get(id)
+                .groups()
+                .stream()
+                .findFirst()
+                .get()
+                .getName();
 
         return UserDTO.builder()
                 .id(u.getId())
@@ -146,7 +180,7 @@ public class UserServiceImpl implements UserService {
                 .firstname(u.getFirstName())
                 .lastname(u.getLastName())
                 .function(u.getAttributes().get("function").get(0))
-                .role(u.getAttributes().get("role").get(0))
+                .role(group)
                 .statut(u.getAttributes().get("statut").get(0))
                 .build();
     }

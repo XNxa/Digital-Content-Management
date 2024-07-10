@@ -8,7 +8,7 @@
     </select>
     }
     @else
-    {<select [class]="border ? 'input-border' : 'no-border'" [formControl]="value" (input)="onInput($event)"
+    {<select [class]="border ? 'input-border' : 'no-border'" [formControl]="value" (click)="onInput($event)"
         [attr.aria-label]="label">
         @for (item of options; track $index) {
         <option>{{item}}</option>

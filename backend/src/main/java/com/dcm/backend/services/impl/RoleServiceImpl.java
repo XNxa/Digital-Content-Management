@@ -67,6 +67,7 @@ public class RoleServiceImpl implements RoleService {
                         .group(roleDTO.getId())
                         .toRepresentation();
 
+        groupRepresentation.setName(roleDTO.getName());
         groupRepresentation.setAttributes(
                 Map.of("description", List.of(roleDTO.getDescription()), "state",
                         List.of(String.valueOf(roleDTO.isState()))));
@@ -105,6 +106,18 @@ public class RoleServiceImpl implements RoleService {
                 .roles()
                 .realmLevel()
                 .add(roles);
+
+        keycloak.realm(keycloakProperties.getRealm())
+                .groups()
+                .group(groupRepresentation.getId())
+                .members()
+                .forEach(userRepresentation -> {
+                    userRepresentation.getAttributes().put("role", List.of(roleDTO.getName()));
+                    keycloak.realm(keycloakProperties.getRealm())
+                            .users()
+                            .get(userRepresentation.getId())
+                            .update(userRepresentation);
+                });
     }
 
     @Override
