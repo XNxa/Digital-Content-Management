@@ -1,5 +1,5 @@
 import { CdkTreeModule, FlatTreeControl } from '@angular/cdk/tree';
-import { AfterContentInit, AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { AfterContentInit, AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { RoleApiService } from '../../services/role-api.service';
 import { Permission } from '../../models/Permission';
 import { ToggleButtonComponent } from '../../shared/components/buttons/toggle-button/toggle-button.component';
@@ -39,11 +39,12 @@ export class PermissionsTreeComponent implements OnInit, OnChanges {
   isHiddenSubfolder = (_: number, node: PermissionNode) => node.level == 1 && node.hidden!;
   isLeaf = (_: number, node: PermissionNode) => node.level == 2;
 
-  constructor(private api: RoleApiService) { }
+  constructor(private api: RoleApiService, private cd : ChangeDetectorRef) { }
 
   ngOnInit(): void {
     this.api.getPermissions().subscribe(permissions => {
       this.buildDataSource(permissions);
+      this.ngOnChanges({});
     });
   }
 

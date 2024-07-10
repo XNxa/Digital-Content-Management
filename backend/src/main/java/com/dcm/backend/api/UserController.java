@@ -45,7 +45,6 @@ public class UserController {
     @PreAuthorize("hasRole('user_delete')")
     @DeleteMapping("/delete")
     public void deleteUser(@RequestParam("id") String id) {
-        System.out.println("Deleting user with id: " + id);
         userService.delete(id);
     }
 

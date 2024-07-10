@@ -27,11 +27,7 @@ export class UserApiService {
     }
 
     public deleteUser(id: string): Observable<void> {
-        return this.http.delete<void>(`${this.API}/delete}`, {
-            params: {
-                id: id
-            }
-        });
+        return this.http.delete<void>(`${this.API}/delete`, { params: { id: id } });
     }
 
     public updateUser(user: User): Observable<void> {
