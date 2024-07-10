@@ -28,7 +28,7 @@ label {
   border-radius: 4px;
 }
 
-select {
+select, input {
   color: var(--text-color);
   appearance: none;
   outline: none;

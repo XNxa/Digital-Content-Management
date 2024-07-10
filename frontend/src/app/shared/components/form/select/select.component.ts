@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ErrorMessageComponent } from '../error-message/error-message.component';
 
@@ -9,7 +9,7 @@ import { ErrorMessageComponent } from '../error-message/error-message.component'
   templateUrl: './select.component.html',
   styleUrl: './select.component.css'
 })
-export class SelectComponent implements OnInit {
+export class SelectComponent implements OnChanges {
   @Input() label: string = '';
   @Input() hint: string = '';
   @Input() options!: string[];
@@ -18,24 +18,20 @@ export class SelectComponent implements OnInit {
   @Input() value!: FormControl<string | null>;
   @Output() valueChange: EventEmitter<FormControl<string | null>> = new EventEmitter<FormControl<string | null>>();
 
-  ngOnInit(): void {
-    if (this.options) {
-      const i = this.options.findIndex((option) => option == this.value.value);
-      if (i == -1) {
-        if (this.value.value)
-          this.options.unshift(this.value.value);
-      } else if (i != 0) {
-        if (this.value.value) {
-          this.options.splice(i, 1);
-          this.options.unshift(this.value.value);
-        }
+  ngOnChanges(changes: SimpleChanges): void {
+    if (this.options && !this.options.includes('')) {
+      this.options.unshift('');
+    }
+
+    if (changes['disabled']) {
+      if (!this.disabled) {
+        this.value.setValue(null)
+        this.valueChange.emit(this.value);
       }
-      this.value.setValue(this.options[0]);
     }
   }
 
   onInput(_event: Event): void {
     this.valueChange.emit(this.value);
   }
-
 }

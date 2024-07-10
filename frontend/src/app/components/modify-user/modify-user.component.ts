@@ -110,6 +110,7 @@ export class ModifyUserComponent implements OnInit {
         this.mode = 'consult';
       });
     } else {
+      console.log(this.role.value);
       this.group1.markAllAsTouched();
       this.group2.markAllAsTouched();
       this.group3.markAllAsTouched();

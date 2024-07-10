@@ -1,11 +1,7 @@
 <div class="input-container">
     <label>{{ label }} <span>{{hint}}</span></label>
     @if (disabled) {
-    <select [class]="border ? 'input-border disabled' : 'no-border disabled'" [formControl]="value">
-        @for (item of options; track $index) {
-        <option>{{item}}</option>
-        }
-    </select>
+    <input [class]="border ? 'input-border' : 'no-border'" type="text" [value]="value.value" disabled>
     }
     @else
     {<select [class]="border ? 'input-border' : 'no-border'" [formControl]="value" (click)="onInput($event)"
