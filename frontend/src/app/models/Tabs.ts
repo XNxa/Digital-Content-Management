@@ -17,28 +17,28 @@ const SUB_TREE: Node[] = [
     {
         expandable: false,
         name: 'Images',
-        path: 'image',
+        path: 'images',
         logo: 'image',
         level: 1,
     },
     {
         expandable: false,
         name: 'Vidéos',
-        path: 'video',
+        path: 'videos',
         logo: 'video',
         level: 1,
     },
     {
         expandable: false,
         name: 'Pictos',
-        path: 'picto',
+        path: 'pictos',
         logo: 'picto',
         level: 1,
     },
     {
         expandable: false,
         name: 'Documents',
-        path: 'doc',
+        path: 'docs',
         logo: 'doc',
         level: 1,
     },
@@ -142,7 +142,7 @@ export function getNameFromPath(path: string): string {
     return TREE.find(node => node.path == path)?.name || '';
 }
 
-export type FileCategory = 'image' | 'video' | 'picto' | 'doc';
+export type FileCategory = 'images' | 'videos' | 'pictos' | 'docs';
 
 export function getCategoryFromPath(path: string): FileCategory {
     return path as FileCategory;

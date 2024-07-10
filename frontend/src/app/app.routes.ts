@@ -4,7 +4,6 @@ import { getRoutesForTabs } from './models/Tabs';
 import { ZoomButtonComponent } from './shared/components/buttons/zoom-button/zoom-button.component';
 import { UserListComponent } from './components/user-list/user-list.component';
 import { AuthGuard } from './auth.guard';
-import { AddUserDialogComponent } from './components/add-user-dialog/add-user-dialog.component';
 import { RoleListComponent } from './components/role-list/role-list.component';
 import { NewRoleComponent } from './components/new-role/new-role.component';
 import { ModifyRoleComponent } from './components/modify-role/modify-role.component';

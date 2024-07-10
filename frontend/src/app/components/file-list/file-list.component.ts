@@ -18,6 +18,7 @@ import { FileDetailsComponent } from '../file-details/file-details.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { getCategoryFromPath, getNameFromPath } from '../../models/Tabs';
 import { FormControl } from '@angular/forms';
+import { PermissionDirective } from '../../shared/directives/permission.directive';
 
 @Component({
   selector: 'app-file-list',
@@ -33,7 +34,8 @@ import { FormControl } from '@angular/forms';
     InputComponent,
     SelectComponent,
     DropdownCheckboxComponent,
-    FileDetailsComponent
+    FileDetailsComponent,
+    PermissionDirective
   ],
   templateUrl: './file-list.component.html',
   styleUrl: './file-list.component.css'
@@ -204,43 +206,41 @@ export class FileListComponent implements OnInit {
     }
   }
 
-  onMenuButtonClicked(buttonClicked: string) {
-    switch (buttonClicked) {
-      case 'Dupliquer':
-        const filenames = [...this.selectedFiles].map(index => this.files[index].filename);
-        filenames.forEach(filename => {
-          this.api.duplicate(filename).subscribe({
-            next: () => {
-              this.snackbar.show('Fichier dupliqué avec succès');
-            }
-          });
-        });
-        break;
-      case 'Télécharger':
-        for (let index of this.selectedFiles) {
-          this.api.getFileData(this.files[index].filename).subscribe({
-            next: blob => {
-              const url = URL.createObjectURL(blob);
-              const a = document.createElement('a');
-              a.href = url;
-              a.download = this.files[index].filename;
-              a.click();
-              URL.revokeObjectURL(url);
-            }
-          });
+  onDuplicate(): void {
+    const filenames = [...this.selectedFiles].map(index => this.files[index].filename);
+    filenames.forEach(filename => {
+      this.api.duplicate(filename).subscribe({
+        next: () => {
+          this.snackbar.show('Fichier dupliqué avec succès');
         }
-        break;
-      case 'Partager par e-mail':
-        const selectedFiles = [...this.selectedFiles].map(index => this.files[index]);
-        const linkPromises = selectedFiles.map(file => lastValueFrom(this.api.getLink(file.filename)));
+      });
+    });
+  }
 
-        Promise.all(linkPromises).then(links => {
-          const mailtoLinks = links.map(link => `- ${encodeURIComponent(link)}`).join('%0A%0A');
-          const mailtoLink = `mailto:?subject=Partage de fichier&body=Bonjour,%0A%0AVeuillez trouver ci-joint les liens vers les fichiers :%0A${mailtoLinks}`;
-          window.location.href = mailtoLink;
-        });
-        break;
+  onDownload(): void {
+    for (let index of this.selectedFiles) {
+      this.api.getFileData(this.files[index].filename).subscribe({
+        next: blob => {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = this.files[index].filename;
+          a.click();
+          URL.revokeObjectURL(url);
+        }
+      });
     }
+  }
+
+  onShare(): void {
+    const selectedFiles = [...this.selectedFiles].map(index => this.files[index]);
+    const linkPromises = selectedFiles.map(file => lastValueFrom(this.api.getLink(file.filename)));
+
+    Promise.all(linkPromises).then(links => {
+      const mailtoLinks = links.map(link => `- ${encodeURIComponent(link)}`).join('%0A%0A');
+      const mailtoLink = `mailto:?subject=Partage de fichier&body=Bonjour,%0A%0AVeuillez trouver ci-joint les liens vers les fichiers :%0A${mailtoLinks}`;
+      window.location.href = mailtoLink;
+    });
   }
 
   fileClicked(index: number): void {

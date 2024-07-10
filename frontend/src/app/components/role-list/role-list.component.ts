@@ -8,13 +8,14 @@ import { RoleApiService } from '../../services/role-api.service';
 import { SelectComponent } from '../../shared/components/form/select/select.component';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
+import { PermissionDirective } from '../../shared/directives/permission.directive';
 
 @Component({
   selector: 'app-role-list',
   standalone: true,
   templateUrl: './role-list.component.html',
   styleUrl: './role-list.component.css',
-  imports: [TableComponent, PageSelectorComponent, IconButtonComponent, IconTextButtonComponent, SelectComponent]
+  imports: [TableComponent, PageSelectorComponent, IconButtonComponent, IconTextButtonComponent, SelectComponent, PermissionDirective]
 })
 export class RoleListComponent implements OnInit {
   selectedRoles: Set<number> = new Set<number>();

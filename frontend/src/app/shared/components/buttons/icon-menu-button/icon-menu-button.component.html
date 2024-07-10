@@ -1,16 +1,11 @@
 <div>
-    <button [class]="color" [disabled]="disabled" (click)="openMenu()">
-        <img [class]="color" [src]="'icons/' + ((color == 'blue') ? 'white/' : 'blue/') + icon + '.svg'" />
+    <button [class]="color + ' icon'" [disabled]="disabled" (click)="openMenu()">
+        <img [class]="color +' icon'" [src]="'icons/' + ((color == 'blue') ? 'white/' : 'blue/') + icon + '.svg'" />
     </button>
 
     @if (menuOpened) {
-    <div class="menu">
-        @for (button of buttonsLabels; track $index) {
-        <button class="white" (click)="onMenuButtonClicked($index)">
-            <img [src]="getIconPath($index)" />
-            <span>{{button}}</span>
-        </button>
-        }
+    <div class="menu" (click)="openMenu()">
+        <ng-content class="intern"></ng-content>
     </div>
     }
 </div>

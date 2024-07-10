@@ -59,22 +59,22 @@ public class FileFilterSpecification implements Specification<FileHeader> {
         }
 
         switch (category) {
-            case "image":
+            case "images":
                 predicates.add(criteriaBuilder.or(Arrays.stream(imageTypes)
                         .map(type -> criteriaBuilder.like(root.get("type"), type))
                         .toArray(Predicate[]::new)));
                 break;
-            case "video":
+            case "videos":
                 predicates.add(criteriaBuilder.or(Arrays.stream(videoTypes)
                         .map(type -> criteriaBuilder.like(root.get("type"), type))
                         .toArray(Predicate[]::new)));
                 break;
-            case "picto":
+            case "pictos":
                 predicates.add(criteriaBuilder.or(Arrays.stream(pictoTypes)
                         .map(type -> criteriaBuilder.like(root.get("type"), type))
                         .toArray(Predicate[]::new)));
                 break;
-            case "doc":
+            case "docs":
                 predicates.add(criteriaBuilder.not(criteriaBuilder.or(
                         Arrays.stream(imageTypes)
                                 .map(type -> criteriaBuilder.like(root.get("type"), type))

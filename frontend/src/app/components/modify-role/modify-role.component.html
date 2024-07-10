@@ -11,12 +11,12 @@
     
     <div class="actions">
         @if (mode == 'consult') {
-        <app-icon-text-button color="white" title="Supprimer le rôle" icon="delete"
+        <app-icon-text-button permission="role_delete" color="white" title="Supprimer le rôle" icon="delete"
             (click)="deleteRole()"></app-icon-text-button>
-        <app-icon-text-button title="Modifier le rôle" icon="modify" (click)="modify()"></app-icon-text-button>
+        <app-icon-text-button permission="role_modify" title="Modifier le rôle" icon="modify" (click)="modify()"></app-icon-text-button>
         } @else {
         <app-icon-text-button color="white" title="Annuler" icon="close" (click)="cancel()"></app-icon-text-button>
-        <app-icon-text-button title="Supprimer le rôle" icon="delete" (click)="deleteRole()"></app-icon-text-button>
+        <app-icon-text-button permission="role_delete" title="Supprimer le rôle" icon="delete" (click)="deleteRole()"></app-icon-text-button>
         <app-icon-text-button title="Enregistrer" icon="check" (click)="save()"></app-icon-text-button>
         }
     </div>

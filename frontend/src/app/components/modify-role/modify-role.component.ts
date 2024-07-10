@@ -8,13 +8,14 @@ import { ToggleButtonComponent } from "../../shared/components/buttons/toggle-bu
 import { LongInputComponent } from "../../shared/components/form/long-input/long-input.component";
 import { PermissionsTreeComponent } from "../permissions-tree/permissions-tree.component";
 import { Role } from '../../models/Role';
+import { PermissionDirective } from '../../shared/directives/permission.directive';
 
 @Component({
   selector: 'app-modify-role',
   standalone: true,
   templateUrl: './modify-role.component.html',
   styleUrl: './modify-role.component.css',
-  imports: [IconTextButtonComponent, InputComponent, ToggleButtonComponent, LongInputComponent, PermissionsTreeComponent, RouterModule]
+  imports: [IconTextButtonComponent, InputComponent, ToggleButtonComponent, LongInputComponent, PermissionsTreeComponent, RouterModule, PermissionDirective]
 })
 export class ModifyRoleComponent implements OnInit {
 

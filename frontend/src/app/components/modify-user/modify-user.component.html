@@ -11,9 +11,9 @@
 
     <div class="actions">
         @if (mode == 'consult') {
-        <app-icon-text-button color="white" title="Supprimer le profil" icon="delete"
+        <app-icon-text-button permission="user_delete" color="white" title="Supprimer le profil" icon="delete"
             (click)="deleteUser()"></app-icon-text-button>
-        <app-icon-text-button title="Modifier le profil" icon="modify" (click)="modify()"></app-icon-text-button>
+        <app-icon-text-button permission="user_modify" title="Modifier le profil" icon="modify" (click)="modify()"></app-icon-text-button>
         } @else {
         <app-icon-text-button color="white" title="Annuler" icon="close" (click)="cancel()"></app-icon-text-button>
         <app-icon-text-button title="Enregistrer" icon="check" (click)="save()"></app-icon-text-button>

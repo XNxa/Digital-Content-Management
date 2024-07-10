@@ -11,28 +11,9 @@ import { ButtonIcon } from '../icon-button-type';
 export class IconMenuButtonComponent {
   @Input() icon!: ButtonIcon;
   @Input() disabled = false;
-  @Input() color: 'blue' | 'white' | 'clearblue' = 'blue';
-
-  @Input() buttonsLabels: string[] = [];
-  @Input() buttonsIcons: ButtonIcon[] = [];
-
-  @Output() click: EventEmitter<string> = new EventEmitter<string>();
+  @Input() color: 'blue' | 'white' | 'clearblue' = 'white';
 
   menuOpened: boolean = false;
-
-  getIconPath(index: number): string {
-    return 'icons/' + ((this.color == 'blue') ? 'white/' : 'blue/') + this.buttonsIcons[index] + '.svg';
-  }
-
-  handleClick(event: Event): void {
-    event.stopPropagation();
-    this.click.emit();
-  }
-
-  onMenuButtonClicked(index: number): void {
-    this.click.emit(this.buttonsLabels[index]);
-    this.menuOpened = false;
-  }
 
   openMenu(): void {
     this.menuOpened = !this.menuOpened;

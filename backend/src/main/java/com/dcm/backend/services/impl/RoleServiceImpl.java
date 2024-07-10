@@ -81,7 +81,7 @@ public class RoleServiceImpl implements RoleService {
                 .filter(roleRepresentation -> roleDTO.getPermissions()
                         .contains(roleRepresentation.getName()))
                 .toList();
-        
+
         List<RoleRepresentation> rolesToRemove =
                 keycloak.realm(keycloakProperties.getRealm())
                         .groups()

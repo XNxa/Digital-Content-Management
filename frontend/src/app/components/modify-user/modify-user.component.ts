@@ -9,11 +9,12 @@ import { RoleApiService } from '../../services/role-api.service';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { User } from '../../models/User';
 import { SelectComponent } from "../../shared/components/form/select/select.component";
+import { PermissionDirective } from '../../shared/directives/permission.directive';
 
 @Component({
   selector: 'app-modify-user',
   standalone: true,
-  imports: [InputComponent, ToggleButtonComponent, LongInputComponent, IconTextButtonComponent, RouterModule, SelectComponent],
+  imports: [InputComponent, ToggleButtonComponent, LongInputComponent, IconTextButtonComponent, RouterModule, SelectComponent, PermissionDirective],
   templateUrl: './modify-user.component.html',
   styleUrl: './modify-user.component.css'
 })

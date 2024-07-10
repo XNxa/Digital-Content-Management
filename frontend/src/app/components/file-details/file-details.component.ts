@@ -10,16 +10,23 @@ import { Status } from '../../enums/status';
 import { StatusChipComponent } from '../../shared/components/status-chip/status-chip.component';
 import { ZipListComponent } from '../../shared/components/zip-list/zip-list.component';
 import { IconTextButtonComponent } from '../../shared/components/buttons/icon-text-button/icon-text-button.component';
+import { getNameFromPath } from '../../models/Tabs';
+import { PermissionDirective } from '../../shared/directives/permission.directive';
 
 @Component({
   selector: 'app-file-details',
   standalone: true,
-  imports: [ZoomButtonComponent, IconButtonComponent, IconTextButtonComponent, ModifyDialogComponent, StatusChipComponent, ZipListComponent],
+  imports: [ZoomButtonComponent, IconButtonComponent, IconTextButtonComponent, ModifyDialogComponent, StatusChipComponent, ZipListComponent, PermissionDirective],
   templateUrl: './file-details.component.html',
   styleUrl: './file-details.component.css',
 })
 export class FileDetailsComponent implements OnChanges {
   @Input() file!: FileHeader;
+
+  @Input() folder!: string;
+  @Input() typeFolder!: string;
+  displayFolder!: string;
+  displayTypeFolder!: string;
 
   @Output() closeView: EventEmitter<void> = new EventEmitter<void>();
 
@@ -63,6 +70,8 @@ export class FileDetailsComponent implements OnChanges {
     });
 
     this.type = (MimeTypes.extension(this.file?.type!) || 'unknown').toUpperCase();
+    this.displayFolder = getNameFromPath(this.folder);
+    this.displayTypeFolder = getNameFromPath(this.typeFolder);
   }
 
   openDialog(): void {

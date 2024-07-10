@@ -12,6 +12,7 @@ import { User } from '../../models/User';
 import { FormControl } from '@angular/forms';
 import { AddUserDialogComponent } from '../add-user-dialog/add-user-dialog.component';
 import { Router } from '@angular/router';
+import { PermissionDirective } from '../../shared/directives/permission.directive';
 
 @Component({
     selector: 'app-user-list',
@@ -26,7 +27,8 @@ import { Router } from '@angular/router';
         InputComponent,
         TableComponent,
         PageSelectorComponent,
-        AddUserDialogComponent
+        AddUserDialogComponent,
+        PermissionDirective
     ]
 })
 export class UserListComponent implements OnInit {

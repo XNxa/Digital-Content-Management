@@ -1,4 +1,4 @@
-button {
+:host ::ng-deep button {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -8,46 +8,46 @@ button {
   border-width: 0;
 }
 
-button.blue {
+:host ::ng-deep button.blue {
   /* Bleu électrique */
   background: var(--primary);
   color: white;
 }
 
-button.blue:hover {
+:host ::ng-deep button.blue:hover {
   background: var(--primary);
   box-shadow: 1px 1px var(--primary-accent);
 }
 
-button.blue:active {
+:host ::ng-deep button.blue:active {
   background: var(--primary-accent);
 }
 
-button.white {
+:host ::ng-deep button.white {
   background: white;
   color: var(--text-color);
 }
 
-button.white:hover {
+:host ::ng-deep button.white:hover {
   background: var(--secondary);
   box-shadow: 1px 1px var(--secondary-accent);
 }
 
-button.white:active {
+:host ::ng-deep button.white:active {
   background: var(--secondary-accent);
 }
 
-button.clearblue {
+:host ::ng-deep button.clearblue {
   background: var(--secondary);
   color: var(--text-color);
 }
 
-button.clearblue:hover {
+:host ::ng-deep button.clearblue:hover {
   background: white;
   box-shadow: 1px 1px gray;
 }
 
-button.clearblue:active {
+:host ::ng-deep button.clearblue:active {
   background: gray;
 }
 
@@ -67,4 +67,14 @@ button.clearblue:active {
       margin-right: 5px;
     }
   }
+}
+
+:host ::ng-deep button.external {
+  justify-content: flex-start;
+  width: 100%;
+  border-radius: 0px;
+}
+
+:host ::ng-deep img.external {
+  margin-right: 5px;
 }
