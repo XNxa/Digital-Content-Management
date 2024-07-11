@@ -140,8 +140,9 @@ public class FileServiceTest {
 
     @Test
     void testCount() {
-        when(fileRepository.count()).thenReturn(10L);
-        long count = fileService.count(any());
+        when(fileRepository.count(any(Specification.class))).thenReturn(10L);
+        long count =
+                fileService.count(new FileFilterDTO(0, 0, "", "", List.of(), List.of()));
         assertEquals(10L, count);
     }
 
@@ -285,13 +286,11 @@ public class FileServiceTest {
 
         InputStream fakeStream = new ByteArrayInputStream("thumbnail content".getBytes());
 
-        GetObjectArgs getObjectArgs = GetObjectArgs.builder()
-                .bucket("test")
-                .object(thumbnailName)
-                .build();
+        GetObjectArgs getObjectArgs =
+                GetObjectArgs.builder().bucket("test").object(thumbnailName).build();
 
-        GetObjectResponse getObjectResponse = new GetObjectResponse(null, "test",
-                null, thumbnailName, fakeStream);
+        GetObjectResponse getObjectResponse =
+                new GetObjectResponse(null, "test", null, thumbnailName, fakeStream);
 
         when(fileRepository.findByFilename(filename)).thenReturn(
                 Optional.of(existingFileHeader));
@@ -321,9 +320,10 @@ public class FileServiceTest {
     void testGetThumbnailNoThumbnail() {
         // Setup
         String filename = "fileWithoutThumbnail.txt";
-        FileHeader fileWithoutThumbnail = new FileHeader(filename, "Test file", "1",
-                Status.PUBLIE, LocalDate.now().toString(),
-                "text/plain", 123L, new LinkedList<>());
+        FileHeader fileWithoutThumbnail =
+                new FileHeader(filename, "Test file", "1", Status.PUBLIE,
+                        LocalDate.now().toString(), "text/plain", 123L,
+                        new LinkedList<>());
 
         when(fileRepository.findByFilename(filename)).thenReturn(
                 Optional.of(fileWithoutThumbnail));
@@ -337,9 +337,10 @@ public class FileServiceTest {
     @Test
     void testGetFileTypeExists() throws FileNotFoundException {
         String filename = "existingFile.txt";
-        FileHeader existingFileHeader = new FileHeader(filename, "Test file", "1",
-                Status.PUBLIE, LocalDate.now().toString(),
-                "text/plain", 123L, new LinkedList<>());
+        FileHeader existingFileHeader =
+                new FileHeader(filename, "Test file", "1", Status.PUBLIE,
+                        LocalDate.now().toString(), "text/plain", 123L,
+                        new LinkedList<>());
 
         when(fileRepository.findByFilename(filename)).thenReturn(
                 Optional.of(existingFileHeader));
@@ -394,10 +395,10 @@ public class FileServiceTest {
     @Test
     void testDuplicateFileSuccess() throws Exception {
         String filename = "originalFile.txt";
-        FileHeader originalFileHeader = new FileHeader(filename, "Original file", "1",
-                Status.PUBLIE, LocalDate.now().toString(),
-                "text/plain", 123L,
-                List.of(new Keyword("keyword1")));
+        FileHeader originalFileHeader =
+                new FileHeader(filename, "Original file", "1", Status.PUBLIE,
+                        LocalDate.now().toString(), "text/plain", 123L,
+                        List.of(new Keyword("keyword1")));
 
         when(fileRepository.findByFilename(filename)).thenReturn(
                 Optional.of(originalFileHeader));
@@ -419,10 +420,10 @@ public class FileServiceTest {
     @Test
     void testDuplicateFileSuccessImage() throws Exception {
         String filename = "originalFile.jpg";
-        FileHeader originalFileHeader = new FileHeader(filename, "Original file", "1",
-                Status.PUBLIE, LocalDate.now().toString(),
-                "image/jpeg", 123L,
-                List.of(new Keyword("keyword1")));
+        FileHeader originalFileHeader =
+                new FileHeader(filename, "Original file", "1", Status.PUBLIE,
+                        LocalDate.now().toString(), "image/jpeg", 123L,
+                        List.of(new Keyword("keyword1")));
         originalFileHeader.setThumbnailName("thumbnail/originalFile.jpg");
 
         when(fileRepository.findByFilename(filename)).thenReturn(
@@ -458,10 +459,10 @@ public class FileServiceTest {
     @Test
     void testDuplicateThrowsMinioException() throws Exception {
         String filename = "originalFile.txt";
-        FileHeader originalFileHeader = new FileHeader(filename, "Original file", "1",
-                Status.PUBLIE, LocalDate.now().toString(),
-                "text/plain", 123L,
-                List.of(new Keyword("keyword1")));
+        FileHeader originalFileHeader =
+                new FileHeader(filename, "Original file", "1", Status.PUBLIE,
+                        LocalDate.now().toString(), "text/plain", 123L,
+                        List.of(new Keyword("keyword1")));
         originalFileHeader.setThumbnailName("thumbnail/originalFile.jpg");
 
         when(fileRepository.findByFilename(filename)).thenReturn(
@@ -478,9 +479,8 @@ public class FileServiceTest {
     void testUpdateFileSuccess() throws Exception {
         String filename = "existingFile.txt";
         FileHeader existingFileHeader =
-                new FileHeader(filename, "Original description", "1",
-                        Status.PUBLIE, LocalDate.now().toString(),
-                        "text/plain", 123L,
+                new FileHeader(filename, "Original description", "1", Status.PUBLIE,
+                        LocalDate.now().toString(), "text/plain", 123L,
                         List.of(new Keyword("keyword1")));
         FileHeaderDTO metadata = FileHeaderDTO.builder()
                 .description("Updated description")
@@ -537,9 +537,8 @@ public class FileServiceTest {
     void testUpdateThrowsMinioException() throws Exception {
         String filename = "existingFile.txt";
         FileHeader existingFileHeader =
-                new FileHeader(filename, "Original description", "1",
-                        Status.PUBLIE, LocalDate.now().toString(),
-                        "text/plain", 123L,
+                new FileHeader(filename, "Original description", "1", Status.PUBLIE,
+                        LocalDate.now().toString(), "text/plain", 123L,
                         List.of(new Keyword("keyword1")));
         FileHeaderDTO metadata = FileHeaderDTO.builder()
                 .description("Updated description")

@@ -4,6 +4,12 @@ spring:
     url: 'jdbc:h2:mem:test'
     username: 'sa'
     password: 'sa'
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/dcm
+          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
 
 minio:
   endpoint: http://localhost:9000
