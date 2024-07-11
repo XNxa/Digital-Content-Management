@@ -7,6 +7,7 @@ public final class ErrorMessages {
     public static final String NO_THUMBNAIL_CODE = "NO.THUMBNAIL";
     public static final String BAD_REQUEST_CODE = "BAD.REQUEST";
 
+    public static final String CONSTRAINT_VIOLATION_CODE = "CONSTRAINT.VIOLATION";
     public static final String REQUIERED_FIELD_MISSING_CODE = "REQUIERED.FIELD.MISSING";
     public static final String EXCEED_MAX_SIZE_CODE = "EXCEED.MAX.SIZE";
     public static final String INVALID_MIME_TYPE_CODE = "INVALID.MIME.TYPE";

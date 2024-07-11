@@ -4,6 +4,8 @@ import com.dcm.backend.exceptions.FileNotFoundException;
 import com.dcm.backend.exceptions.NoThumbnailException;
 import com.dcm.backend.utils.ErrorMessages;
 import io.minio.errors.MinioException;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 @ControllerAdvice
 public class ExceptionHandlers {
@@ -49,6 +52,17 @@ public class ExceptionHandlers {
     public ResponseError handleIllegalArgumentException(IllegalArgumentException ex) {
         return new ResponseError(ErrorMessages.BAD_REQUEST_CODE,
                 ex.getMessage());
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ResponseError handleConstraintViolationException(ConstraintViolationException ex) {
+        List<String> errors = ex.getConstraintViolations().stream()
+                .map(ConstraintViolation::getMessage)
+                .toList();
+        return new ResponseError(ErrorMessages.CONSTRAINT_VIOLATION_CODE,
+                String.join(", ", errors));
     }
 
     @Data
