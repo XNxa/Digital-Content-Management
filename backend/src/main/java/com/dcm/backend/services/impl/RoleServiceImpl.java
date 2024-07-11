@@ -3,6 +3,8 @@ package com.dcm.backend.services.impl;
 import com.dcm.backend.dto.PermissionDTO;
 import com.dcm.backend.dto.RoleDTO;
 import com.dcm.backend.services.RoleService;
+import com.dcm.backend.utils.mappers.PermissionMapper;
+import com.dcm.backend.utils.mappers.RoleMapper;
 import ma.gov.mes.framework.keycloak.KeycloakProperties;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.idm.GroupRepresentation;
@@ -19,10 +21,16 @@ import java.util.Objects;
 public class RoleServiceImpl implements RoleService {
 
     @Autowired
-    Keycloak keycloak;
+    private Keycloak keycloak;
 
     @Autowired
-    KeycloakProperties keycloakProperties;
+    private KeycloakProperties keycloakProperties;
+
+    @Autowired
+    private RoleMapper roleMapper;
+
+    @Autowired
+    private PermissionMapper permissionMapper;
 
     @Override
     public Long countRoles() {
@@ -38,16 +46,7 @@ public class RoleServiceImpl implements RoleService {
                 .groups()
                 .groups("", firstResult, maxResults, false)
                 .stream()
-                .map(groupRepresentation -> {
-                    RoleDTO roleDTO = new RoleDTO();
-                    roleDTO.setName(groupRepresentation.getName());
-                    Map<String, List<String>> attr = groupRepresentation.getAttributes();
-                    roleDTO.setDescription(attr.get("description").get(0));
-                    roleDTO.setState(Boolean.parseBoolean(attr.get("state").get(0)));
-                    roleDTO.setPermissions(groupRepresentation.getRealmRoles());
-                    roleDTO.setId(groupRepresentation.getId());
-                    return roleDTO;
-                })
+                .map(roleMapper::toRoleDTO)
                 .toList();
     }
 
@@ -58,37 +57,85 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void updateRole(RoleDTO roleDTO) {
+        GroupRepresentation groupRepresentation = getGroupRepresentation(roleDTO.getId());
+        updateGroupRepresentation(groupRepresentation, roleDTO);
+        updateGroupRoles(groupRepresentation, roleDTO);
+        updateUserRoles(groupRepresentation, roleDTO.getName());
+    }
+
+    @Override
+    public void createRole(RoleDTO roleDTO) {
         GroupRepresentation groupRepresentation =
-                keycloak.realm(keycloakProperties.getRealm())
-                        .groups()
-                        .group(roleDTO.getId())
-                        .toRepresentation();
+                roleMapper.toGroupRepresentation(roleDTO);
+        keycloak.realm(keycloakProperties.getRealm()).groups().add(groupRepresentation);
 
+        GroupRepresentation group = getGroupByName(roleDTO.getName());
+        List<RoleRepresentation> roles = getRoleRepresentations(roleDTO.getPermissions());
+
+        keycloak.realm(keycloakProperties.getRealm())
+                .groups()
+                .group(group.getId())
+                .roles()
+                .realmLevel()
+                .add(roles);
+    }
+
+    @Override
+    public Collection<PermissionDTO> getPermissions() {
+        return keycloak.realm(keycloakProperties.getRealm())
+                .roles()
+                .list(false)
+                .stream()
+                .map(permissionMapper::toPermissionDTO)
+                .filter(Objects::nonNull)
+                .sorted(this::comparePermissions)
+                .toList();
+    }
+
+    @Override
+    public RoleDTO getRole(String id) {
+        GroupRepresentation group = keycloak.realm(keycloakProperties.getRealm())
+                .groups()
+                .group(id)
+                .toRepresentation();
+
+        return roleMapper.toRoleDTO(group);
+    }
+
+    @Override
+    public Collection<String> getActiveRoles() {
+        return keycloak.realm(keycloakProperties.getRealm())
+                .groups()
+                .groups("", 0, Math.toIntExact(this.countRoles()), false)
+                .stream()
+                .filter(this::isGroupActive)
+                .map(GroupRepresentation::getName)
+                .toList();
+    }
+
+    private GroupRepresentation getGroupRepresentation(String id) {
+        return keycloak.realm(keycloakProperties.getRealm())
+                .groups()
+                .group(id)
+                .toRepresentation();
+    }
+
+    private void updateGroupRepresentation(GroupRepresentation groupRepresentation, RoleDTO roleDTO) {
         groupRepresentation.setName(roleDTO.getName());
-        groupRepresentation.setAttributes(
-                Map.of("description", List.of(roleDTO.getDescription()), "state",
-                        List.of(String.valueOf(roleDTO.isState()))));
-
+        groupRepresentation.setAttributes(Map.of(
+                "description", List.of(roleDTO.getDescription()),
+                "state", List.of(String.valueOf(roleDTO.isState()))
+        ));
         keycloak.realm(keycloakProperties.getRealm())
                 .groups()
                 .group(groupRepresentation.getId())
                 .update(groupRepresentation);
+    }
 
-        List<RoleRepresentation> roles = keycloak.realm(keycloakProperties.getRealm())
-                .roles()
-                .list()
-                .stream()
-                .filter(roleRepresentation -> roleDTO.getPermissions()
-                        .contains(roleRepresentation.getName()))
-                .toList();
-
+    private void updateGroupRoles(GroupRepresentation groupRepresentation, RoleDTO roleDTO) {
+        List<RoleRepresentation> roles = getRoleRepresentations(roleDTO.getPermissions());
         List<RoleRepresentation> rolesToRemove =
-                keycloak.realm(keycloakProperties.getRealm())
-                        .groups()
-                        .group(groupRepresentation.getId())
-                        .roles()
-                        .realmLevel()
-                        .listAll();
+                getCurrentGroupRoles(groupRepresentation.getId());
 
         keycloak.realm(keycloakProperties.getRealm())
                 .groups()
@@ -103,131 +150,59 @@ public class RoleServiceImpl implements RoleService {
                 .roles()
                 .realmLevel()
                 .add(roles);
+    }
 
+    private void updateUserRoles(GroupRepresentation groupRepresentation, String roleName) {
         keycloak.realm(keycloakProperties.getRealm())
                 .groups()
                 .group(groupRepresentation.getId())
                 .members()
-                .forEach(userRepresentation -> {
-                    userRepresentation.getAttributes()
-                            .put("role", List.of(roleDTO.getName()));
+                .forEach(user -> {
+                    user.getAttributes().put("role", List.of(roleName));
                     keycloak.realm(keycloakProperties.getRealm())
                             .users()
-                            .get(userRepresentation.getId())
-                            .update(userRepresentation);
+                            .get(user.getId())
+                            .update(user);
                 });
     }
 
-    @Override
-    public void createRole(RoleDTO roleDTO) {
-        GroupRepresentation groupRepresentation = new GroupRepresentation();
-        groupRepresentation.setName(roleDTO.getName());
-        groupRepresentation.setAttributes(
-                Map.of("description", List.of(roleDTO.getDescription()), "state",
-                        List.of(String.valueOf(roleDTO.isState()))));
-
-        keycloak.realm(keycloakProperties.getRealm()).groups().add(groupRepresentation);
-
-        GroupRepresentation g = keycloak.realm(keycloakProperties.getRealm())
+    private GroupRepresentation getGroupByName(String name) {
+        return keycloak.realm(keycloakProperties.getRealm())
                 .groups()
                 .groups()
                 .stream()
-                .filter(group -> group.getName().equals(roleDTO.getName()))
+                .filter(group -> group.getName().equals(name))
                 .findFirst()
-                .get();
+                .orElseThrow();
+    }
 
-        List<RoleRepresentation> roles = keycloak.realm(keycloakProperties.getRealm())
+    private List<RoleRepresentation> getRoleRepresentations(Collection<String> permissions) {
+        return keycloak.realm(keycloakProperties.getRealm())
                 .roles()
                 .list()
                 .stream()
-                .filter(roleRepresentation -> roleDTO.getPermissions()
-                        .contains(roleRepresentation.getName()))
+                .filter(role -> permissions.contains(role.getName()))
                 .toList();
+    }
 
-        keycloak.realm(keycloakProperties.getRealm())
+    private List<RoleRepresentation> getCurrentGroupRoles(String groupId) {
+        return keycloak.realm(keycloakProperties.getRealm())
                 .groups()
-                .group(g.getId())
+                .group(groupId)
                 .roles()
                 .realmLevel()
-                .add(roles);
+                .listAll();
     }
 
-    @Override
-    public Collection<PermissionDTO> getPermissions() {
-        return keycloak.realm(keycloakProperties.getRealm())
-                .roles()
-                .list(false)
-                .stream()
-                .map(roleRepresentation -> {
-                    PermissionDTO permissionDTO = new PermissionDTO();
-                    permissionDTO.setPermission(roleRepresentation.getName());
-                    if (roleRepresentation.getAttributes() == null) {
-                        return permissionDTO;
-                    }
-                    List<String> attr =
-                            roleRepresentation.getAttributes().get("DisplayName");
-                    if (attr == null) {
-                        // ignore roles without DisplayName
-                        return null;
-                    }
-                    if (attr.size() == 4) {
-                        permissionDTO.setFolder(attr.get(0));
-                        permissionDTO.setSubfolder(attr.get(1));
-                        permissionDTO.setName(attr.get(2));
-                        permissionDTO.setPosition(Integer.parseInt(attr.get(3)));
-                    } else {
-                        assert attr.size() == 3;
-                        permissionDTO.setFolder(attr.get(0));
-                        permissionDTO.setSubfolder("");
-                        permissionDTO.setName(attr.get(1));
-                        permissionDTO.setPosition(Integer.parseInt(attr.get(2)));
-                    }
-                    return permissionDTO;
-                })
-                .filter(Objects::nonNull)
-                .sorted((p1, p2) -> {
-                    if (p1.getPosition() == p2.getPosition()) {
-                        return 0;
-                    }
-                    return p1.getPosition() < p2.getPosition() ? -1 : 1;
-                })
-                .toList();
+    private int comparePermissions(PermissionDTO p1, PermissionDTO p2) {
+        return Integer.compare(p1.getPosition(), p2.getPosition());
     }
 
-    @Override
-    public RoleDTO getRole(String id) {
-        GroupRepresentation g = keycloak.realm(keycloakProperties.getRealm())
-                .groups()
-                .group(id)
-                .toRepresentation();
-
-        RoleDTO roleDTO = new RoleDTO();
-        roleDTO.setName(g.getName());
-        roleDTO.setDescription(g.getAttributes().get("description").get(0));
-        roleDTO.setState(Boolean.parseBoolean(g.getAttributes().get("state").get(0)));
-        roleDTO.setPermissions(g.getRealmRoles());
-        roleDTO.setId(g.getId());
-        return roleDTO;
-    }
-
-    @Override
-    public Collection<String> getActiveRoles() {
-        return keycloak.realm(keycloakProperties.getRealm())
-                .groups()
-                .groups("", 0, Math.toIntExact(this.countRoles()), false)
-                .stream()
-                .filter(groupRepresentation -> {
-                    if (groupRepresentation.getAttributes() == null) {
-                        return false;
-                    }
-                    List<String> attr = groupRepresentation.getAttributes().get("state");
-                    if (attr == null) {
-                        return false;
-                    }
-                    return Boolean.parseBoolean(attr.get(0));
-                })
-                .map(GroupRepresentation::getName)
-                .toList();
-
+    private boolean isGroupActive(GroupRepresentation group) {
+        if (group.getAttributes() == null) {
+            return false;
+        }
+        List<String> attr = group.getAttributes().get("state");
+        return attr != null && Boolean.parseBoolean(attr.get(0));
     }
 }
