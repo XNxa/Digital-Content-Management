@@ -76,8 +76,13 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public long count() {
-        return fileRepository.count();
+    public long count(FileFilterDTO filter) {
+        FileFilterSpecification spec =
+                new FileFilterSpecification(filter.getFilename(),
+                        filter.getKeywords().stream().map(Keyword::new).toList(),
+                        filter.getStatus(), filter.getCategory());
+
+        return fileRepository.count(spec);
     }
 
     @Override

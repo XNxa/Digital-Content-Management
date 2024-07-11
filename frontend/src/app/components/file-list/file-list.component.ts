@@ -172,9 +172,12 @@ export class FileListComponent implements OnInit {
       this.keywords = keywords;
     });
 
-    this.api.getNumberOfElement().subscribe(n => {
-      this.numberOfElements = n;
-    });
+    this.api.getNumberOfElement(this.folder + '/' + this.filenameSearched.value,
+      getCategoryFromPath(this.typeFolder),
+      (this.keywordsSearched.value || undefined),
+      (this.statusSearched.value || []).map(s => Status.fromString(s))).subscribe(n => {
+        this.numberOfElements = n;
+      });
   }
 
   onDeleteClicked() {
@@ -183,7 +186,10 @@ export class FileListComponent implements OnInit {
         this.files = this.files.filter((_, index) => !this.selectedFiles.has(index));
         this.selectedFiles.clear();
         this.snackbar.show('Fichiers supprimés avec succès');
-        this.api.getNumberOfElement().subscribe(n => {
+        this.api.getNumberOfElement(this.folder + '/' + this.filenameSearched.value,
+        getCategoryFromPath(this.typeFolder),
+        (this.keywordsSearched.value || undefined),
+        (this.statusSearched.value || []).map(s => Status.fromString(s))).subscribe(n => {
           this.numberOfElements = n;
         });
         this.api.getKeywords().subscribe(keywords => {

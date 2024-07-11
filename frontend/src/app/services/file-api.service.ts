@@ -23,8 +23,16 @@ export class FileApiService {
     return this.httpClient.post<void>(`${this.API}/upload`, formData);
   }
 
-  public getNumberOfElement(): Observable<number> {
-    return this.httpClient.get<number>(`${this.API}/count`);
+  public getNumberOfElement(filename: string, type: FileCategory, keywords?: string[], status?: Status[]): Observable<number> {
+    const filter = {
+      page: '0',
+      size: '0',
+      filename: filename,
+      keywords: (keywords || []),
+      status: (status || []),
+      category: type,
+    };
+    return this.httpClient.post<number>(`${this.API}/count`, filter);
   }
 
   public getPages(page: number, size: number, filename: string, type: FileCategory, keywords?: string[], status?: Status[]): Observable<FileHeader[]> {

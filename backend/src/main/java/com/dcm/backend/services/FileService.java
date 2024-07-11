@@ -29,11 +29,12 @@ public interface FileService {
             XmlParserException, InternalException;
 
     /**
-     * Returns the number of files in the database
+     * Returns the number of files in the database that match the filter
      *
+     * @param  filter Filter to apply
      * @return Number of files
      */
-    long count();
+    long count(FileFilterDTO filter);
 
     /**
      * Returns a page of files headers

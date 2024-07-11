@@ -8,8 +8,8 @@ import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core
   styleUrl: './page-selector.component.css'
 })
 export class PageSelectorComponent implements OnChanges{
-  @Input() totalItems!: number;
-  @Input() itemsPerPage!: number;
+  @Input() totalItems: number = 0;
+  @Input() itemsPerPage: number = 10;
   @Output() pageChange = new EventEmitter<number>();
 
   currentPage: number = 1;

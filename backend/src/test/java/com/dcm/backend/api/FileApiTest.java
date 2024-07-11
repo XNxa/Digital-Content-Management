@@ -78,7 +78,7 @@ public class FileApiTest {
 
     @Test
     public void testGetNumberOfElements() throws Exception {
-        when(fileService.count()).thenReturn(10L);
+        when(fileService.count(any())).thenReturn(10L);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/count"))
                 .andExpect(status().isOk())

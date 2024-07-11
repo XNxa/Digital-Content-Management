@@ -141,7 +141,7 @@ public class FileServiceTest {
     @Test
     void testCount() {
         when(fileRepository.count()).thenReturn(10L);
-        long count = fileService.count();
+        long count = fileService.count(any());
         assertEquals(10L, count);
     }
 

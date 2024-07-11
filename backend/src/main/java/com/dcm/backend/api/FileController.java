@@ -15,7 +15,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -38,16 +37,14 @@ public class FileController {
 
     @SneakyThrows
     @PostMapping("/upload")
-    @PreAuthorize("hasRole(@util.buildPermission(#metadata, " +
-            "'import'))")
-    public void uploadFile(@RequestPart("file") MultipartFile file,
-                           @RequestPart("metadata") @Valid FileHeaderDTO metadata) {
+    @PreAuthorize("hasRole(@util.buildPermission(#metadata, " + "'import'))")
+    public void uploadFile(@RequestPart("file") MultipartFile file, @RequestPart("metadata") @Valid FileHeaderDTO metadata) {
         fs.upload(file.getInputStream(), metadata);
     }
 
-    @GetMapping("/count")
-    public long getNumberOfElements() {
-        return fs.count();
+    @PostMapping("/count")
+    public long getNumberOfElements(@RequestBody @Valid FileFilterDTO filter) {
+        return fs.count(filter);
     }
 
     @PostMapping("/files")
@@ -55,9 +52,7 @@ public class FileController {
         Page<FileHeader> p = fs.getPage(filter);
         p.getTotalPages();
 
-        return p.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
+        return p.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
     @SneakyThrows
@@ -81,35 +76,29 @@ public class FileController {
 
     @SneakyThrows
     @DeleteMapping("/delete")
-    @PreAuthorize("hasRole(@util.buildPermission(#filenames[0], " +
-            "'delete'))")
+    @PreAuthorize("hasRole(@util.buildPermission(#filenames[0], " + "'delete'))")
     public void deleteFile(@RequestParam("filename") String[] filenames) {
         fs.delete(filenames);
     }
 
     @SneakyThrows
     @GetMapping("/link")
-    @PreAuthorize("hasRole(@util.buildPermission(#filename, " +
-            "'share')) or hasRole(@util.buildPermission(#filename, " +
-            "'copy_link'))")
+    @PreAuthorize("hasRole(@util.buildPermission(#filename, " + "'share')) or hasRole(@util.buildPermission(#filename, " + "'copy_link'))")
     public String getLink(@RequestParam("filename") String filename) {
         return fs.getLink(filename);
     }
 
     @SneakyThrows
     @PostMapping("/duplicate")
-    @PreAuthorize("hasRole(@util.buildPermission(#filename, " +
-            "'duplicate'))")
+    @PreAuthorize("hasRole(@util.buildPermission(#filename, " + "'duplicate'))")
     public void duplicateFile(@RequestParam("filename") String filename) {
         fs.duplicate(filename);
     }
 
     @SneakyThrows
     @PutMapping("/update")
-    @PreAuthorize("hasRole(@util.buildPermission(#filename, " +
-            "'modify'))")
-    public void updateFile(@RequestParam("filename") String filename,
-                           @RequestBody @Valid FileHeaderDTO metadata) {
+    @PreAuthorize("hasRole(@util.buildPermission(#filename, " + "'modify'))")
+    public void updateFile(@RequestParam("filename") String filename, @RequestBody @Valid FileHeaderDTO metadata) {
         fs.update(filename, metadata);
     }
 
