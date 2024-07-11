@@ -23,7 +23,7 @@ public class ExceptionHandlers {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     public ResponseError handleIOException(IOException ex) {
-        return new ResponseError(ErrorMessages.ERROR_MESSAGE_INTERNAL_SERVER_ERROR_CODE,
+        return new ResponseError(ErrorMessages.INTERNAL_SERVER_ERROR_CODE,
                 ex.getMessage());
     }
 
@@ -31,7 +31,7 @@ public class ExceptionHandlers {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     public ResponseError handleFileNotFoundException(FileNotFoundException ex) {
-        return new ResponseError(ErrorMessages.ERROR_MESSAGE_FILE_NOT_FOUND_CODE,
+        return new ResponseError(ErrorMessages.FILE_NOT_FOUND_CODE,
                 ex.getMessage());
     }
 
@@ -39,7 +39,7 @@ public class ExceptionHandlers {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     public ResponseError handleNoThumbnailException(NoThumbnailException ex) {
-        return new ResponseError(ErrorMessages.ERROR_MESSAGE_NO_THUMBNAIL_CODE,
+        return new ResponseError(ErrorMessages.NO_THUMBNAIL_CODE,
                 ex.getMessage());
     }
 
@@ -47,7 +47,7 @@ public class ExceptionHandlers {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public ResponseError handleIllegalArgumentException(IllegalArgumentException ex) {
-        return new ResponseError(ErrorMessages.ERROR_MESSAGE_BAD_REQUEST_CODE,
+        return new ResponseError(ErrorMessages.BAD_REQUEST_CODE,
                 ex.getMessage());
     }
 

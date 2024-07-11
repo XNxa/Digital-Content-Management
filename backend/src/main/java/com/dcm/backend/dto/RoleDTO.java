@@ -1,5 +1,7 @@
 package com.dcm.backend.dto;
 
+import com.dcm.backend.utils.ErrorMessages;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -11,17 +13,16 @@ public class RoleDTO {
 
     private String id;
 
-    @NotNull
-    @NotEmpty
+    @NotBlank(message = ErrorMessages.REQUIERED_FIELD_MISSING_CODE)
     private String name;
 
-    @NotNull
+    @NotNull(message = ErrorMessages.REQUIERED_FIELD_MISSING_CODE)
     private String description;
 
-    @NotNull
+    @NotNull(message = ErrorMessages.REQUIERED_FIELD_MISSING_CODE)
     private boolean state;
 
-    @NotNull
+    @NotNull(message = ErrorMessages.REQUIERED_FIELD_MISSING_CODE)
     private Collection<String> permissions;
 
 }

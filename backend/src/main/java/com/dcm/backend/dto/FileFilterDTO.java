@@ -1,6 +1,7 @@
 package com.dcm.backend.dto;
 
 import com.dcm.backend.enumeration.Status;
+import com.dcm.backend.utils.ErrorMessages;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -16,17 +17,17 @@ import java.util.List;
 @Builder
 public class FileFilterDTO {
 
-    @NotNull
+    @NotNull(message = ErrorMessages.REQUIERED_FIELD_MISSING_CODE)
     private int page;
 
-    @NotNull
+    @NotNull(message = ErrorMessages.REQUIERED_FIELD_MISSING_CODE)
     private int size;
 
-    @Size(max = 255)
+    @Size(max = 255,  message = ErrorMessages.EXCEED_MAX_SIZE_CODE)
     private String filename;
 
-    @Size(max = 255)
-    @NotNull
+    @Size(max = 255, message = ErrorMessages.EXCEED_MAX_SIZE_CODE)
+    @NotNull(message = ErrorMessages.REQUIERED_FIELD_MISSING_CODE)
     private String category;
 
     private List<String> keywords;
