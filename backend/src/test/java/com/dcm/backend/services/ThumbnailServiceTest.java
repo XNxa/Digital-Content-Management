@@ -1,5 +1,6 @@
 package com.dcm.backend.services;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -94,7 +95,7 @@ public class ThumbnailServiceTest {
         assertEquals(100, thumbnail.getHeight());
     }
 
-    private void testGenerateImageThumbnail(String format) throws IOException {
+    private void testGenerateImageThumbnail(@NotNull String format) throws IOException {
         BufferedImage originalImage =
                 new BufferedImage(200, 200, BufferedImage.TYPE_INT_RGB);
         ByteArrayOutputStream os = new ByteArrayOutputStream();

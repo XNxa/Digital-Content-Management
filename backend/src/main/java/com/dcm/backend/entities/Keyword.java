@@ -6,6 +6,7 @@ import jakarta.persistence.ManyToMany;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 
@@ -26,7 +27,7 @@ public class Keyword {
     }
 
     @SuppressWarnings("CopyConstructorMissesField")
-    public Keyword(Keyword keyword) {
+    public Keyword(@NotNull Keyword keyword) {
         this.name = keyword.getName();
     }
 }

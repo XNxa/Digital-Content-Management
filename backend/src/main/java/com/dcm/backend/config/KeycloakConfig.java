@@ -2,6 +2,7 @@ package com.dcm.backend.config;
 
 import ma.gov.mes.framework.keycloak.KeycloakProperties;
 import ma.gov.mes.framework.keycloak.jwt.JwtAuthConverter;
+import org.jetbrains.annotations.NotNull;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
@@ -23,11 +24,13 @@ public class KeycloakConfig {
                 .build();
     }
 
+    @NotNull
     @Bean
     public KeycloakProperties keycloakProperties() {
         return new KeycloakProperties();
     }
 
+    @NotNull
     @Bean
     public JwtAuthConverter jwtAuthConverter() {
         return new JwtAuthConverter(

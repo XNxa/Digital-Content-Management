@@ -1,6 +1,8 @@
 package com.dcm.backend.utils.mappers;
 
 import com.dcm.backend.dto.PermissionDTO;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.mapstruct.Mapper;
 
@@ -9,7 +11,8 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface PermissionMapper {
 
-    default PermissionDTO toPermissionDTO(RoleRepresentation roleRepresentation) {
+    @Nullable
+    default PermissionDTO toPermissionDTO(@NotNull RoleRepresentation roleRepresentation) {
         PermissionDTO permission = new PermissionDTO();
         permission.setPermission(roleRepresentation.getName());
 

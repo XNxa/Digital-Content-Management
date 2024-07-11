@@ -6,6 +6,7 @@ import com.dcm.backend.services.RoleService;
 import com.dcm.backend.utils.mappers.PermissionMapper;
 import com.dcm.backend.utils.mappers.RoleMapper;
 import ma.gov.mes.framework.keycloak.KeycloakProperties;
+import org.jetbrains.annotations.NotNull;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
@@ -40,6 +41,7 @@ public class RoleServiceImpl implements RoleService {
                 .get("count");
     }
 
+    @NotNull
     @Override
     public Collection<RoleDTO> getRoles(int firstResult, int maxResults, RoleDTO filter) {
         return keycloak.realm(keycloakProperties.getRealm())
@@ -56,7 +58,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public void updateRole(RoleDTO roleDTO) {
+    public void updateRole(@NotNull RoleDTO roleDTO) {
         GroupRepresentation groupRepresentation = getGroupRepresentation(roleDTO.getId());
         updateGroupRepresentation(groupRepresentation, roleDTO);
         updateGroupRoles(groupRepresentation, roleDTO);
@@ -64,7 +66,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public void createRole(RoleDTO roleDTO) {
+    public void createRole(@NotNull RoleDTO roleDTO) {
         GroupRepresentation groupRepresentation =
                 roleMapper.toGroupRepresentation(roleDTO);
         keycloak.realm(keycloakProperties.getRealm()).groups().add(groupRepresentation);
@@ -80,6 +82,7 @@ public class RoleServiceImpl implements RoleService {
                 .add(roles);
     }
 
+    @NotNull
     @Override
     public Collection<PermissionDTO> getPermissions() {
         return keycloak.realm(keycloakProperties.getRealm())
@@ -102,6 +105,7 @@ public class RoleServiceImpl implements RoleService {
         return roleMapper.toRoleDTO(group);
     }
 
+    @NotNull
     @Override
     public Collection<String> getActiveRoles() {
         return keycloak.realm(keycloakProperties.getRealm())
@@ -120,7 +124,7 @@ public class RoleServiceImpl implements RoleService {
                 .toRepresentation();
     }
 
-    private void updateGroupRepresentation(GroupRepresentation groupRepresentation, RoleDTO roleDTO) {
+    private void updateGroupRepresentation(@NotNull GroupRepresentation groupRepresentation, @NotNull RoleDTO roleDTO) {
         groupRepresentation.setName(roleDTO.getName());
         groupRepresentation.setAttributes(Map.of(
                 "description", List.of(roleDTO.getDescription()),
@@ -132,7 +136,7 @@ public class RoleServiceImpl implements RoleService {
                 .update(groupRepresentation);
     }
 
-    private void updateGroupRoles(GroupRepresentation groupRepresentation, RoleDTO roleDTO) {
+    private void updateGroupRoles(@NotNull GroupRepresentation groupRepresentation, @NotNull RoleDTO roleDTO) {
         List<RoleRepresentation> roles = getRoleRepresentations(roleDTO.getPermissions());
         List<RoleRepresentation> rolesToRemove =
                 getCurrentGroupRoles(groupRepresentation.getId());
@@ -152,7 +156,7 @@ public class RoleServiceImpl implements RoleService {
                 .add(roles);
     }
 
-    private void updateUserRoles(GroupRepresentation groupRepresentation, String roleName) {
+    private void updateUserRoles(@NotNull GroupRepresentation groupRepresentation, @NotNull String roleName) {
         keycloak.realm(keycloakProperties.getRealm())
                 .groups()
                 .group(groupRepresentation.getId())
@@ -166,6 +170,7 @@ public class RoleServiceImpl implements RoleService {
                 });
     }
 
+    @NotNull
     private GroupRepresentation getGroupByName(String name) {
         return keycloak.realm(keycloakProperties.getRealm())
                 .groups()
@@ -176,7 +181,8 @@ public class RoleServiceImpl implements RoleService {
                 .orElseThrow();
     }
 
-    private List<RoleRepresentation> getRoleRepresentations(Collection<String> permissions) {
+    @NotNull
+    private List<RoleRepresentation> getRoleRepresentations(@NotNull Collection<String> permissions) {
         return keycloak.realm(keycloakProperties.getRealm())
                 .roles()
                 .list()
@@ -194,11 +200,11 @@ public class RoleServiceImpl implements RoleService {
                 .listAll();
     }
 
-    private int comparePermissions(PermissionDTO p1, PermissionDTO p2) {
+    private int comparePermissions(@NotNull PermissionDTO p1, @NotNull PermissionDTO p2) {
         return Integer.compare(p1.getPosition(), p2.getPosition());
     }
 
-    private boolean isGroupActive(GroupRepresentation group) {
+    private boolean isGroupActive(@NotNull GroupRepresentation group) {
         if (group.getAttributes() == null) {
             return false;
         }

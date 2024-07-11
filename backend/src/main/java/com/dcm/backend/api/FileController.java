@@ -8,6 +8,7 @@ import com.dcm.backend.services.KeywordService;
 import com.dcm.backend.utils.mappers.FileHeaderMapper;
 import jakarta.validation.Valid;
 import lombok.SneakyThrows;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -37,7 +38,7 @@ public class FileController {
     @SneakyThrows
     @PostMapping("/upload")
     @PreAuthorize("hasRole(@util.buildPermission(#metadata, " + "'import'))")
-    public void uploadFile(@RequestPart("file") MultipartFile file, @RequestPart("metadata") @Valid FileHeaderDTO metadata) {
+    public void uploadFile(@NotNull @RequestPart("file") MultipartFile file, @RequestPart("metadata") @Valid FileHeaderDTO metadata) {
         fs.upload(file.getInputStream(), metadata);
     }
 
@@ -46,6 +47,7 @@ public class FileController {
         return fs.count(filter);
     }
 
+    @NotNull
     @PostMapping("/files")
     public List<FileHeaderDTO> getFiles(@RequestBody @Valid FileFilterDTO filter) {
         Page<FileHeader> p = fs.getPage(filter);
@@ -54,6 +56,7 @@ public class FileController {
         return p.stream().map(fileHeaderMapper::toDto).collect(Collectors.toList());
     }
 
+    @NotNull
     @SneakyThrows
     @GetMapping("/filedata")
     public ResponseEntity<Resource> getFileData(@RequestParam("filename") String filename) {
@@ -61,6 +64,7 @@ public class FileController {
         return ResponseEntity.ok().contentType(fs.getFileType(filename)).body(resource);
     }
 
+    @NotNull
     @SneakyThrows
     @GetMapping("/thumbnail")
     public ResponseEntity<Resource> getThumbnail(@RequestParam("filename") String filename) {

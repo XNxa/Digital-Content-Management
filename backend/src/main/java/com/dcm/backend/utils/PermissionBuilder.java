@@ -3,6 +3,7 @@ package com.dcm.backend.utils;
 import com.dcm.backend.dto.FileHeaderDTO;
 import com.dcm.backend.entities.FileHeader;
 import com.dcm.backend.repositories.FileRepository;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+@SuppressWarnings("unused")
 @Service("util")
 public class PermissionBuilder {
 
@@ -25,7 +27,8 @@ public class PermissionBuilder {
 
     private final static String[] pictoTypes = {"image/svg+xml"};
 
-    public String buildPermission(FileHeaderDTO metadata, String basePermission) {
+    @NotNull
+    public String buildPermission(@NotNull FileHeaderDTO metadata, String basePermission) {
 
         String folder = getFolder(metadata.getFilename());
         if (folder == null) return "false";
@@ -46,7 +49,8 @@ public class PermissionBuilder {
     }
 
 
-    public String buildPermission(String filename, String basePermission) {
+    @NotNull
+    public String buildPermission(@NotNull String filename, String basePermission) {
         String folder = getFolder(filename);
         if (folder == null) return "false";
 
@@ -70,7 +74,7 @@ public class PermissionBuilder {
         return String.join("_", folder, type, basePermission);
     }
 
-    private static @Nullable String getFolder(String filename) {
+    private static @Nullable String getFolder(@NotNull String filename) {
         String[] parts = filename.split("/");
         if (parts.length < 2) {
             return null;
@@ -81,7 +85,7 @@ public class PermissionBuilder {
         return folder;
     }
 
-    private boolean match(String[] types, String type) {
+    private boolean match(@NotNull String[] types, @NotNull String type) {
         return Arrays.stream(types).anyMatch(t -> {
             if (t.contains("%")) {
                 return type.matches(t.replace("%", ".*"));

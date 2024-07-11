@@ -14,6 +14,7 @@ import com.dcm.backend.services.impl.FileServiceImpl;
 import com.dcm.backend.services.impl.KeywordServiceImpl;
 import io.minio.*;
 import lombok.SneakyThrows;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -70,7 +71,7 @@ public class FileServiceTest {
         when(mc.minioClient()).thenReturn(mockMinioClient);
     }
 
-    private void testUploadTemplate(String filename, String type) throws Exception {
+    private void testUploadTemplate(String filename, @NotNull String type) throws Exception {
         boolean isMedia = false;
         boolean isImage = false;
         if (type.contains("image")) {

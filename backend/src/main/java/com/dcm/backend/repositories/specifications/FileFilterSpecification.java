@@ -8,6 +8,7 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.AllArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class FileFilterSpecification implements Specification<FileHeader> {
 
 
     @Override
-    public Predicate toPredicate(Root<FileHeader> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+    public Predicate toPredicate(@NotNull Root<FileHeader> root, @NotNull CriteriaQuery<?> query, @NotNull CriteriaBuilder criteriaBuilder) {
         List<Predicate> predicates = new ArrayList<>();
 
         if (!filename.isBlank()) {
@@ -89,8 +90,7 @@ public class FileFilterSpecification implements Specification<FileHeader> {
                                 .toArray(Predicate[]::new))));
                 break;
             default:
-                System.err.println("Invalid category" + category);
-                break;
+                throw new IllegalArgumentException("Invalid category: " + category);
         }
 
         return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

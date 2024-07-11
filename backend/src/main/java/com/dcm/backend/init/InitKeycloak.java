@@ -1,6 +1,7 @@
 package com.dcm.backend.init;
 
 import jakarta.ws.rs.ProcessingException;
+import org.jetbrains.annotations.NotNull;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
@@ -114,7 +115,7 @@ public class InitKeycloak {
         }
     }
 
-    private static void removeExistingRealmIfNecessary(Keycloak keycloak) {
+    private static void removeExistingRealmIfNecessary(@NotNull Keycloak keycloak) {
         if (keycloak.realms()
                 .findAll()
                 .stream()
@@ -127,7 +128,7 @@ public class InitKeycloak {
         }
     }
 
-    private static void createNewRealm(Keycloak keycloak) {
+    private static void createNewRealm(@NotNull Keycloak keycloak) {
         RealmRepresentation realm = new RealmRepresentation();
         realm.setRealm(REALMNAME);
         realm.setEnabled(true);
@@ -135,7 +136,7 @@ public class InitKeycloak {
         keycloak.realms().create(realm);
     }
 
-    private static void createFrontendClient(Keycloak keycloak) {
+    private static void createFrontendClient(@NotNull Keycloak keycloak) {
         ClientRepresentation frontendClient = new ClientRepresentation();
         frontendClient.setClientId("frontend-" + REALMNAME);
         frontendClient.setName("frontend");
@@ -148,7 +149,7 @@ public class InitKeycloak {
         keycloak.realm(REALMNAME).clients().create(frontendClient);
     }
 
-    private static void createBackendClient(Keycloak keycloak) {
+    private static void createBackendClient(@NotNull Keycloak keycloak) {
         ClientRepresentation backendClient = new ClientRepresentation();
         backendClient.setClientId("backend-" + REALMNAME);
         backendClient.setName("backend");
@@ -159,7 +160,7 @@ public class InitKeycloak {
         keycloak.realm(REALMNAME).clients().create(backendClient);
     }
 
-    private static void configUserProfileAttributes(Keycloak keycloak) {
+    private static void configUserProfileAttributes(@NotNull Keycloak keycloak) {
         UPConfig upConfig =
                 keycloak.realm(REALMNAME).users().userProfile().getConfiguration();
         List<UPAttribute> upAttributes = upConfig.getAttributes();
@@ -194,7 +195,7 @@ public class InitKeycloak {
         keycloak.realm(REALMNAME).users().userProfile().update(upConfig);
     }
 
-    private static void createRoles(Keycloak keycloak) {
+    private static void createRoles(@NotNull Keycloak keycloak) {
 
         int position = 0;
 

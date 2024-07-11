@@ -4,7 +4,6 @@ import com.dcm.backend.enumeration.Status;
 import com.dcm.backend.utils.ErrorMessages;
 import com.dcm.backend.validation.constraints.ValidMimeType;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
