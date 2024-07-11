@@ -8,7 +8,6 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.AllArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;
@@ -18,22 +17,18 @@ import java.util.List;
 @AllArgsConstructor
 public class FileFilterSpecification implements Specification<FileHeader> {
 
+    private final static String[] imageTypes =
+            {"image/jpeg", "image/png", "image/gif", "image/bmp", "image/webp",
+                    "image/tiff",};
+    private final static String[] videoTypes = {"video/%",};
+    private final static String[] pictoTypes = {"image/svg+xml",};
     String filename;
     List<Keyword> keywords;
     List<Status> status;
     String category;
 
-    private final static String[] imageTypes =
-            {"image/jpeg", "image/png", "image/gif", "image/bmp", "image/webp",
-                    "image/tiff",};
-
-    private final static String[] videoTypes = {"video/%",};
-
-    private final static String[] pictoTypes = {"image/svg+xml",};
-
-
     @Override
-    public Predicate toPredicate(@NotNull Root<FileHeader> root, @NotNull CriteriaQuery<?> query, @NotNull CriteriaBuilder criteriaBuilder) {
+    public Predicate toPredicate(Root<FileHeader> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
         List<Predicate> predicates = new ArrayList<>();
 
         if (!filename.isBlank()) {

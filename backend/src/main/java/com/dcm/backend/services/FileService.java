@@ -31,7 +31,7 @@ public interface FileService {
     /**
      * Returns the number of files in the database that match the filter
      *
-     * @param  filter Filter to apply
+     * @param filter Filter to apply
      * @return Number of files
      */
     long count(FileFilterDTO filter);

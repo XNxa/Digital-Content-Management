@@ -16,7 +16,6 @@ import com.dcm.backend.services.ThumbnailService;
 import io.minio.*;
 import io.minio.errors.*;
 import io.minio.http.Method;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -56,7 +55,7 @@ public class FileServiceImpl implements FileService {
     private ThumbnailService thumbnailService;
 
     @Override
-    public void upload(@NotNull InputStream is, @NotNull FileHeaderDTO metadata) throws IOException,
+    public void upload(InputStream is, FileHeaderDTO metadata) throws IOException,
             ServerException, InsufficientDataException, ErrorResponseException,
             NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
             XmlParserException, InternalException {
@@ -78,7 +77,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public long count(@NotNull FileFilterDTO filter) {
+    public long count(FileFilterDTO filter) {
         FileFilterSpecification spec =
                 new FileFilterSpecification(filter.getFilename(),
                         filter.getKeywords().stream().map(Keyword::new).toList(),
@@ -87,9 +86,8 @@ public class FileServiceImpl implements FileService {
         return fileRepository.count(spec);
     }
 
-    @NotNull
     @Override
-    public Page<FileHeader> getPage(@NotNull FileFilterDTO filter) {
+    public Page<FileHeader> getPage(FileFilterDTO filter) {
         Pageable pageRequest = PageRequest.of(filter.getPage(), filter.getSize());
 
         FileFilterSpecification spec =
@@ -101,7 +99,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public void delete(@NotNull String[] filename) throws FileNotFoundException, ServerException,
+    public void delete(String[] filename) throws FileNotFoundException, ServerException,
             InsufficientDataException, ErrorResponseException, IOException,
             NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
             XmlParserException, InternalException {
@@ -129,7 +127,6 @@ public class FileServiceImpl implements FileService {
         }
     }
 
-    @NotNull
     @Override
     public InputStreamResource getFile(String filename) throws ServerException,
             InsufficientDataException, ErrorResponseException, IOException,
@@ -146,7 +143,6 @@ public class FileServiceImpl implements FileService {
                         .build()));
     }
 
-    @NotNull
     @Override
     public InputStreamResource getThumbnail(String filename) throws ServerException,
             InsufficientDataException, ErrorResponseException, IOException,
@@ -170,7 +166,6 @@ public class FileServiceImpl implements FileService {
                         .build()));
     }
 
-    @NotNull
     @Override
     public MediaType getFileType(String filename) throws FileNotFoundException {
         FileHeader fileHeader = fileRepository.findByFilename(filename).orElseThrow(
@@ -213,7 +208,8 @@ public class FileServiceImpl implements FileService {
         if (baseName.contains(".")) {
             baseName = fileHeader.getFilename().substring(0,
                     fileHeader.getFilename().lastIndexOf('.'));
-            extension = fileHeader.getFilename().substring(fileHeader.getFilename().lastIndexOf('.'));
+            extension = fileHeader.getFilename()
+                    .substring(fileHeader.getFilename().lastIndexOf('.'));
         }
 
         String newName = baseName + "_copy" + extension;
@@ -258,7 +254,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public void update(String filename, @NotNull FileHeaderDTO metadata) throws
+    public void update(String filename, FileHeaderDTO metadata) throws
             FileNotFoundException, ServerException, InsufficientDataException,
             ErrorResponseException, IOException, NoSuchAlgorithmException,
             InvalidKeyException, InvalidResponseException, XmlParserException,
@@ -314,8 +310,8 @@ public class FileServiceImpl implements FileService {
      * @param is       InputStream of the file
      * @param metadata FileHeaderDTO metadata of the file
      */
-    private void uploadFileToMinio(InputStream is, @NotNull FileHeaderDTO metadata,
-                                   @NotNull Collection<Keyword> keywords) throws
+    private void uploadFileToMinio(InputStream is, FileHeaderDTO metadata,
+                                   Collection<Keyword> keywords) throws
             IOException, ServerException, InsufficientDataException,
             ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException,
             InvalidResponseException, XmlParserException, InternalException {
@@ -341,7 +337,7 @@ public class FileServiceImpl implements FileService {
      * @param thumbnail BufferedImage thumbnail of the file
      * @param metadata  FileHeaderDTO metadata of the file
      */
-    private void uploadThumbnailToMinio(@Nullable BufferedImage thumbnail, @NotNull FileHeaderDTO metadata) throws
+    private void uploadThumbnailToMinio(@Nullable BufferedImage thumbnail, FileHeaderDTO metadata) throws
             IOException, ServerException, InsufficientDataException,
             ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException,
             InvalidResponseException, XmlParserException, InternalException {
@@ -364,7 +360,7 @@ public class FileServiceImpl implements FileService {
      * @param thumbnail         BufferedImage thumbnail of the file
      * @param keywordCollection Collection of keywords of the file
      */
-    private void saveFileMetadata(@NotNull FileHeaderDTO metadata, @Nullable BufferedImage thumbnail, Collection<Keyword> keywordCollection) {
+    private void saveFileMetadata(FileHeaderDTO metadata, @Nullable BufferedImage thumbnail, Collection<Keyword> keywordCollection) {
         FileHeader f = new FileHeader(metadata.getFilename(), metadata.getDescription(),
                 metadata.getVersion(), metadata.getStatus(), LocalDate.now().toString(),
                 metadata.getType(), metadata.getSize(), keywordCollection);
@@ -381,8 +377,7 @@ public class FileServiceImpl implements FileService {
      * @param metadata FileHeaderDTO metadata of the file
      * @return Collection of keywords
      */
-    @NotNull
-    private Collection<Keyword> getKeywords(@NotNull FileHeaderDTO metadata) {
+    private Collection<Keyword> getKeywords(FileHeaderDTO metadata) {
         // Compute the keywords
         Collection<Keyword> keywordCollection = new LinkedList<>();
         for (String key : metadata.getKeywords()) {

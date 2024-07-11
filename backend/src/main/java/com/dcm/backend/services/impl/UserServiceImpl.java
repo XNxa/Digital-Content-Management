@@ -5,7 +5,6 @@ import com.dcm.backend.exceptions.UserNotFoundException;
 import com.dcm.backend.services.UserService;
 import com.dcm.backend.utils.mappers.UserMapper;
 import ma.gov.mes.framework.keycloak.KeycloakProperties;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.idm.CredentialRepresentation;
@@ -35,9 +34,8 @@ public class UserServiceImpl implements UserService {
         return keycloak.realm(keycloakProperties.getRealm()).users().count();
     }
 
-    @NotNull
     @Override
-    public Collection<UserDTO> list(int firstResult, int maxResults, @NotNull UserDTO filter) {
+    public Collection<UserDTO> list(int firstResult, int maxResults, UserDTO filter) {
         String query = buildQuery(filter);
 
         return keycloak.realm(keycloakProperties.getRealm())
@@ -49,7 +47,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void create(@NotNull UserDTO user) {
+    public void create(UserDTO user) {
         UserRepresentation userRepresentation = userMapper.toUserRepresentation(user);
 
         setUserPassword(userRepresentation, user.getPassword(), true);
@@ -63,7 +61,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void update(@NotNull UserDTO user) throws UserNotFoundException {
+    public void update(UserDTO user) throws UserNotFoundException {
         UserRepresentation userRepresentation = findUserByEmail(user.getEmail());
 
         if (userRepresentation == null)
@@ -95,8 +93,7 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserDTO(userRepresentation);
     }
 
-    @NotNull
-    private String buildQuery(@NotNull UserDTO filter) {
+    private String buildQuery(UserDTO filter) {
         StringBuilder queryBuilder = new StringBuilder();
         if (filter.getEmail() != null)
             queryBuilder.append("email:").append(filter.getEmail()).append(' ');
@@ -132,7 +129,6 @@ public class UserServiceImpl implements UserService {
                 .groups();
     }
 
-    @NotNull
     private List<GroupRepresentation> getGroupByName(String roleName) {
         return keycloak.realm(keycloakProperties.getRealm())
                 .groups()
@@ -142,7 +138,7 @@ public class UserServiceImpl implements UserService {
                 .toList();
     }
 
-    private void updateUserRepresentation(@NotNull UserDTO user, @NotNull UserRepresentation userRepresentation) {
+    private void updateUserRepresentation(UserDTO user, UserRepresentation userRepresentation) {
         userRepresentation.setEmail(user.getEmail());
         userRepresentation.setFirstName(user.getFirstname());
         userRepresentation.setLastName(user.getLastname());
@@ -154,7 +150,7 @@ public class UserServiceImpl implements UserService {
         ));
     }
 
-    private void updateUserGroups(@NotNull UserRepresentation userRepresentation, @NotNull List<GroupRepresentation> oldGroups, @NotNull List<GroupRepresentation> newGroups) {
+    private void updateUserGroups(UserRepresentation userRepresentation, List<GroupRepresentation> oldGroups, List<GroupRepresentation> newGroups) {
         keycloak.realm(keycloakProperties.getRealm())
                 .users()
                 .get(userRepresentation.getId())
@@ -166,7 +162,7 @@ public class UserServiceImpl implements UserService {
                 .joinGroup(newGroups.get(0).getId());
     }
 
-    private void setUserPassword(@NotNull UserRepresentation userRepresentation,
+    private void setUserPassword(UserRepresentation userRepresentation,
                                  String newPassword, Boolean temporary) {
         CredentialRepresentation credentials = new CredentialRepresentation();
         credentials.setType(CredentialRepresentation.PASSWORD);

@@ -16,7 +16,7 @@ public interface ThumbnailService {
      * @param width  The width of the thumbnail.
      * @param height The height of the thumbnail.
      * @return The thumbnail image.
-     * @throws IOException If the image cannot be read.
+     * @throws IOException              If the image cannot be read.
      * @throws IllegalArgumentException If the InputStream is null.
      */
     BufferedImage generateImageThumbnail(InputStream image, int width,

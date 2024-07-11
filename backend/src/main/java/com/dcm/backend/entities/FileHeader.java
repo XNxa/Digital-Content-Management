@@ -3,7 +3,6 @@ package com.dcm.backend.entities;
 import com.dcm.backend.enumeration.Status;
 import jakarta.persistence.*;
 import lombok.*;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 
@@ -50,7 +49,7 @@ public class FileHeader {
     }
 
     @SuppressWarnings("CopyConstructorMissesField")
-    public FileHeader(@NotNull FileHeader fileHeader) {
+    public FileHeader(FileHeader fileHeader) {
         this.filename = fileHeader.getFilename();
         this.thumbnailName = fileHeader.getThumbnailName();
         this.description = fileHeader.getDescription();

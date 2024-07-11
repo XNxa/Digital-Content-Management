@@ -5,7 +5,6 @@ import com.dcm.backend.repositories.KeywordRepository;
 import com.dcm.backend.repositories.specifications.UnusedKeywordsSpecification;
 import com.dcm.backend.services.KeywordService;
 import jakarta.transaction.Transactional;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,9 +24,8 @@ public class KeywordServiceImpl implements KeywordService {
         keywordRepository.delete(spec);
     }
 
-    @NotNull
     @Override
-    public Keyword getOrAddKeyword(@NotNull String keyword) {
+    public Keyword getOrAddKeyword(String keyword) {
         Optional<Keyword> k = keywordRepository.findById(keyword);
         if (k.isEmpty()) {
             k = Optional.of(keywordRepository.save(new Keyword(keyword)));
@@ -35,7 +33,6 @@ public class KeywordServiceImpl implements KeywordService {
         return k.get();
     }
 
-    @NotNull
     public List<String> getKeywords() {
         return keywordRepository.findAll()
                 .stream()

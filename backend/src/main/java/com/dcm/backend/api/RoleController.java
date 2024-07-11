@@ -41,19 +41,19 @@ public class RoleController {
         return roleService.getRole(id);
     }
 
-    @PreAuthorize("hasRole('" + Permissions.ROLE_DELETE+ "')")
+    @PreAuthorize("hasRole('" + Permissions.ROLE_DELETE + "')")
     @DeleteMapping("/delete")
     public void deleteRole(@RequestParam("id") String id) {
         roleService.deleteRole(id);
     }
 
-    @PreAuthorize("hasRole('" + Permissions.ROLE_MODIFY+ "')")
+    @PreAuthorize("hasRole('" + Permissions.ROLE_MODIFY + "')")
     @PutMapping("/update")
     public void updateRole(@RequestBody @Valid RoleDTO role) {
         roleService.updateRole(role);
     }
 
-    @PreAuthorize("hasRole('" + Permissions.ROLE_ADD+ "')")
+    @PreAuthorize("hasRole('" + Permissions.ROLE_ADD + "')")
     @PostMapping("/create")
     public void createRole(@RequestBody @Valid RoleDTO role) {
         roleService.createRole(role);

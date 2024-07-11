@@ -23,7 +23,7 @@ public class FileFilterDTO {
     @NotNull(message = ErrorMessages.REQUIERED_FIELD_MISSING_CODE)
     private int size;
 
-    @Size(max = 255,  message = ErrorMessages.EXCEED_MAX_SIZE_CODE)
+    @Size(max = 255, message = ErrorMessages.EXCEED_MAX_SIZE_CODE)
     private String filename;
 
     @Size(max = 255, message = ErrorMessages.EXCEED_MAX_SIZE_CODE)

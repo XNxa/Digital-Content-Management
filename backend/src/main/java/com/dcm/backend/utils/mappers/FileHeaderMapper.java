@@ -5,7 +5,8 @@ import com.dcm.backend.entities.FileHeader;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", imports = {java.util.List.class, com.dcm.backend.entities.Keyword.class})
+@Mapper(componentModel = "spring", imports = {java.util.List.class,
+        com.dcm.backend.entities.Keyword.class})
 public interface FileHeaderMapper {
 
     @Mapping(target = "filename", source = "filename")

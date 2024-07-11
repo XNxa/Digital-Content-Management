@@ -260,7 +260,8 @@ public class FileApiTest {
 
     @Test
     public void testUpdateFileAbsent() throws Exception {
-        doThrow(FileNotFoundException.class).when(fileService).update(eq("test.txt"), any(FileHeaderDTO.class));
+        doThrow(FileNotFoundException.class).when(fileService)
+                .update(eq("test.txt"), any(FileHeaderDTO.class));
 
         FileHeaderDTO metadataDTO = FileHeaderDTO.builder()
                 .filename("test.txt")

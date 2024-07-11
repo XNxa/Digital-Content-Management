@@ -5,14 +5,13 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.domain.Specification;
 
 public class UnusedKeywordsSpecification implements Specification<Keyword> {
 
     @Override
-    public Predicate toPredicate(@NotNull Root<Keyword> root, @NotNull CriteriaQuery<?> query,
-                                 @NotNull CriteriaBuilder criteriaBuilder) {
+    public Predicate toPredicate(Root<Keyword> root, CriteriaQuery<?> query,
+                                 CriteriaBuilder criteriaBuilder) {
         return criteriaBuilder.isEmpty(root.get("fileHeaders"));
     }
 

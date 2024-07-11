@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 @Mapper(componentModel = "spring",
-        imports = {Map.class, List.class} , unmappedTargetPolicy = ReportingPolicy.IGNORE)
+        imports = {Map.class, List.class}, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface UserMapper {
 
     @Mapping(target = "email", source = "email")

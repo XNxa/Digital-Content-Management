@@ -1,7 +1,6 @@
 package com.dcm.backend.init;
 
 import jakarta.ws.rs.ProcessingException;
-import org.jetbrains.annotations.NotNull;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
@@ -24,43 +23,31 @@ import java.util.Set;
  */
 public class InitKeycloak {
 
+    public static final String URL = "http://localhost:4200";
+    public static final String URLstar = URL + "/*";
     private static final String REALMNAME = "dcm";
-
     private static final String[] PERMISSIONS =
             {"import", "modify", "duplicate", "download", "copy_link", "share", "delete"};
-
     private static final String[] DISPLAY_PERMISSIONS =
             {"Importer un fichier", "Modifier les informations d'un fichier",
                     "Dupliquer un fichier", "Télécharger un fichier",
                     "Copier le lien d'un fichier", "Partager par e-mail un fichier",
                     "Supprimer un fichier"};
-
     private static final String[] FOLDER = {"web", "mobile", "sm", "plv", "campagnes"};
-
     private static final String[] DISPLAY_FOLDERS =
             {"Web", "Mobile", "SM", "P.L.V", "Campagnes"};
-
     private static final String[] SUBFOLDER = {"images", "videos", "pictos", "docs"};
-
     private static final String[] DISPLAY_SUBFOLDERS =
             {"Images", "Vidéos", "Pictos", "Documents"};
-
     private static final String[] OTHER_ROLES =
             {"user_add", "user_modify", "user_delete", "role_add", "role_modify",
                     "role_delete",};
-
     private static final String[] DISPLAY_OTHER_ROLES =
             {"Ajouter un nouvel utilisateur", "Modifier le profil de l'utilisateur",
                     "Supprimer un utilisateur", "Ajouter un nouveau rôle",
                     "Modifier un rôle", "Supprimer un rôle"};
-
     private static final String[] FOLDERS_OTHER_ROLES =
             {"Utilisateurs", "Utilisateurs", "Utilisateurs", "Rôles", "Rôles", "Rôles"};
-
-    public static final String URL = "http://localhost:4200";
-
-    public static final String URLstar = URL + "/*";
-
 
     public static void main(String[] args) {
 
@@ -115,7 +102,7 @@ public class InitKeycloak {
         }
     }
 
-    private static void removeExistingRealmIfNecessary(@NotNull Keycloak keycloak) {
+    private static void removeExistingRealmIfNecessary(Keycloak keycloak) {
         if (keycloak.realms()
                 .findAll()
                 .stream()
@@ -128,7 +115,7 @@ public class InitKeycloak {
         }
     }
 
-    private static void createNewRealm(@NotNull Keycloak keycloak) {
+    private static void createNewRealm(Keycloak keycloak) {
         RealmRepresentation realm = new RealmRepresentation();
         realm.setRealm(REALMNAME);
         realm.setEnabled(true);
@@ -136,7 +123,7 @@ public class InitKeycloak {
         keycloak.realms().create(realm);
     }
 
-    private static void createFrontendClient(@NotNull Keycloak keycloak) {
+    private static void createFrontendClient(Keycloak keycloak) {
         ClientRepresentation frontendClient = new ClientRepresentation();
         frontendClient.setClientId("frontend-" + REALMNAME);
         frontendClient.setName("frontend");
@@ -149,7 +136,7 @@ public class InitKeycloak {
         keycloak.realm(REALMNAME).clients().create(frontendClient);
     }
 
-    private static void createBackendClient(@NotNull Keycloak keycloak) {
+    private static void createBackendClient(Keycloak keycloak) {
         ClientRepresentation backendClient = new ClientRepresentation();
         backendClient.setClientId("backend-" + REALMNAME);
         backendClient.setName("backend");
@@ -160,7 +147,7 @@ public class InitKeycloak {
         keycloak.realm(REALMNAME).clients().create(backendClient);
     }
 
-    private static void configUserProfileAttributes(@NotNull Keycloak keycloak) {
+    private static void configUserProfileAttributes(Keycloak keycloak) {
         UPConfig upConfig =
                 keycloak.realm(REALMNAME).users().userProfile().getConfiguration();
         List<UPAttribute> upAttributes = upConfig.getAttributes();
@@ -195,7 +182,7 @@ public class InitKeycloak {
         keycloak.realm(REALMNAME).users().userProfile().update(upConfig);
     }
 
-    private static void createRoles(@NotNull Keycloak keycloak) {
+    private static void createRoles(Keycloak keycloak) {
 
         int position = 0;
 

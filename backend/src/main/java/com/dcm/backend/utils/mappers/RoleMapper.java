@@ -8,7 +8,8 @@ import org.mapstruct.Mapping;
 import java.util.List;
 import java.util.Map;
 
-@Mapper(componentModel = "spring", imports = {Map.class, List.class, Boolean.class, GroupRepresentation.class})
+@Mapper(componentModel = "spring", imports = {Map.class, List.class, Boolean.class,
+        GroupRepresentation.class})
 public interface RoleMapper {
 
     @Mapping(target = "id", source = "id")
