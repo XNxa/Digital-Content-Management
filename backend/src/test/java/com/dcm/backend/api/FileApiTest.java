@@ -228,7 +228,7 @@ public class FileApiTest {
     }
 
     @Test
-    public void DuplicateFileAbsent() throws Exception {
+    public void duplicateFileAbsent() throws Exception {
         doThrow(FileNotFoundException.class).when(fileService).duplicate("test.txt");
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/duplicate")

@@ -83,11 +83,13 @@ public class ThumbnailServiceTest {
     }
 
     private void testGenerateVideoThumbnail(String format) throws IOException {
-        InputStream videoInputStream =
-                getClass().getResourceAsStream("/testvideo." + format);
+        BufferedImage thumbnail;
+        try (InputStream videoInputStream = getClass().getResourceAsStream(
+                "/testvideo." + format)) {
 
-        BufferedImage thumbnail =
-                thumbnailService.generateVideoThumbnail(videoInputStream, 100, 100);
+            thumbnail =
+                    thumbnailService.generateVideoThumbnail(videoInputStream, 100, 100);
+        }
 
         assertNotNull(thumbnail);
         assertEquals(100, thumbnail.getWidth());
