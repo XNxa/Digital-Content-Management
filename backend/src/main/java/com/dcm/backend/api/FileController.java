@@ -3,12 +3,11 @@ package com.dcm.backend.api;
 import com.dcm.backend.dto.FileFilterDTO;
 import com.dcm.backend.dto.FileHeaderDTO;
 import com.dcm.backend.entities.FileHeader;
-import com.dcm.backend.entities.Keyword;
 import com.dcm.backend.services.FileService;
 import com.dcm.backend.services.KeywordService;
+import com.dcm.backend.utils.mappers.FileHeaderMapper;
 import jakarta.validation.Valid;
 import lombok.SneakyThrows;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -33,7 +32,7 @@ public class FileController {
     private KeywordService ks;
 
     @Autowired
-    private ModelMapper modelMapper;
+    private FileHeaderMapper fileHeaderMapper;
 
     @SneakyThrows
     @PostMapping("/upload")
@@ -52,7 +51,7 @@ public class FileController {
         Page<FileHeader> p = fs.getPage(filter);
         p.getTotalPages();
 
-        return p.stream().map(this::convertToDto).collect(Collectors.toList());
+        return p.stream().map(fileHeaderMapper::toDto).collect(Collectors.toList());
     }
 
     @SneakyThrows
@@ -100,13 +99,6 @@ public class FileController {
     @PreAuthorize("hasRole(@util.buildPermission(#filename, " + "'modify'))")
     public void updateFile(@RequestParam("filename") String filename, @RequestBody @Valid FileHeaderDTO metadata) {
         fs.update(filename, metadata);
-    }
-
-    private FileHeaderDTO convertToDto(FileHeader fileHeader) {
-        FileHeaderDTO fileHeaderDTO = modelMapper.map(fileHeader, FileHeaderDTO.class);
-        fileHeaderDTO.setKeywords(
-                fileHeader.getKeywords().stream().map(Keyword::getName).toList());
-        return fileHeaderDTO;
     }
 }
 
