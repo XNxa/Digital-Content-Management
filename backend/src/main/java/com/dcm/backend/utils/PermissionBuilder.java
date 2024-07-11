@@ -1,4 +1,4 @@
-package com.dcm.backend.services.impl;
+package com.dcm.backend.utils;
 
 import com.dcm.backend.dto.FileHeaderDTO;
 import com.dcm.backend.entities.FileHeader;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service("util")
-public class AuthorizationServiceImpl {
+public class PermissionBuilder {
 
     @Autowired
     private FileRepository fr;

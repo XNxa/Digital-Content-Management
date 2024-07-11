@@ -3,6 +3,7 @@ package com.dcm.backend.api;
 import com.dcm.backend.dto.PermissionDTO;
 import com.dcm.backend.dto.RoleDTO;
 import com.dcm.backend.services.RoleService;
+import com.dcm.backend.utils.Permissions;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -40,19 +41,19 @@ public class RoleController {
         return roleService.getRole(id);
     }
 
-    @PreAuthorize("hasRole('role_delete')")
+    @PreAuthorize("hasRole('" + Permissions.ROLE_DELETE+ "')")
     @DeleteMapping("/delete")
     public void deleteRole(@RequestParam("id") String id) {
         roleService.deleteRole(id);
     }
 
-    @PreAuthorize("hasRole('role_modify')")
+    @PreAuthorize("hasRole('" + Permissions.ROLE_MODIFY+ "')")
     @PutMapping("/update")
     public void updateRole(@RequestBody @Valid RoleDTO role) {
         roleService.updateRole(role);
     }
 
-    @PreAuthorize("hasRole('role_add')")
+    @PreAuthorize("hasRole('" + Permissions.ROLE_ADD+ "')")
     @PostMapping("/create")
     public void createRole(@RequestBody @Valid RoleDTO role) {
         roleService.createRole(role);
