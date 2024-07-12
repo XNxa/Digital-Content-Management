@@ -42,8 +42,6 @@ export class TableComponent<Column extends C> implements OnInit {
   validDataType(data: object[]): boolean {
     if (data.length === 0) return true;
     const dataKeys = Object.keys(data[0]);
-    console.log(dataKeys);
-    console.log(this.columns.map((c) => c.field));
     return this.columns.every((c) => dataKeys.includes(c.field));
   }
 
