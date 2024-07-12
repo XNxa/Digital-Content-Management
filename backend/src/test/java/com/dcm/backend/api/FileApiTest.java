@@ -1,5 +1,6 @@
 package com.dcm.backend.api;
 
+import com.dcm.backend.config.TestSecurityConfig;
 import com.dcm.backend.dto.FileFilterDTO;
 import com.dcm.backend.dto.FileHeaderDTO;
 import com.dcm.backend.entities.FileHeader;
@@ -7,6 +8,7 @@ import com.dcm.backend.entities.Keyword;
 import com.dcm.backend.enumeration.Status;
 import com.dcm.backend.exceptions.FileNotFoundException;
 import com.dcm.backend.exceptions.NoThumbnailException;
+import com.dcm.backend.repositories.FileRepository;
 import com.dcm.backend.services.FileService;
 import com.dcm.backend.services.KeywordService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,11 +17,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -33,6 +37,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Import(TestSecurityConfig.class)
+@WithUserDetails("user1")
 public class FileApiTest {
 
     @Autowired
@@ -44,6 +50,9 @@ public class FileApiTest {
     @MockBean
     private KeywordService keywordService;
 
+    @MockBean
+    private FileRepository fileRepository;
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -51,11 +60,12 @@ public class FileApiTest {
     public void testUploadFile() throws Exception {
         doNothing().when(fileService).upload(any(), any(FileHeaderDTO.class));
 
-        MockMultipartFile file = new MockMultipartFile("file", "test.txt", "text/plain",
+        MockMultipartFile file = new MockMultipartFile("file", "web/test.txt", "text" +
+                "/plain",
                 "test content".getBytes());
 
         FileHeaderDTO metadataDTO = FileHeaderDTO.builder()
-                .filename("test.txt")
+                .filename("web/test.txt")
                 .description("test description")
                 .version("1")
                 .status(Status.valueOf("PLANIFIE"))
@@ -72,7 +82,7 @@ public class FileApiTest {
                         jsonmetadata.getBytes());
 
         mockMvc.perform(
-                        MockMvcRequestBuilders.multipart("/api/upload").file(file).file(metadata))
+                        MockMvcRequestBuilders.multipart("/api/file/upload").file(file).file(metadata))
                 .andExpect(status().isOk());
     }
 
@@ -80,7 +90,18 @@ public class FileApiTest {
     public void testGetNumberOfElements() throws Exception {
         when(fileService.count(any())).thenReturn(10L);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/count"))
+        FileFilterDTO filter = FileFilterDTO.builder()
+                .page(0)
+                .size(0)
+                .filename("web/")
+                .status(List.of())
+                .keywords(List.of())
+                .category("docs")
+                .build();
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/file/count")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(filter)))
                 .andExpect(status().isOk())
                 .andExpect(content().string("10"));
     }
@@ -111,7 +132,7 @@ public class FileApiTest {
 
         when(fileService.getPage(any(FileFilterDTO.class))).thenReturn(page);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/files")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/file/files")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonFilter))
                 .andExpect(status().isOk())
@@ -126,7 +147,7 @@ public class FileApiTest {
         when(fileService.getFileType("test.txt")).thenReturn(MediaType.TEXT_PLAIN);
 
         mockMvc.perform(
-                        MockMvcRequestBuilders.get("/api/filedata").param("filename", "test.txt"))
+                        MockMvcRequestBuilders.get("/api/file/filedata").param("filename", "test.txt"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.TEXT_PLAIN))
                 .andExpect(content().string("test content"));
@@ -137,7 +158,7 @@ public class FileApiTest {
         when(fileService.getFile("test.txt")).thenThrow(FileNotFoundException.class);
 
         mockMvc.perform(
-                        MockMvcRequestBuilders.get("/api/filedata").param("filename", "test.txt"))
+                        MockMvcRequestBuilders.get("/api/file/filedata").param("filename", "test.txt"))
                 .andExpect(status().isNotFound());
     }
 
@@ -148,7 +169,7 @@ public class FileApiTest {
         when(fileService.getThumbnail("test.txt")).thenReturn(resource);
         when(fileService.getFileType("test.txt")).thenReturn(MediaType.IMAGE_JPEG);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/thumbnail")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/file/thumbnail")
                         .param("filename", "test.txt"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.IMAGE_JPEG))
@@ -159,7 +180,7 @@ public class FileApiTest {
     public void testGetThumbnailAbsent() throws Exception {
         when(fileService.getThumbnail("test.txt")).thenThrow(FileNotFoundException.class);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/thumbnail")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/file/thumbnail")
                         .param("filename", "test.txt"))
                 .andExpect(status().isNotFound());
     }
@@ -168,7 +189,7 @@ public class FileApiTest {
     public void testGetThumbnailAbsent2() throws Exception {
         when(fileService.getThumbnail("test.txt")).thenThrow(NoThumbnailException.class);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/thumbnail")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/file/thumbnail")
                         .param("filename", "test.txt"))
                 .andExpect(status().isNotFound());
     }
@@ -178,7 +199,7 @@ public class FileApiTest {
         List<String> keywords = List.of("keyword1", "keyword2");
         when(keywordService.getKeywords()).thenReturn(keywords);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/keywords"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/file/keywords"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0]", is("keyword1")))
                 .andExpect(jsonPath("$[1]", is("keyword2")));
@@ -188,59 +209,63 @@ public class FileApiTest {
     public void testDeleteFile() throws Exception {
         doNothing().when(fileService).delete(any());
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/delete")
-                .param("filename", "[test.txt]")).andExpect(status().isOk());
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/file/delete")
+                .param("filename", "web/test.txt")).andExpect(status().isOk());
     }
 
     @Test
     public void testDeleteFileAbsent() throws Exception {
         doThrow(FileNotFoundException.class).when(fileService).delete(any());
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/delete")
-                .param("filename", "[test.txt]")).andExpect(status().isNotFound());
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/file/delete")
+                .param("filename", "web/test.txt")).andExpect(status().isNotFound());
     }
 
     @Test
     public void testGetLink() throws Exception {
-        when(fileService.getLink("test.txt")).thenReturn("http://example.com/test.txt");
+        when(fileService.getLink("web/test.txt")).thenReturn("http://example.com/test" +
+                ".txt");
 
         mockMvc.perform(
-                        MockMvcRequestBuilders.get("/api/link").param("filename", "test.txt"))
+                        MockMvcRequestBuilders.get("/api/file/link").param("filename",
+                                "web/test.txt"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("http://example.com/test.txt"));
     }
 
     @Test
     public void testGetLinkAbsent() throws Exception {
-        when(fileService.getLink("test.txt")).thenThrow(FileNotFoundException.class);
+        when(fileService.getLink("web/test.txt")).thenThrow(FileNotFoundException.class);
 
         mockMvc.perform(
-                        MockMvcRequestBuilders.get("/api/link").param("filename", "test.txt"))
+                        MockMvcRequestBuilders.get("/api/file/link").param("filename",
+                                "web/test.txt"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     public void testDuplicateFile() throws Exception {
-        doNothing().when(fileService).duplicate("test.txt");
+        doNothing().when(fileService).duplicate("web/test.txt");
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/duplicate")
-                .param("filename", "test.txt")).andExpect(status().isOk());
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/file/duplicate")
+                .param("filename", "web/test.txt")).andExpect(status().isOk());
     }
 
     @Test
     public void duplicateFileAbsent() throws Exception {
-        doThrow(FileNotFoundException.class).when(fileService).duplicate("test.txt");
+        doThrow(FileNotFoundException.class).when(fileService).duplicate("web/test.txt");
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/duplicate")
-                .param("filename", "test.txt")).andExpect(status().isNotFound());
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/file/duplicate")
+                .param("filename", "web/test.txt")).andExpect(status().isNotFound());
     }
 
     @Test
     public void testUpdateFile() throws Exception {
-        doNothing().when(fileService).update(eq("test.txt"), any(FileHeaderDTO.class));
+        doNothing().when(fileService).update(eq("web/test.txt"),
+                any(FileHeaderDTO.class));
 
         FileHeaderDTO metadataDTO = FileHeaderDTO.builder()
-                .filename("test.txt")
+                .filename("web/test.txt")
                 .description("updated description")
                 .version("1")
                 .status(Status.valueOf("PLANIFIE"))
@@ -251,8 +276,8 @@ public class FileApiTest {
 
         String jsonMetadata = objectMapper.writeValueAsString(metadataDTO);
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/update")
-                        .param("filename", "test.txt")
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/file/update")
+                        .param("filename", "web/test.txt")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonMetadata))
                 .andExpect(status().isOk());
@@ -261,10 +286,10 @@ public class FileApiTest {
     @Test
     public void testUpdateFileAbsent() throws Exception {
         doThrow(FileNotFoundException.class).when(fileService)
-                .update(eq("test.txt"), any(FileHeaderDTO.class));
+                .update(eq("web/test.txt"), any(FileHeaderDTO.class));
 
         FileHeaderDTO metadataDTO = FileHeaderDTO.builder()
-                .filename("test.txt")
+                .filename("web/test.txt")
                 .description("updated description")
                 .version("1")
                 .status(Status.valueOf("PLANIFIE"))
@@ -275,8 +300,8 @@ public class FileApiTest {
 
         String jsonMetadata = objectMapper.writeValueAsString(metadataDTO);
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/update")
-                        .param("filename", "test.txt")
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/file/update")
+                        .param("filename", "web/test.txt")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonMetadata))
                 .andExpect(status().isNotFound());

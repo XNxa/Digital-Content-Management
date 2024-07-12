@@ -2,6 +2,7 @@ package com.dcm.backend.utils;
 
 import com.dcm.backend.dto.FileHeaderDTO;
 import com.dcm.backend.entities.FileHeader;
+import com.dcm.backend.exceptions.FileNotFoundException;
 import com.dcm.backend.repositories.FileRepository;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,24 +19,16 @@ public class PermissionBuilder {
     private final static String[] imageTypes =
             {"image/jpeg", "image/png", "image/gif", "image/bmp", "image/webp",
                     "image/tiff",};
+
     private final static String[] videoTypes = {"video/%",};
+
     private final static String[] pictoTypes = {"image/svg+xml"};
+
     @Autowired
     private FileRepository fr;
 
-    private static @Nullable String getFolder(String filename) {
-        String[] parts = filename.split("/");
-        if (parts.length < 2) {
-            return null;
-        }
-        String folder = parts[0];
-
-        assert List.of("web", "mobile", "sm", "plv", "campagnes").contains(folder);
-        return folder;
-    }
 
     public String buildPermission(FileHeaderDTO metadata, String basePermission) {
-
         String folder = getFolder(metadata.getFilename());
         if (folder == null) return "false";
 
@@ -54,7 +47,8 @@ public class PermissionBuilder {
         return String.join("_", folder, type, basePermission);
     }
 
-    public String buildPermission(String filename, String basePermission) {
+    public String buildPermission(String filename, String basePermission) throws
+            FileNotFoundException {
         String folder = getFolder(filename);
         if (folder == null) return "false";
 
@@ -72,7 +66,7 @@ public class PermissionBuilder {
                 type = "docs";
             }
         } else {
-            return "false";
+            type = "docs";
         }
 
         return String.join("_", folder, type, basePermission);
@@ -86,5 +80,16 @@ public class PermissionBuilder {
                 return t.equals(type);
             }
         });
+    }
+
+    private static @Nullable String getFolder(String filename) {
+        String[] parts = filename.split("/");
+        if (parts.length < 2) {
+            return null;
+        }
+        String folder = parts[0];
+
+        assert List.of("web", "mobile", "sm", "plv", "campagnes").contains(folder);
+        return folder;
     }
 }
