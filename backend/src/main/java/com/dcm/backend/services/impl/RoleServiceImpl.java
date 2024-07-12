@@ -122,10 +122,9 @@ public class RoleServiceImpl implements RoleService {
 
     private void updateGroupRepresentation(GroupRepresentation groupRepresentation, RoleDTO roleDTO) {
         groupRepresentation.setName(roleDTO.getName());
-        groupRepresentation.setAttributes(Map.of(
-                "description", List.of(roleDTO.getDescription()),
-                "state", List.of(String.valueOf(roleDTO.isState()))
-        ));
+        groupRepresentation.setAttributes(
+                Map.of("description", List.of(roleDTO.getDescription()), "state",
+                        List.of(String.valueOf(roleDTO.isState()))));
         keycloak.realm(keycloakProperties.getRealm())
                 .groups()
                 .group(groupRepresentation.getId())

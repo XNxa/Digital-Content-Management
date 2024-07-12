@@ -1,7 +1,7 @@
 <div class="file-card" (click)="onCardClicked()">
   <div class="file-card-body">
     <div class="file-image-container">
-      @if (file?.thumbnail !== null) {
+      @if (file?.thumbnail !== undefined) {
         <img class="file-thumbnail" src="{{ file?.thumbnail }}" />
       } @else {
         <img class="file-icon" src="{{ icon }}" />

@@ -130,6 +130,14 @@ export function getRoutesForTabs(): Route[] {
       path: `${getRouteForNode(node)}/:type`,
       component: FileListComponent,
       canActivate: [AuthGuard],
+      data: {
+        roles: [
+          getRouteForNode(node) + '_images_consult',
+          getRouteForNode(node) + '_videos_consult',
+          getRouteForNode(node) + '_pictos_consult',
+          getRouteForNode(node) + '_docs_consult',
+        ],
+      },
     };
   });
 }

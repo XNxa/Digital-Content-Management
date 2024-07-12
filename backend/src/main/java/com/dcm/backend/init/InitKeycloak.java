@@ -27,12 +27,13 @@ public class InitKeycloak {
     public static final String URLstar = URL + "/*";
     private static final String REALMNAME = "dcm";
     private static final String[] PERMISSIONS =
-            {"import", "modify", "duplicate", "download", "copy_link", "share", "delete"};
+            {"consult", "import", "modify", "duplicate", "download", "copy_link", "share",
+                    "delete"};
     private static final String[] DISPLAY_PERMISSIONS =
-            {"Importer un fichier", "Modifier les informations d'un fichier",
-                    "Dupliquer un fichier", "Télécharger un fichier",
-                    "Copier le lien d'un fichier", "Partager par e-mail un fichier",
-                    "Supprimer un fichier"};
+            {"Consulter les fichiers", "Importer un fichier",
+                    "Modifier les informations d'un fichier", "Dupliquer un fichier",
+                    "Télécharger un fichier", "Copier le lien d'un fichier",
+                    "Partager par e-mail un fichier", "Supprimer un fichier"};
     private static final String[] FOLDER = {"web", "mobile", "sm", "plv", "campagnes"};
     private static final String[] DISPLAY_FOLDERS =
             {"Web", "Mobile", "SM", "P.L.V", "Campagnes"};
@@ -40,14 +41,16 @@ public class InitKeycloak {
     private static final String[] DISPLAY_SUBFOLDERS =
             {"Images", "Vidéos", "Pictos", "Documents"};
     private static final String[] OTHER_ROLES =
-            {"user_add", "user_modify", "user_delete", "role_add", "role_modify",
-                    "role_delete",};
+            {"user_consult", "user_add", "user_modify", "user_delete", "role_consult",
+                    "role_add", "role_modify", "role_delete"};
     private static final String[] DISPLAY_OTHER_ROLES =
-            {"Ajouter un nouvel utilisateur", "Modifier le profil de l'utilisateur",
-                    "Supprimer un utilisateur", "Ajouter un nouveau rôle",
-                    "Modifier un rôle", "Supprimer un rôle"};
+            {"Consulter les utilisateurs", "Ajouter un nouvel utilisateur",
+                    "Modifier le profil de l'utilisateur", "Supprimer un utilisateur",
+                    "Consulter les rôles", "Ajouter un nouveau rôle", "Modifier un rôle",
+                    "Supprimer un rôle"};
     private static final String[] FOLDERS_OTHER_ROLES =
-            {"Utilisateurs", "Utilisateurs", "Utilisateurs", "Rôles", "Rôles", "Rôles"};
+            {"Utilisateurs", "Utilisateurs", "Utilisateurs", "Utilisateurs", "Rôles",
+                    "Rôles", "Rôles", "Rôles"};
 
     public static void main(String[] args) {
 
@@ -206,8 +209,9 @@ public class InitKeycloak {
             String role = OTHER_ROLES[i];
             RoleRepresentation r = new RoleRepresentation();
             r.setName(role);
-            r.setAttributes(Map.of("DisplayName", List.of(FOLDERS_OTHER_ROLES[i],
-                    DISPLAY_OTHER_ROLES[i], String.valueOf(position++))));
+            r.setAttributes(Map.of("DisplayName",
+                    List.of(FOLDERS_OTHER_ROLES[i], DISPLAY_OTHER_ROLES[i],
+                            String.valueOf(position++))));
             keycloak.realm(REALMNAME).roles().create(r);
         }
     }

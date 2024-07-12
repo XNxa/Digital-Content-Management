@@ -27,27 +27,31 @@ export const routes: Routes = [
         path: 'roles',
         component: RoleListComponent,
         canActivate: [AuthGuard],
+        data: { roles: ['role_consult'] },
       },
       {
         path: 'role/:id',
         component: ModifyRoleComponent,
         canActivate: [AuthGuard],
+        data: { roles: ['role_consult'] },
       },
       {
         path: 'roles/add',
         component: NewRoleComponent,
         canActivate: [AuthGuard],
+        data: { roles: ['role_consult'] },
       },
       {
         path: 'users',
         component: UserListComponent,
         canActivate: [AuthGuard],
+        data: { roles: ['user_consult'] },
       },
       {
         path: 'user/:id',
         component: ModifyUserComponent,
         canActivate: [AuthGuard],
-        // data: { roles: ['...'] }
+        data: { roles: ['user_consult'] },
       },
       ...getRoutesForTabs(),
     ],
