@@ -5,7 +5,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   standalone: true,
   imports: [],
   templateUrl: './simple-button.component.html',
-  styleUrl: './simple-button.component.css'
+  styleUrl: './simple-button.component.css',
 })
 export class SimpleButtonComponent {
   @Input() title = '';

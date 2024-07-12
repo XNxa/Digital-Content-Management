@@ -1,5 +1,13 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { ChipsInputComponent } from '../../shared/components/form/chips-input/chips-input.component';
 import { SelectComponent } from '../../shared/components/form/select/select.component';
 import { IconTextButtonComponent } from '../../shared/components/buttons/icon-text-button/icon-text-button.component';
@@ -13,27 +21,54 @@ import { RoleApiService } from '../../services/role-api.service';
 @Component({
   selector: 'app-add-user-dialog',
   standalone: true,
-  imports: [InputComponent, SelectComponent, ChipsInputComponent, IconTextButtonComponent, ToggleButtonComponent, ReactiveFormsModule, ErrorMessageComponent],
+  imports: [
+    InputComponent,
+    SelectComponent,
+    ChipsInputComponent,
+    IconTextButtonComponent,
+    ToggleButtonComponent,
+    ReactiveFormsModule,
+    ErrorMessageComponent,
+  ],
   templateUrl: './add-user-dialog.component.html',
-  styleUrl: './add-user-dialog.component.css'
+  styleUrl: './add-user-dialog.component.css',
 })
 export class AddUserDialogComponent implements OnInit {
-  title = "Ajouter un nouvel utilisateur";
+  title = 'Ajouter un nouvel utilisateur';
 
   @Output() close = new EventEmitter<void>();
 
   currentStep = 1;
 
-  firstname = new FormControl('', [Validators.required, Validators.maxLength(255)]);
-  lastname = new FormControl('', [Validators.required, Validators.maxLength(255)]);
-  function = new FormControl('', [Validators.required, Validators.maxLength(255)]);
-  email = new FormControl('', [Validators.required, Validators.email, Validators.maxLength(255)]);
+  firstname = new FormControl('', [
+    Validators.required,
+    Validators.maxLength(255),
+  ]);
+  lastname = new FormControl('', [
+    Validators.required,
+    Validators.maxLength(255),
+  ]);
+  function = new FormControl('', [
+    Validators.required,
+    Validators.maxLength(255),
+  ]);
+  email = new FormControl('', [
+    Validators.required,
+    Validators.email,
+    Validators.maxLength(255),
+  ]);
 
   role = new FormControl('', [Validators.required]);
   statut = false;
 
-  password = new FormControl('', [Validators.required, Validators.minLength(8)]);
-  passwordConfirmation = new FormControl('', [Validators.required, Validators.minLength(8)]);
+  password = new FormControl('', [
+    Validators.required,
+    Validators.minLength(8),
+  ]);
+  passwordConfirmation = new FormControl('', [
+    Validators.required,
+    Validators.minLength(8),
+  ]);
 
   group1: FormGroup;
   group2: FormGroup;
@@ -41,16 +76,30 @@ export class AddUserDialogComponent implements OnInit {
 
   roleOptions: string[] = [];
 
-  constructor(private roleapi : RoleApiService, private userapi: UserApiService) {
-    this.group1 = new FormGroup({ firstname: this.firstname, lastname: this.lastname, function: this.function, email: this.email });
-    this.group2 = new FormGroup({ role: this.role });
-    this.group3 = new FormGroup({ password: this.password, passwordConfirmation: this.passwordConfirmation }, {
-      validators: this.passwordsMatchValidator()
+  constructor(
+    private roleapi: RoleApiService,
+    private userapi: UserApiService,
+  ) {
+    this.group1 = new FormGroup({
+      firstname: this.firstname,
+      lastname: this.lastname,
+      function: this.function,
+      email: this.email,
     });
+    this.group2 = new FormGroup({ role: this.role });
+    this.group3 = new FormGroup(
+      {
+        password: this.password,
+        passwordConfirmation: this.passwordConfirmation,
+      },
+      {
+        validators: this.passwordsMatchValidator(),
+      },
+    );
   }
 
   ngOnInit(): void {
-    this.roleapi.getActiveRoles().subscribe(roles => {
+    this.roleapi.getActiveRoles().subscribe((roles) => {
       this.roleOptions = roles;
     });
   }
@@ -60,7 +109,11 @@ export class AddUserDialogComponent implements OnInit {
       const password = control.get('password');
       const passwordConfirmation = control.get('passwordConfirmation');
 
-      if (password && passwordConfirmation && password.value != passwordConfirmation.value) {
+      if (
+        password &&
+        passwordConfirmation &&
+        password.value != passwordConfirmation.value
+      ) {
         return { passwordMismatch: true };
       }
       return null;
@@ -109,5 +162,4 @@ export class AddUserDialogComponent implements OnInit {
       });
     }
   }
-
 }

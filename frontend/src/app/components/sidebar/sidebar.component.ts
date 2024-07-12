@@ -4,20 +4,20 @@ import { UserCardFooterComponent } from '../../shared/components/user-card-foote
 import { TREE, Node, getRouteForNode } from '../../models/Tabs';
 import { Router } from '@angular/router';
 
-
 @Component({
   selector: 'app-sidebar',
   standalone: true,
   imports: [CdkTreeModule, UserCardFooterComponent],
   templateUrl: './sidebar.component.html',
-  styleUrl: './sidebar.component.css'
+  styleUrl: './sidebar.component.css',
 })
 export class SidebarComponent {
   treeControl = new FlatTreeControl<Node>(
-    node => node.level, node => node.expandable
+    (node) => node.level,
+    (node) => node.expandable,
   );
 
-  dataSource = TREE.map(node => {
+  dataSource = TREE.map((node) => {
     if (node.name == 'Accueil') {
       node.isSelected = true;
       this.router.navigate([getRouteForNode(node)]);
@@ -25,7 +25,7 @@ export class SidebarComponent {
     return node;
   });
 
-  constructor(private router: Router) { }
+  constructor(private router: Router) {}
 
   hasChild = (_: number, node: Node) => node.expandable;
 
@@ -60,10 +60,12 @@ export class SidebarComponent {
 
   selectNode(node: Node): void {
     if (node.expandable) {
-      this.dataSource.forEach(n => { if (n.name != node.name) n.isExpanded = false; });
+      this.dataSource.forEach((n) => {
+        if (n.name != node.name) n.isExpanded = false;
+      });
       node.isExpanded = !node.isExpanded;
     } else {
-      this.dataSource.forEach(n => n.isSelected = false);
+      this.dataSource.forEach((n) => (n.isSelected = false));
       node.isSelected = true;
     }
     this.navigateTo(node);
@@ -86,13 +88,11 @@ export class SidebarComponent {
   }
 
   navigateTo(node: Node): void {
-    let parent = this.getParentNode(node);
+    const parent = this.getParentNode(node);
     if (parent) {
       this.router.navigate([getRouteForNode(parent), getRouteForNode(node)]);
     } else {
-      if (!node.expandable)
-        this.router.navigate([getRouteForNode(node)]);
+      if (!node.expandable) this.router.navigate([getRouteForNode(node)]);
     }
   }
-
 }

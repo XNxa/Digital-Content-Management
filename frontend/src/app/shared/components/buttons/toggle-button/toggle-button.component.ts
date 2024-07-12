@@ -5,16 +5,15 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   standalone: true,
   imports: [],
   templateUrl: './toggle-button.component.html',
-  styleUrl: './toggle-button.component.css'
+  styleUrl: './toggle-button.component.css',
 })
 export class ToggleButtonComponent {
-  
-  @Input() label: string = '';
+  @Input() label = '';
   @Input() checked!: boolean;
-  @Input() noTitle: boolean = false;
-  @Input() disabled: boolean = false;
+  @Input() noTitle = false;
+  @Input() disabled = false;
   @Output() checkedChange = new EventEmitter<boolean>();
-  
+
   toggle($event: MouseEvent) {
     if (this.disabled) return;
     $event.stopPropagation();

@@ -1,68 +1,139 @@
 <div class="dialog-backdrop">
-    <div class="dialog">
-        <div class="dialog-header">
-            <h3>{{title}}</h3>
-            <button class="close-button" (click)="cancel()">
-                <img src="icons/blue/close.svg">
-            </button>
-        </div>
-        <div class="dialog-steps">
-            <div class="step step-left" [class]="currentStep == 1 ? 'active' : ''">
-                Profil
-            </div>
-            <div class="step" [class]="currentStep == 2 ? 'active' : ''">
-                Rôle
-            </div>
-            <div class="step step-right" [class]="currentStep == 3 ? 'active' : ''">
-                Mot de passe
-            </div>
-        </div>
-
-        @switch (currentStep) {
-        @case (1) {
-        <div class="dialog-body">
-            <div class="inputs-container">
-                <app-input label="Nom" [border]="true" placeholder="Saisissez un nom" [(value)]="lastname"></app-input>
-                <app-input label="Prénom" [border]="true" placeholder="Saisissez un prénom"
-                    [(value)]="firstname"></app-input>
-            </div>
-            <div class="inputs-container">
-                <app-input label="Fonction" [border]="true" placeholder="Saisissez une fonction"
-                    [(value)]="function"></app-input>
-                <app-input label="Email" [border]="true" placeholder="Saisissez un email" [(value)]="email"></app-input>
-            </div>
-        </div>
-
-        <div class="dialog-footer">
-            <app-icon-text-button title="Annuler" icon="close" color="white" (click)="cancel()"></app-icon-text-button>
-            <app-icon-text-button title="Suivant" icon="forward" (click)="nextStep()"></app-icon-text-button>
-        </div>
-        }
-        @case (2) {
-        <div class="inputs-container">
-            <app-select label="Rôle" [border]="true" [options]="roleOptions" placeholder="Saisissez un rôle" [(value)]="role"></app-select>
-            <app-toggle-button label="Statut" [(checked)]="statut"></app-toggle-button>
-        </div>
-
-        <div class="dialog-footer">
-            <app-icon-text-button title="Annuler" icon="close" color="white" (click)="cancel()"></app-icon-text-button>
-            <app-icon-text-button title="Précédent" icon="back" (click)="previousStep()"></app-icon-text-button>
-            <app-icon-text-button title="Suivant" icon="forward" (click)="nextStep()"></app-icon-text-button>
-        </div>
-        }
-        @case (3) {
-        <div class="inputs-container">
-            <app-input label="Mot de passe" type="password" [(value)]="password"></app-input>
-            <app-input label="Confirmer le mot de passe" type="password" [(value)]="passwordConfirmation"></app-input>
-        </div>
-        <app-error-message style="margin-top: 5px;" [form]="group3"></app-error-message>
-
-        <div class="dialog-footer">
-            <app-icon-text-button title="Annuler" icon="close" color="white" (click)="cancel()"></app-icon-text-button>
-            <app-icon-text-button title="Précédent" icon="back" (click)="previousStep()"></app-icon-text-button>
-            <app-icon-text-button title="Enregistrer" icon="check" (click)="save()"></app-icon-text-button>
-        </div>
-        }
-        }
+  <div class="dialog">
+    <div class="dialog-header">
+      <h3>{{ title }}</h3>
+      <button class="close-button" (click)="cancel()">
+        <img src="icons/blue/close.svg" />
+      </button>
     </div>
+    <div class="dialog-steps">
+      <div class="step step-left" [class]="currentStep === 1 ? 'active' : ''">
+        Profil
+      </div>
+      <div class="step" [class]="currentStep === 2 ? 'active' : ''">Rôle</div>
+      <div class="step step-right" [class]="currentStep === 3 ? 'active' : ''">
+        Mot de passe
+      </div>
+    </div>
+
+    @switch (currentStep) {
+      @case (1) {
+        <div class="dialog-body">
+          <div class="inputs-container">
+            <app-input
+              label="Nom"
+              [border]="true"
+              placeholder="Saisissez un nom"
+              [(value)]="lastname"
+            ></app-input>
+            <app-input
+              label="Prénom"
+              [border]="true"
+              placeholder="Saisissez un prénom"
+              [(value)]="firstname"
+            ></app-input>
+          </div>
+          <div class="inputs-container">
+            <app-input
+              label="Fonction"
+              [border]="true"
+              placeholder="Saisissez une fonction"
+              [(value)]="function"
+            ></app-input>
+            <app-input
+              label="Email"
+              [border]="true"
+              placeholder="Saisissez un email"
+              [(value)]="email"
+            ></app-input>
+          </div>
+        </div>
+
+        <div class="dialog-footer">
+          <app-icon-text-button
+            title="Annuler"
+            icon="close"
+            color="white"
+            (click)="cancel()"
+          ></app-icon-text-button>
+          <app-icon-text-button
+            title="Suivant"
+            icon="forward"
+            (click)="nextStep()"
+          ></app-icon-text-button>
+        </div>
+      }
+      @case (2) {
+        <div class="inputs-container">
+          <app-select
+            label="Rôle"
+            [border]="true"
+            [options]="roleOptions"
+            placeholder="Saisissez un rôle"
+            [(value)]="role"
+          ></app-select>
+          <app-toggle-button
+            label="Statut"
+            [(checked)]="statut"
+          ></app-toggle-button>
+        </div>
+
+        <div class="dialog-footer">
+          <app-icon-text-button
+            title="Annuler"
+            icon="close"
+            color="white"
+            (click)="cancel()"
+          ></app-icon-text-button>
+          <app-icon-text-button
+            title="Précédent"
+            icon="back"
+            (click)="previousStep()"
+          ></app-icon-text-button>
+          <app-icon-text-button
+            title="Suivant"
+            icon="forward"
+            (click)="nextStep()"
+          ></app-icon-text-button>
+        </div>
+      }
+      @case (3) {
+        <div class="inputs-container">
+          <app-input
+            label="Mot de passe"
+            type="password"
+            [(value)]="password"
+          ></app-input>
+          <app-input
+            label="Confirmer le mot de passe"
+            type="password"
+            [(value)]="passwordConfirmation"
+          ></app-input>
+        </div>
+        <app-error-message
+          style="margin-top: 5px"
+          [form]="group3"
+        ></app-error-message>
+
+        <div class="dialog-footer">
+          <app-icon-text-button
+            title="Annuler"
+            icon="close"
+            color="white"
+            (click)="cancel()"
+          ></app-icon-text-button>
+          <app-icon-text-button
+            title="Précédent"
+            icon="back"
+            (click)="previousStep()"
+          ></app-icon-text-button>
+          <app-icon-text-button
+            title="Enregistrer"
+            icon="check"
+            (click)="save()"
+          ></app-icon-text-button>
+        </div>
+      }
+    }
+  </div>
 </div>

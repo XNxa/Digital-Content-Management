@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ButtonIcon } from '../icon-button-type';
 
 @Component({
@@ -6,14 +6,14 @@ import { ButtonIcon } from '../icon-button-type';
   standalone: true,
   imports: [],
   templateUrl: './icon-menu-button.component.html',
-  styleUrl: './icon-menu-button.component.css'
+  styleUrl: './icon-menu-button.component.css',
 })
 export class IconMenuButtonComponent {
   @Input() icon!: ButtonIcon;
   @Input() disabled = false;
   @Input() color: 'blue' | 'white' | 'clearblue' = 'white';
 
-  menuOpened: boolean = false;
+  menuOpened = false;
 
   openMenu(): void {
     this.menuOpened = !this.menuOpened;

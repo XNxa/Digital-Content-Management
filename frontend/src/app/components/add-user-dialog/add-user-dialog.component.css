@@ -1,87 +1,88 @@
 .dialog-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: #0b2866d3;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #0b2866d3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .dialog {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 700px;
-    height: 320px;
-    box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.453);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 700px;
+  height: 320px;
+  box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.453);
 }
 
 .dialog-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .dialog-body {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .inputs-container {
-    display: flex;
-    gap: 10px;
+  display: flex;
+  gap: 10px;
 
-    app-input, app-toggle-button, app-select {
-        flex: 1;
-    }
+  app-input,
+  app-toggle-button,
+  app-select {
+    flex: 1;
+  }
 }
 
 .close-button {
-    background: transparent;
-    border: none;
-    cursor: pointer;
+  background: transparent;
+  border: none;
+  cursor: pointer;
 }
 
 .dialog-footer {
-    margin-top: auto;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 10px;
+  margin-top: auto;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
 }
 
 .dialog-steps {
-    display: flex;
+  display: flex;
 }
 
 .step {
-    flex: auto;
-    padding: 10px;
-    font-size: small;
-    text-align: center;
-    background-color: #ECEFF1;
-    color: var(--grey-text);
+  flex: auto;
+  padding: 10px;
+  font-size: small;
+  text-align: center;
+  background-color: #eceff1;
+  color: var(--grey-text);
 }
 
 .step-left {
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
 }
 
 .step-right {
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
 
 .active {
-    background-color: var(--secondary);
-    color: var(--primary);
+  background-color: var(--secondary);
+  color: var(--primary);
 }
-

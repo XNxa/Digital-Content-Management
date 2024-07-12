@@ -1,4 +1,10 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+} from '@angular/core';
 import { FileHeader } from '../../models/FileHeader';
 import { MimeTypes } from '../../utils/mime-types';
 import { FileApiService } from '../../services/file-api.service';
@@ -16,7 +22,15 @@ import { PermissionDirective } from '../../shared/directives/permission.directiv
 @Component({
   selector: 'app-file-details',
   standalone: true,
-  imports: [ZoomButtonComponent, IconButtonComponent, IconTextButtonComponent, ModifyDialogComponent, StatusChipComponent, ZipListComponent, PermissionDirective],
+  imports: [
+    ZoomButtonComponent,
+    IconButtonComponent,
+    IconTextButtonComponent,
+    ModifyDialogComponent,
+    StatusChipComponent,
+    ZipListComponent,
+    PermissionDirective,
+  ],
   templateUrl: './file-details.component.html',
   styleUrl: './file-details.component.css',
 })
@@ -37,18 +51,21 @@ export class FileDetailsComponent implements OnChanges {
   displaytype!: 'image' | 'video' | 'zip' | undefined;
 
   data!: string;
-  currentZoom: number = 1;
+  currentZoom = 1;
 
   height: number | undefined;
   width: number | undefined;
 
-  isDialogOpen: boolean = false;
+  isDialogOpen = false;
 
   Status = Status;
 
-  constructor(private api: FileApiService, private snackbar: SnackbarService) { }
+  constructor(
+    private api: FileApiService,
+    private snackbar: SnackbarService,
+  ) {}
 
-  ngOnChanges(_changes: SimpleChanges): void {
+  ngOnChanges(): void {
     if (this.file.type.startsWith('image')) {
       this.displaytype = 'image';
     } else if (this.file.type.startsWith('video')) {
@@ -60,16 +77,18 @@ export class FileDetailsComponent implements OnChanges {
     }
 
     this.api.getFileData(this.file.filename).subscribe({
-      next: blob => {
-        let fr = new FileReader();
+      next: (blob) => {
+        const fr = new FileReader();
         fr.readAsDataURL(blob);
         fr.onload = () => {
           this.data = fr.result as string;
-        }
-      }
+        };
+      },
     });
 
-    this.type = (MimeTypes.extension(this.file?.type!) || 'unknown').toUpperCase();
+    this.type = (
+      MimeTypes.extension(this.file?.type) || 'unknown'
+    ).toUpperCase();
     this.displayFolder = getNameFromPath(this.folder);
     this.displayTypeFolder = getNameFromPath(this.typeFolder);
   }
@@ -83,14 +102,14 @@ export class FileDetailsComponent implements OnChanges {
   }
 
   onSendByEmail(): void {
-    this.api.getLink(this.file.filename).subscribe(link => {
+    this.api.getLink(this.file.filename).subscribe((link) => {
       const mailtoLink = `mailto:?subject=Partage de fichier&body=Bonjour,%0A%0AVeuillez trouver ci-joint le lien vers le fichier :%0A${encodeURIComponent(link)}`;
       window.location.href = mailtoLink;
     });
   }
 
   onGetLink(): void {
-    this.api.getLink(this.file.filename).subscribe(link => {
+    this.api.getLink(this.file.filename).subscribe((link) => {
       navigator.clipboard.writeText(link).then(() => {
         this.snackbar.show('Lien copié dans le presse-papier');
       });
@@ -99,14 +118,14 @@ export class FileDetailsComponent implements OnChanges {
 
   onDownload(): void {
     this.api.getFileData(this.file.filename).subscribe({
-      next: blob => {
+      next: (blob) => {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
         a.download = this.file.filename;
         a.click();
         URL.revokeObjectURL(url);
-      }
+      },
     });
   }
 
@@ -114,7 +133,7 @@ export class FileDetailsComponent implements OnChanges {
     this.api.duplicate(this.file.filename).subscribe({
       next: () => {
         this.snackbar.show('Fichier dupliqué avec succès');
-      }
+      },
     });
   }
 
@@ -122,7 +141,7 @@ export class FileDetailsComponent implements OnChanges {
     this.api.delete([this.file.filename]).subscribe({
       next: () => {
         this.snackbar.show('Fichiers supprimés avec succès');
-      }
+      },
     });
     this.next.emit();
   }

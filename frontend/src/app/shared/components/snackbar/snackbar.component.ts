@@ -5,19 +5,17 @@ import { Component } from '@angular/core';
   standalone: true,
   imports: [],
   templateUrl: './snackbar.component.html',
-  styleUrl: './snackbar.component.css'
+  styleUrl: './snackbar.component.css',
 })
 export class SnackbarComponent {
+  isVisible = false;
+  message = '';
 
-  isVisible: boolean = false;
-  message: string = '';
-
-  show(message: string, duration: number = 3000) {
+  show(message: string, duration = 3000) {
     this.message = message;
     this.isVisible = true;
     setTimeout(() => {
       this.isVisible = false;
     }, duration);
   }
-
 }

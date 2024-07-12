@@ -1,25 +1,39 @@
 import { Component, OnInit } from '@angular/core';
-import { InputComponent } from "../../shared/components/form/input/input.component";
-import { ToggleButtonComponent } from "../../shared/components/buttons/toggle-button/toggle-button.component";
-import { LongInputComponent } from "../../shared/components/form/long-input/long-input.component";
-import { IconTextButtonComponent } from "../../shared/components/buttons/icon-text-button/icon-text-button.component";
-import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { InputComponent } from '../../shared/components/form/input/input.component';
+import { ToggleButtonComponent } from '../../shared/components/buttons/toggle-button/toggle-button.component';
+import { LongInputComponent } from '../../shared/components/form/long-input/long-input.component';
+import { IconTextButtonComponent } from '../../shared/components/buttons/icon-text-button/icon-text-button.component';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ValidationErrors,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { UserApiService } from '../../services/user-api.service';
 import { RoleApiService } from '../../services/role-api.service';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { User } from '../../models/User';
-import { SelectComponent } from "../../shared/components/form/select/select.component";
+import { SelectComponent } from '../../shared/components/form/select/select.component';
 import { PermissionDirective } from '../../shared/directives/permission.directive';
 
 @Component({
   selector: 'app-modify-user',
   standalone: true,
-  imports: [InputComponent, ToggleButtonComponent, LongInputComponent, IconTextButtonComponent, RouterModule, SelectComponent, PermissionDirective],
+  imports: [
+    InputComponent,
+    ToggleButtonComponent,
+    LongInputComponent,
+    IconTextButtonComponent,
+    RouterModule,
+    SelectComponent,
+    PermissionDirective,
+  ],
   templateUrl: './modify-user.component.html',
-  styleUrl: './modify-user.component.css'
+  styleUrl: './modify-user.component.css',
 })
 export class ModifyUserComponent implements OnInit {
-
   mode: 'modify' | 'consult' = 'consult';
 
   user!: User;
@@ -30,24 +44,40 @@ export class ModifyUserComponent implements OnInit {
   email = new FormControl('', [Validators.required, Validators.email]);
 
   role = new FormControl('', [Validators.required]);
-  state: boolean = false;
+  state = false;
 
   password = new FormControl('', [Validators.required]);
   passwordConfirmation = new FormControl('', [Validators.required]);
 
-  group1 = new FormGroup({ firstname: this.firstname, lastname: this.lastname, function: this.function, email: this.email });
-  group2 = new FormGroup({ role: this.role });
-  group3 = new FormGroup({ password: this.password, passwordConfirmation: this.passwordConfirmation }, {
-    validators: this.passwordsMatchValidator()
+  group1 = new FormGroup({
+    firstname: this.firstname,
+    lastname: this.lastname,
+    function: this.function,
+    email: this.email,
   });
+  group2 = new FormGroup({ role: this.role });
+  group3 = new FormGroup(
+    {
+      password: this.password,
+      passwordConfirmation: this.passwordConfirmation,
+    },
+    {
+      validators: this.passwordsMatchValidator(),
+    },
+  );
 
   roleOptions!: string[];
 
-  constructor(private userapi: UserApiService, private roleapi: RoleApiService, private route: ActivatedRoute, private router: Router) { }
+  constructor(
+    private userapi: UserApiService,
+    private roleapi: RoleApiService,
+    private route: ActivatedRoute,
+    private router: Router,
+  ) {}
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      this.userapi.getUser(params['id']).subscribe(user => {
+    this.route.params.subscribe((params) => {
+      this.userapi.getUser(params['id']).subscribe((user) => {
         this.user = user;
         this.firstname.setValue(user.firstname);
         this.lastname.setValue(user.lastname);
@@ -57,7 +87,7 @@ export class ModifyUserComponent implements OnInit {
         this.state = user.statut == 'active';
       });
     });
-    this.roleapi.getActiveRoles().subscribe(roles => {
+    this.roleapi.getActiveRoles().subscribe((roles) => {
       this.roleOptions = roles;
     });
   }
@@ -67,7 +97,11 @@ export class ModifyUserComponent implements OnInit {
       const password = control.get('password');
       const passwordConfirmation = control.get('passwordConfirmation');
 
-      if (password && passwordConfirmation && password.value != passwordConfirmation.value) {
+      if (
+        password &&
+        passwordConfirmation &&
+        password.value != passwordConfirmation.value
+      ) {
         return { passwordMismatch: true };
       }
       return null;
@@ -104,9 +138,9 @@ export class ModifyUserComponent implements OnInit {
         email: this.email.value!,
         role: this.role.value!,
         statut: this.state ? 'active' : 'inactive',
-        password: this.password.value!
-      }
-  
+        password: this.password.value!,
+      };
+
       this.userapi.updateUser(user).subscribe(() => {
         this.mode = 'consult';
       });

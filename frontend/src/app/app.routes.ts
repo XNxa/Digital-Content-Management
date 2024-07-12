@@ -10,45 +10,46 @@ import { ModifyRoleComponent } from './components/modify-role/modify-role.compon
 import { ModifyUserComponent } from './components/modify-user/modify-user.component';
 
 export const routes: Routes = [
-    {
+  {
+    path: '',
+    component: HomeComponent,
+    children: [
+      {
         path: '',
-        component: HomeComponent,
-        children: [
-            {
-                path: '',
-                redirectTo: 'accueil',
-                pathMatch: 'full'
-            },
-            {
-                path: 'home',
-                component: ZoomButtonComponent, //TODO
-            },
-            {
-                path: 'roles',
-                component: RoleListComponent, 
-                canActivate: [AuthGuard]
-            },
-            {
-                path: 'role/:id',
-                component: ModifyRoleComponent,
-                canActivate: [AuthGuard]
-            },
-            {
-                path: 'roles/add',
-                component: NewRoleComponent,
-                canActivate: [AuthGuard]
-            },
-            {
-                path: 'users',
-                component: UserListComponent,
-                canActivate: [AuthGuard]
-            },
-            {
-                path: 'user/:id',
-                component: ModifyUserComponent,
-                canActivate: [AuthGuard]
-            },
-            ...getRoutesForTabs()
-        ]
-    }
+        redirectTo: 'accueil',
+        pathMatch: 'full',
+      },
+      {
+        path: 'home',
+        component: ZoomButtonComponent, //TODO
+      },
+      {
+        path: 'roles',
+        component: RoleListComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'role/:id',
+        component: ModifyRoleComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'roles/add',
+        component: NewRoleComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'users',
+        component: UserListComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'user/:id',
+        component: ModifyUserComponent,
+        canActivate: [AuthGuard],
+        // data: { roles: ['...'] }
+      },
+      ...getRoutesForTabs(),
+    ],
+  },
 ];

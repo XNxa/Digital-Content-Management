@@ -1,11 +1,13 @@
 <div class="card">
-    @if (pp == '') {
-        <span class="default-pp">{{name.at(0)?.toUpperCase()}}</span>
-    } @else {
-        <img class="pp" src="{{pp}}">
-    }
-    <span class="name">
-        {{name}}
-    </span>
-    <img [src]="'icons/' + (profileOpen ? 'chevron_up.svg' : 'chevron_right.svg')">
+  @if (pp === "") {
+    <span class="default-pp">{{ name.at(0)?.toUpperCase() }}</span>
+  } @else {
+    <img class="pp" src="{{ pp }}" />
+  }
+  <span class="name">
+    {{ name }}
+  </span>
+  <img
+    [src]="'icons/' + (profileOpen ? 'chevron_up.svg' : 'chevron_right.svg')"
+  />
 </div>

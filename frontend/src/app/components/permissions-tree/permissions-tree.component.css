@@ -1,81 +1,84 @@
 .select {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.left-button, .right-button {
-    border: #105DFB 1px solid;
-    color: #105DFB;
-    background-color: white;
-    padding: 6px 10px;
-    font-weight: 500;
+.left-button,
+.right-button {
+  border: #105dfb 1px solid;
+  color: #105dfb;
+  background-color: white;
+  padding: 6px 10px;
+  font-weight: 500;
 }
 
 .left-button {
-    border-top-left-radius: 8px;
-    border-bottom-left-radius: 8px;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
 }
 
 .right-button {
-    border-left: 0px;
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
+  border-left: 0px;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
 }
 
-.right-button:hover, .left-button:hover {
-    background-color: #D7E3FC;
+.right-button:hover,
+.left-button:hover {
+  background-color: #d7e3fc;
 }
 
 .tree {
-    width: 100%;
-    user-select: none;
+  width: 100%;
+  user-select: none;
 }
 
 .line {
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid #E0E0E0;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #e0e0e0;
 }
 
 cdk-tree-node {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .folder {
-    background-color: #105DFB;
-    color: white;
+  background-color: #105dfb;
+  color: white;
 }
 
 .subfolder {
-    background-color: white;
-    color: #105DFB;
-    border-bottom: #ECEFF1 1px solid;
+  background-color: white;
+  color: #105dfb;
+  border-bottom: #eceff1 1px solid;
 }
 
 .leaf {
-    background-color: white;
-    color: #0B2866;
-    border-bottom: #ECEFF1 1px solid;
+  background-color: white;
+  color: #0b2866;
+  border-bottom: #eceff1 1px solid;
 }
 
 .toggle {
-    margin: 15px;
-    margin-left: auto;
-    margin-right: 30px;
+  margin: 15px;
+  margin-left: auto;
+  margin-right: 30px;
 }
 
 cdk-tree-node:first-child {
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
 }
 
-cdk-tree-node:last-child, .last {
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
+cdk-tree-node:last-child,
+.last {
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
 }
 
 img {
-    margin: 10px;
+  margin: 10px;
 }

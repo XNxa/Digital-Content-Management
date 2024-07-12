@@ -1,26 +1,40 @@
 <div class="sidebar">
   <div class="sidebar-header">
-    <img src="logo.svg" class="logo">
+    <img src="logo.svg" class="logo" />
   </div>
 
   <div class="sidebar-nav">
     <cdk-tree [dataSource]="dataSource" [treeControl]="treeControl">
       <!-- This is the tree node template for title nodes -->
-      <cdk-tree-node *cdkTreeNodeDef="let node; when: isTitle" cdkTreeNodePadding [class]="getClass(node)">
-        <p>{{node.name}}</p>
+      <cdk-tree-node
+        *cdkTreeNodeDef="let node; when: isTitle"
+        cdkTreeNodePadding
+        [class]="getClass(node)"
+      >
+        <p>{{ node.name }}</p>
       </cdk-tree-node>
       <!-- This is the tree node template for leaf nodes -->
-      <cdk-tree-node *cdkTreeNodeDef="let node" cdkTreeNodePadding
-        [style.display]="shouldRender(node) ? 'flex' : 'none'" [class]="getClass(node)" (click)="selectNode(node)">
-        <img [src]="getLogoPath(node)">
-        <a>{{node.name}}</a>
+      <cdk-tree-node
+        *cdkTreeNodeDef="let node"
+        cdkTreeNodePadding
+        [style.display]="shouldRender(node) ? 'flex' : 'none'"
+        [class]="getClass(node)"
+        (click)="selectNode(node)"
+      >
+        <img [src]="getLogoPath(node)" />
+        <a>{{ node.name }}</a>
       </cdk-tree-node>
       <!-- This is the tree node template for expandable nodes -->
-      <cdk-tree-node *cdkTreeNodeDef="let node; when: hasChild" cdkTreeNodePadding
-        [style.display]="shouldRender(node) ? 'flex' : 'none'" [class]="getClass(node)" (click)="selectNode(node)">
-        <img [src]="getArrowPath(node)">
-        <img [src]="getLogoPath(node)">
-        <a>{{node.name}}</a>
+      <cdk-tree-node
+        *cdkTreeNodeDef="let node; when: hasChild"
+        cdkTreeNodePadding
+        [style.display]="shouldRender(node) ? 'flex' : 'none'"
+        [class]="getClass(node)"
+        (click)="selectNode(node)"
+      >
+        <img [src]="getArrowPath(node)" />
+        <img [src]="getLogoPath(node)" />
+        <a>{{ node.name }}</a>
       </cdk-tree-node>
     </cdk-tree>
   </div>

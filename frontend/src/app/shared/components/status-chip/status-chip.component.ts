@@ -6,11 +6,11 @@ import { Status } from '../../../enums/status';
   standalone: true,
   imports: [],
   templateUrl: './status-chip.component.html',
-  styleUrl: './status-chip.component.css'
+  styleUrl: './status-chip.component.css',
 })
 export class StatusChipComponent {
   @Input() status: Status = Status.ARCHIVE;
-  @Input() size: 'small' | 'large' = 'small'; 
+  @Input() size: 'small' | 'large' = 'small';
 
   getClass(status: Status): string {
     return status.toLowerCase() + ' ' + this.size;

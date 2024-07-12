@@ -1,14 +1,25 @@
 <div class="input-container">
-    <label>{{ label }} <span>{{hint}}</span></label>
-    @if (disabled) {
-    <input [class]="border ? 'input-border' : 'no-border'" type="text" [value]="value.value" disabled>
-    }
-    @else
-    {<select [class]="border ? 'input-border' : 'no-border'" [formControl]="value" (click)="onInput($event)"
-        [attr.aria-label]="label">
-        @for (item of options; track $index) {
-        <option>{{item}}</option>
-        }
-    </select>}
-    <app-error-message [form]="value"></app-error-message>
+  <label
+    >{{ label }} <span>{{ hint }}</span></label
+  >
+  @if (disabled) {
+    <input
+      [class]="border ? 'input-border' : 'no-border'"
+      type="text"
+      [value]="value.value"
+      disabled
+    />
+  } @else {
+    <select
+      [class]="border ? 'input-border' : 'no-border'"
+      [formControl]="value"
+      (click)="onInput()"
+      [attr.aria-label]="label"
+    >
+      @for (item of options; track $index) {
+        <option>{{ item }}</option>
+      }
+    </select>
+  }
+  <app-error-message [form]="value"></app-error-message>
 </div>

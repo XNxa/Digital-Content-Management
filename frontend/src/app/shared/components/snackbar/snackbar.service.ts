@@ -1,21 +1,17 @@
-import { Injectable } from "@angular/core";
-import { SnackbarComponent } from "./snackbar.component";
+import { Injectable } from '@angular/core';
+import { SnackbarComponent } from './snackbar.component';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root',
 })
 export class SnackbarService {
-    
-    private snackbarComponent !: SnackbarComponent;
+  private snackbarComponent!: SnackbarComponent;
 
-    constructor() { }
+  setSnackbarComponent(snackbarComponent: SnackbarComponent) {
+    this.snackbarComponent = snackbarComponent;
+  }
 
-    setSnackbarComponent(snackbarComponent: SnackbarComponent) {
-        this.snackbarComponent = snackbarComponent;
-    }
-
-    show(message: string, duration: number = 3000) {
-        this.snackbarComponent.show(message, duration);
-    }
-    
+  show(message: string, duration = 3000) {
+    this.snackbarComponent.show(message, duration);
+  }
 }

@@ -6,21 +6,22 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
   standalone: true,
   imports: [ReactiveFormsModule],
   templateUrl: './long-input.component.html',
-  styleUrl: './long-input.component.css'
+  styleUrl: './long-input.component.css',
 })
 export class LongInputComponent {
-  @Input() label: string = '';
-  @Input() hint: string = '';
-  @Input() placeholder: string = '';
+  @Input() label = '';
+  @Input() hint = '';
+  @Input() placeholder = '';
   @Input() value!: FormControl<string | null>;
   @Input() border = true;
-  @Input() rows: number = 3;
-  @Input() disabled: boolean = false;
-  @Output() valueChange: EventEmitter<FormControl<string | null>> = new EventEmitter<FormControl<string | null>>();
+  @Input() rows = 3;
+  @Input() disabled = false;
+  @Output() valueChange: EventEmitter<FormControl<string | null>> =
+    new EventEmitter<FormControl<string | null>>();
 
-  isPasswordVisible: boolean = false;
+  isPasswordVisible = false;
 
-  onInput(_event: Event): void {
+  onInput(): void {
     this.valueChange.emit(this.value);
   }
 }

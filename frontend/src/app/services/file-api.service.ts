@@ -7,41 +7,55 @@ import { Status } from '../enums/status';
 import { FileCategory } from '../models/Tabs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FileApiService {
-
   private API = environment.api + '/file';
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient) {}
 
   public uploadFile(file: File, metadata: FileHeader): Observable<void> {
     const formData: FormData = new FormData();
     formData.append('file', file, file.name);
-    formData.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+    formData.append(
+      'metadata',
+      new Blob([JSON.stringify(metadata)], { type: 'application/json' }),
+    );
 
     return this.httpClient.post<void>(`${this.API}/upload`, formData);
   }
 
-  public getNumberOfElement(filename: string, type: FileCategory, keywords?: string[], status?: Status[]): Observable<number> {
+  public getNumberOfElement(
+    filename: string,
+    type: FileCategory,
+    keywords?: string[],
+    status?: Status[],
+  ): Observable<number> {
     const filter = {
       page: '0',
       size: '0',
       filename: filename,
-      keywords: (keywords || []),
-      status: (status || []),
+      keywords: keywords || [],
+      status: status || [],
       category: type,
     };
     return this.httpClient.post<number>(`${this.API}/count`, filter);
   }
 
-  public getPages(page: number, size: number, filename: string, type: FileCategory, keywords?: string[], status?: Status[]): Observable<FileHeader[]> {
+  public getPages(
+    page: number,
+    size: number,
+    filename: string,
+    type: FileCategory,
+    keywords?: string[],
+    status?: Status[],
+  ): Observable<FileHeader[]> {
     const filter = {
       page: page.toString(),
       size: size.toString(),
       filename: filename,
-      keywords: (keywords || []),
-      status: (status || []),
+      keywords: keywords || [],
+      status: status || [],
       category: type,
     };
     return this.httpClient.post<FileHeader[]>(`${this.API}/files`, filter).pipe(
@@ -51,15 +65,15 @@ export class FileApiService {
           file.printableSize = convertSizeToPrintable(file.size);
           return file;
         }, this);
-      }
-      ));
+      }),
+    );
   }
 
   public getFileData(filename: string): Observable<Blob> {
     const params = new HttpParams().set('filename', filename);
     return this.httpClient.get<Blob>(`${this.API}/filedata`, {
       params,
-      responseType: 'blob' as 'json'
+      responseType: 'blob' as 'json',
     });
   }
 
@@ -67,7 +81,7 @@ export class FileApiService {
     const params = new HttpParams().set('filename', filename);
     return this.httpClient.get<Blob>(`${this.API}/thumbnail`, {
       params,
-      responseType: 'blob' as 'json'
+      responseType: 'blob' as 'json',
     });
   }
 
@@ -77,26 +91,26 @@ export class FileApiService {
 
   public delete(filename: string[]): Observable<void> {
     return this.httpClient.delete<void>(`${this.API}/delete`, {
-      params: new HttpParams().set('filename', filename.join(','))
+      params: new HttpParams().set('filename', filename.join(',')),
     });
   }
 
   public getLink(filename: string): Observable<string> {
     return this.httpClient.get<string>(`${this.API}/link`, {
       params: new HttpParams().set('filename', filename),
-      responseType: 'text' as 'json'
+      responseType: 'text' as 'json',
     });
   }
 
   public duplicate(filename: string): Observable<void> {
     return this.httpClient.post<void>(`${this.API}/duplicate`, null, {
-      params: new HttpParams().set('filename', filename)
+      params: new HttpParams().set('filename', filename),
     });
   }
 
   public update(filename: string, metadata: FileHeader): Observable<void> {
     return this.httpClient.put<void>(`${this.API}/update`, metadata, {
-      params: new HttpParams().set('filename', filename)
+      params: new HttpParams().set('filename', filename),
     });
   }
 }

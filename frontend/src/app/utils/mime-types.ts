@@ -3,14 +3,14 @@
  * Copyright(c) 2014 Jonathan Ong <me@jongleberry.com>
  * Copyright(c) 2015 Douglas Christopher Wilson <doug@somethingdoug.com>
  * MIT Licensed
- * 
+ *
  * This file has been modified from its original version.
  * The original code has been adapted to work in an Angular environment and encapsulated into a class.
  */
 
 /**
  * The MIT License (MIT)
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
  * 'Software'), to deal in the Software without restriction, including
@@ -18,10 +18,10 @@
  * distribute, sublicense, and/or sell copies of the Software, and to
  * permit persons to whom the Software is furnished to do so, subject to
  * the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
  * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
@@ -30,7 +30,6 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
 
 import mimeDb from 'mime-db';
 
@@ -46,8 +45,8 @@ const TEXT_TYPE_REGEXP = /^text\//i;
  * Represents a utility class for working with MIME types.
  */
 export class MimeTypes {
-  private static extensions: { [key: string]: string[] } = {};
-  private static types: { [key: string]: string } = {};
+  private static extensions: Record<string, string[]> = {};
+  private static types: Record<string, string> = {};
 
   static {
     this.populateMaps(this.extensions, this.types);
@@ -77,7 +76,6 @@ export class MimeTypes {
     return false;
   }
 
-  
   /**
    * Returns the content type based on the provided string.
    * If the string is not a valid content type, it returns false.
@@ -125,7 +123,6 @@ export class MimeTypes {
     return exts[0];
   }
 
-  
   /**
    * Looks up the MIME type based on the file extension of the given path.
    * @param path - The file path.
@@ -136,7 +133,9 @@ export class MimeTypes {
       return false;
     }
 
-    const extension = extname('x.' + path).toLowerCase().slice(1);
+    const extension = extname('x.' + path)
+      .toLowerCase()
+      .slice(1);
 
     if (!extension) {
       return false;
@@ -145,29 +144,31 @@ export class MimeTypes {
     return this.types[extension] || false;
   }
 
-  private static populateMaps(extensions: { [key: string]: string[] }, types: { [key: string]: string }) {
+  private static populateMaps(
+    extensions: Record<string, string[]>,
+    types: Record<string, string>,
+  ) {
     const preference = ['nginx', 'apache', undefined, 'iana'];
 
-    Object.keys(mimeDb).forEach((type) => {
+    for (const type of Object.keys(mimeDb)) {
       const mime = mimeDb[type];
       const exts = mime.extensions;
 
       if (!exts || !exts.length) {
-        return;
+        continue;
       }
 
       extensions[type] = exts.slice();
 
-      for (let i = 0; i < exts.length; i++) {
-        const extension = exts[i];
-
+      for (const extension of exts) {
         if (types[extension]) {
           const from = preference.indexOf(mimeDb[types[extension]].source);
           const to = preference.indexOf(mime.source);
 
           if (
             types[extension] !== 'application/octet-stream' &&
-            (from > to || (from === to && types[extension].slice(0, 12) === 'application/'))
+            (from > to ||
+              (from === to && types[extension].slice(0, 12) === 'application/'))
           ) {
             continue;
           }
@@ -175,6 +176,6 @@ export class MimeTypes {
 
         types[extension] = type;
       }
-    });
+    }
   }
 }

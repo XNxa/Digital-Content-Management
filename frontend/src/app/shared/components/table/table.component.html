@@ -1,33 +1,45 @@
 <table>
-    <thead>
-        <tr>
-            <th><input style="display: none ;" type="checkbox"></th>
-            @for (column of columnsToDisplay; track $index) {
-                <th>{{ column.header }}</th>
-            }
-        </tr>
-    </thead>
-    <tbody>
-        @for (row of data; track $index) {
-        <tr [class]="isSelected($index)? 'checked':''" (click)="onRowClicked($index)">
-            <td><input type="checkbox" (change)="onChecked($index)" [checked]="isSelected($index)" (click)="stopPropagation($event)"></td>
-            @for (column of columnsToDisplay; track $index) {
-            <td>
-                <div class="cell">
-                    @if (imageColumnPresent && $index == 0) {
-                        @if (row[imageColumn.field] != null) {
-                            <img src="{{ row[imageColumn.field] }}">
-                        } @else {
-                            <img src="/icons/file.svg">
-                        }
-                    }
-                    <span [class]="imageColumnPresent && $index == 0 ? 'next-icon' : ''">
-                        {{ row[column.field] }}
-                    </span>
-                </div>
-            </td>
-            }
-        </tr>
+  <thead>
+    <tr>
+      <th><input style="display: none" type="checkbox" /></th>
+      @for (column of columnsToDisplay; track $index) {
+        <th>{{ column.header }}</th>
+      }
+    </tr>
+  </thead>
+  <tbody>
+    @for (row of _data; track $index) {
+      <tr
+        [class]="isSelected($index) ? 'checked' : ''"
+        (click)="onRowClicked($index)"
+      >
+        <td>
+          <input
+            type="checkbox"
+            (change)="onChecked($index)"
+            [checked]="isSelected($index)"
+            (click)="stopPropagation($event)"
+          />
+        </td>
+        @for (column of columnsToDisplay; track $index) {
+          <td>
+            <div class="cell">
+              @if (imageColumnPresent && $index === 0) {
+                @if (row[imageColumn.field] !== null) {
+                  <img src="{{ row[imageColumn.field] }}" />
+                } @else {
+                  <img src="/icons/file.svg" />
+                }
+              }
+              <span
+                [class]="imageColumnPresent && $index === 0 ? 'next-icon' : ''"
+              >
+                {{ row[column.field] }}
+              </span>
+            </div>
+          </td>
         }
-    </tbody>
+      </tr>
+    }
+  </tbody>
 </table>

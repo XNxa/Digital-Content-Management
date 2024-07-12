@@ -1,32 +1,59 @@
 <div class="dialog-backdrop">
   <div class="dialog">
     <div class="dialog-header">
-      <h3>{{title}}</h3>
+      <h3>{{ title }}</h3>
       <button class="close-button" (click)="close()">
-        <img src="icons/blue/close.svg">
+        <img src="icons/blue/close.svg" />
       </button>
     </div>
     <div class="dialog-body">
       <div class="left">
-        <img [src]="thumbnail">
+        <img [src]="thumbnail" />
       </div>
       <div class="right dialog-body-form">
         <div>
-          <app-long-input label="Description" hint="(facultatif)" [rows]="4" [(value)]="description"></app-long-input>
+          <app-long-input
+            label="Description"
+            hint="(facultatif)"
+            [rows]="4"
+            [(value)]="description"
+          ></app-long-input>
         </div>
         <div class="dialog-version-status">
-          <app-select class="version" label="Version" [options]="['VF', 'VA']" [(value)]="version"></app-select>
-          <app-select class="status" label="Statut" [options]="statusOptions" [(value)]="status"></app-select>
+          <app-select
+            class="version"
+            label="Version"
+            [options]="['VF', 'VA']"
+            [(value)]="version"
+          ></app-select>
+          <app-select
+            class="status"
+            label="Statut"
+            [options]="statusOptions"
+            [(value)]="status"
+          ></app-select>
         </div>
-        <app-chips-input label="Mots-Clés" hint="(Maximum 20)" [(keywords)]="keywords"
-          [suggestions]="keywordsSuggestions"></app-chips-input>
+        <app-chips-input
+          label="Mots-Clés"
+          hint="(Maximum 20)"
+          [(keywords)]="keywords"
+          [suggestions]="keywordsSuggestions"
+        ></app-chips-input>
       </div>
     </div>
 
     <div class="dialog-footer">
-      <app-icon-text-button title="Annuler" icon="close" color="white" (click)="close()"></app-icon-text-button>
-      <app-icon-text-button title="Mettre à jour les informations" icon="check" (click)="save()"></app-icon-text-button>
+      <app-icon-text-button
+        title="Annuler"
+        icon="close"
+        color="white"
+        (click)="close()"
+      ></app-icon-text-button>
+      <app-icon-text-button
+        title="Mettre à jour les informations"
+        icon="check"
+        (click)="save()"
+      ></app-icon-text-button>
     </div>
-
   </div>
 </div>

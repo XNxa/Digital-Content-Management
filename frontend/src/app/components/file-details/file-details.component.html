@@ -1,96 +1,147 @@
 <div class="file-details-container">
-    <div class="preview-section">
-        <div class="preview">
-            @switch (displaytype) {
-            @case ('image') {
-            <img [src]="data" [style]='"transform: scale(" + currentZoom + ");
-                transform-origin: " +
-                (currentZoom > 1? "0" : "50") 
-                +"% "
-                + (currentZoom > 1? "0" : "50")+"%;"'>
-            }
-            @case ('video') {
-            <video [src]="data" controls></video>
-            }
-            @case ('zip') {
-            <app-zip-list [src]="data"></app-zip-list>
-            }
-            @default {
-            <div class="no-preview">
-                <p>Aucun aperçu disponible</p>
-                <app-icon-text-button title="Télécharger" icon="download" color="blue" (click)="onDownload()"></app-icon-text-button>
-            </div>
-            }
-            }
-        </div>
-
-        @if (displaytype == 'image') {
-            <div class="zoom">
-                <app-zoom-button (onZoom)="zoomChange($event)"></app-zoom-button>
-            </div>
+  <div class="preview-section">
+    <div class="preview">
+      @switch (displaytype) {
+        @case ("image") {
+          <img
+            [src]="data"
+            [style]="
+              'transform: scale(' +
+              currentZoom +
+              ');
+                transform-origin: ' +
+              (currentZoom > 1 ? '0' : '50') +
+              '% ' +
+              (currentZoom > 1 ? '0' : '50') +
+              '%;'
+            "
+          />
         }
-
-        <div class="actions">
-            <app-icon-button [permission]="[folder+'_'+typeFolder+'_'+'share']" icon="send" color="dark" (click)="onSendByEmail()"></app-icon-button>
-            <app-icon-button [permission]="[folder+'_'+typeFolder+'_'+'copy_link']" icon="link" color="dark" (click)="onGetLink()"></app-icon-button>
-            <app-icon-button [permission]="[folder+'_'+typeFolder+'_'+'download']" icon="download" color="dark" (click)="onDownload()"></app-icon-button>
-            <app-icon-button [permission]="[folder+'_'+typeFolder+'_'+'duplicate']" icon="duplicate" color="dark" (click)="onDuplicate()"></app-icon-button>
-        </div>
-
-        <div class="left">
-            <button class="previous" (click)="onPrevious()">
-                <img src="icons/left-arrow.svg">
-            </button>
-        </div>
-
-        <div class="right">
-            <button class="next" (click)="onNext()">
-                <img src="icons/right-arrow.svg">
-            </button>
-        </div>
-
+        @case ("video") {
+          <video [src]="data" controls></video>
+        }
+        @case ("zip") {
+          <app-zip-list [src]="data"></app-zip-list>
+        }
+        @default {
+          <div class="no-preview">
+            <p>Aucun aperçu disponible</p>
+            <app-icon-text-button
+              title="Télécharger"
+              icon="download"
+              color="blue"
+              (click)="onDownload()"
+            ></app-icon-text-button>
+          </div>
+        }
+      }
     </div>
-    <div class="details-section">
 
-        <div class="other-actions">
-            <app-icon-button [permission]="[folder+'_'+typeFolder+'_'+'delete']" icon="delete" color="white" (click)="onDelete()"></app-icon-button>
-            <app-icon-button [permission]="[folder+'_'+typeFolder+'_'+'modify']" icon="modify" color="white" (click)="openDialog()"></app-icon-button>
-            <app-icon-button icon="close" color="white" (click)="onClose()"></app-icon-button>
-        </div>
+    @if (displaytype === "image") {
+      <div class="zoom">
+        <app-zoom-button (zoomed)="zoomChange($event)"></app-zoom-button>
+      </div>
+    }
 
-        <div class="section">
-            <h2>{{file.printableFilename}}</h2>
-            <div class="metadata">
-                <p>Ajouté le: {{file.date}}</p>
-                <p>{{type}}: {{file.printableSize}}</p>
-                <p>{{displayFolder}} > {{displayTypeFolder}}</p>
-            </div>
-        </div>
-        <div class="section">
-            <h3>Description</h3>
-            <div class="description">
-                {{file.description}}
-            </div>
-        </div>
-        <div class="section">
-            <h3>Version</h3>
-            <p>{{file.version}}</p>
-        </div>
-        <div class="section">
-            <h3>Statut</h3>
-            <app-status-chip [status]="Status.fromString(file.status)" size="large"></app-status-chip>
-        </div>
-        <div class="section">
-            <h3>Mots-clés</h3>
-            <div class="keywords">
-                @for (keyword of file.keywords; track $index) {
-                <span class="keyword">{{keyword}}</span>
-                }
-            </div>
-        </div>
+    <div class="actions">
+      <app-icon-button
+        [permission]="[folder + '_' + typeFolder + '_' + 'share']"
+        icon="send"
+        color="dark"
+        (click)="onSendByEmail()"
+      ></app-icon-button>
+      <app-icon-button
+        [permission]="[folder + '_' + typeFolder + '_' + 'copy_link']"
+        icon="link"
+        color="dark"
+        (click)="onGetLink()"
+      ></app-icon-button>
+      <app-icon-button
+        [permission]="[folder + '_' + typeFolder + '_' + 'download']"
+        icon="download"
+        color="dark"
+        (click)="onDownload()"
+      ></app-icon-button>
+      <app-icon-button
+        [permission]="[folder + '_' + typeFolder + '_' + 'duplicate']"
+        icon="duplicate"
+        color="dark"
+        (click)="onDuplicate()"
+      ></app-icon-button>
     </div>
+
+    <div class="left">
+      <button class="previous" (click)="onPrevious()">
+        <img src="icons/left-arrow.svg" />
+      </button>
+    </div>
+
+    <div class="right">
+      <button class="next" (click)="onNext()">
+        <img src="icons/right-arrow.svg" />
+      </button>
+    </div>
+  </div>
+  <div class="details-section">
+    <div class="other-actions">
+      <app-icon-button
+        [permission]="[folder + '_' + typeFolder + '_' + 'delete']"
+        icon="delete"
+        color="white"
+        (click)="onDelete()"
+      ></app-icon-button>
+      <app-icon-button
+        [permission]="[folder + '_' + typeFolder + '_' + 'modify']"
+        icon="modify"
+        color="white"
+        (click)="openDialog()"
+      ></app-icon-button>
+      <app-icon-button
+        icon="close"
+        color="white"
+        (click)="onClose()"
+      ></app-icon-button>
+    </div>
+
+    <div class="section">
+      <h2>{{ file.printableFilename }}</h2>
+      <div class="metadata">
+        <p>Ajouté le: {{ file.date }}</p>
+        <p>{{ type }}: {{ file.printableSize }}</p>
+        <p>{{ displayFolder }} > {{ displayTypeFolder }}</p>
+      </div>
+    </div>
+    <div class="section">
+      <h3>Description</h3>
+      <div class="description">
+        {{ file.description }}
+      </div>
+    </div>
+    <div class="section">
+      <h3>Version</h3>
+      <p>{{ file.version }}</p>
+    </div>
+    <div class="section">
+      <h3>Statut</h3>
+      <app-status-chip
+        [status]="Status.fromString(file.status)"
+        size="large"
+      ></app-status-chip>
+    </div>
+    <div class="section">
+      <h3>Mots-clés</h3>
+      <div class="keywords">
+        @for (keyword of file.keywords; track $index) {
+          <span class="keyword">{{ keyword }}</span>
+        }
+      </div>
+    </div>
+  </div>
 </div>
 
 @if (isDialogOpen) {
-<app-modify-dialog [file]="file" (closeDialog)="isDialogOpen = false"></app-modify-dialog>
+  <app-modify-dialog
+    [file]="file"
+    (closeDialog)="isDialogOpen = false"
+  ></app-modify-dialog>
 }

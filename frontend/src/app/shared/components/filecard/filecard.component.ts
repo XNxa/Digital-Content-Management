@@ -1,4 +1,10 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+} from '@angular/core';
 import { FileHeader } from '../../../models/FileHeader';
 import { StatusChipComponent } from '../status-chip/status-chip.component';
 import { Status } from '../../../enums/status';
@@ -10,29 +16,29 @@ import { getIconFor } from '../../../utils/file-icons';
   standalone: true,
   imports: [StatusChipComponent],
   templateUrl: './filecard.component.html',
-  styleUrl: './filecard.component.css'
+  styleUrl: './filecard.component.css',
 })
 export class FilecardComponent implements OnChanges {
-
   @Input() file: FileHeader | undefined;
 
-  @Input() fileChecked !: boolean; 
+  @Input() fileChecked!: boolean;
   @Output() fileCheckedChange = new EventEmitter();
   @Output() fileClicked = new EventEmitter();
 
-  printableFilename: string = '';
-  type: string = '';
+  printableFilename = '';
+  type = '';
   status: Status = Status.ARCHIVE;
   icon!: string;
 
   ngOnChanges(): void {
     if (this.file && this.file?.printableFilename.length > 12) {
-      this.printableFilename = this.file.printableFilename.substring(0, 12) + '...';
+      this.printableFilename =
+        this.file.printableFilename.substring(0, 12) + '...';
     } else {
-      this.printableFilename = this.file?.printableFilename!;
+      this.printableFilename = this.file?.printableFilename || '';
     }
 
-    this.type = MimeTypes.extension(this.file?.type!) || 'unknown';
+    this.type = MimeTypes.extension(this.file?.type || '') || 'unknown';
     this.icon = getIconFor(this.type);
 
     if (this.file?.status) {
@@ -40,7 +46,7 @@ export class FilecardComponent implements OnChanges {
     }
   }
 
-  onFileSelected(event : MouseEvent): void {
+  onFileSelected(event: MouseEvent): void {
     event.stopPropagation();
     this.fileChecked = !this.fileChecked;
     this.fileCheckedChange.emit(this.file);

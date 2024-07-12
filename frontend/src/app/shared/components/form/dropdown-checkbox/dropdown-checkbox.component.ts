@@ -1,4 +1,4 @@
-import { AfterContentInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl, FormsModule } from '@angular/forms';
 
 @Component({
@@ -6,19 +6,20 @@ import { FormControl, FormsModule } from '@angular/forms';
   selector: 'app-dropdown-checkbox',
   imports: [FormsModule],
   templateUrl: './dropdown-checkbox.component.html',
-  styleUrls: ['./dropdown-checkbox.component.css']
+  styleUrls: ['./dropdown-checkbox.component.css'],
 })
 export class DropdownCheckboxComponent {
-  @Input() label: string = '';
-  @Input() placeholder: string = '';
+  @Input() label = '';
+  @Input() placeholder = '';
   @Input() options: string[] = [];
 
   @Input() value!: FormControl<string[] | null>;
-  @Output() valueChange: EventEmitter<FormControl<string[] | null>> = new EventEmitter<FormControl<string[] | null>>();
+  @Output() valueChange: EventEmitter<FormControl<string[] | null>> =
+    new EventEmitter<FormControl<string[] | null>>();
 
   selectedChips: string[] = [];
-  dropdownOpen: boolean = false;
-  filterText: string = '';
+  dropdownOpen = false;
+  filterText = '';
   filteredOptions!: string[];
 
   isSelected(option: string): boolean {
@@ -51,8 +52,8 @@ export class DropdownCheckboxComponent {
   }
 
   filterOptions(): void {
-    this.filteredOptions = this.options.filter(option =>
-      option.toLowerCase().includes(this.filterText.toLowerCase())
+    this.filteredOptions = this.options.filter((option) =>
+      option.toLowerCase().includes(this.filterText.toLowerCase()),
     );
   }
 

@@ -5,52 +5,52 @@ span {
 }
 
 .small {
-    padding: 1px 2px;
-    border-radius: 2px;
-} 
+  padding: 1px 2px;
+  border-radius: 2px;
+}
 
 .large {
-    padding: 4px;
-    border-radius: 4px;
+  padding: 4px;
+  border-radius: 4px;
 }
 
 /* Styles spécifiques pour chaque type de chip */
 .planifie {
-  background-color: #DDD8FF;
-  color: #4B1E97;
+  background-color: #ddd8ff;
+  color: #4b1e97;
 }
 
 .publie {
-  background-color: #D1EEDB;
-  color: #102A19;
+  background-color: #d1eedb;
+  color: #102a19;
 }
 
 .en_attente {
-  background-color: #FFE9C5;
-  color: #3B2604;
+  background-color: #ffe9c5;
+  color: #3b2604;
 }
 
 .non_publie {
-  background-color: #FCD9BD;
-  color: #771D1D;
+  background-color: #fcd9bd;
+  color: #771d1d;
 }
 
 .archive {
-  background-color: #E0E0E0;
-  color: #131B24;
+  background-color: #e0e0e0;
+  color: #131b24;
 }
 
 .erreur_de_publication {
-  background-color: #F8D5D5;
-  color: #920E0E;
+  background-color: #f8d5d5;
+  color: #920e0e;
 }
 
 .active {
-  background-color: #D1EEDB;
-  color: #102A19;
+  background-color: #d1eedb;
+  color: #102a19;
 }
 
 .desactive {
-  background-color: #F8D5D5;
-  color: #920E0E;
+  background-color: #f8d5d5;
+  color: #920e0e;
 }

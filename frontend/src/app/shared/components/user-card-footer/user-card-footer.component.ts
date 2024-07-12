@@ -5,17 +5,13 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   standalone: true,
   imports: [],
   templateUrl: './user-card-footer.component.html',
-  styleUrl: './user-card-footer.component.css'
+  styleUrl: './user-card-footer.component.css',
 })
 export class UserCardFooterComponent {
-
   // TODO : Change that
-  @Input() name = 'Hassania Mouachi'
-  @Input() pp = ''; 
+  @Input() name = 'Hassania Mouachi';
+  @Input() pp = '';
   @Output() openProfile = new EventEmitter<boolean>();
-  
+
   profileOpen = false;
-  
-
-
 }

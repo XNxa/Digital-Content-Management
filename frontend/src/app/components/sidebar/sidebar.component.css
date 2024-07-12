@@ -17,7 +17,7 @@
 .sidebar-nav {
   overflow: auto;
   scrollbar-width: thin;
-  scrollbar-color: #0B2866 #f8f9fa;
+  scrollbar-color: #0b2866 #f8f9fa;
 }
 
 .no-parent {
@@ -32,7 +32,7 @@
   border: none;
   border-radius: 5px;
   background-color: none;
-  color: #8D9CAD;
+  color: #8d9cad;
   margin: 10px;
 
   img {
@@ -43,9 +43,9 @@
 }
 
 .selected {
-  border-left: #105DFB 4px solid;
-  background-color: #EBF1FD;
-  color: #0B2866;
+  border-left: #105dfb 4px solid;
+  background-color: #ebf1fd;
+  color: #0b2866;
 }
 
 .title {

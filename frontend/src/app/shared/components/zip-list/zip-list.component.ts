@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 import JSZip from 'jszip';
 import { convertSizeToPrintable } from '../../../models/FileHeader';
 import { getIconFor } from '../../../utils/file-icons';
@@ -10,19 +10,18 @@ import { MimeTypes } from '../../../utils/mime-types';
   standalone: true,
   imports: [],
   templateUrl: './zip-list.component.html',
-  styleUrl: './zip-list.component.css'
+  styleUrl: './zip-list.component.css',
 })
 export class ZipListComponent implements OnChanges {
-
   @Input() src!: string;
 
   file!: File;
-  files: any[] = [];
+  files: { icon: string; name: string; date: string; size: string }[] = [];
   loaded = false;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-  ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(): void {
     this.http.get(this.src, { responseType: 'blob' }).subscribe((response) => {
       this.file = new File([response], 'file.zip');
       this.readZipFile(this.file);
@@ -39,7 +38,7 @@ export class ZipListComponent implements OnChanges {
           icon: getIconFor(MimeTypes.contentType(zipEntry.name) || ''),
           name: zipEntry.name,
           date: zipEntry.date.toLocaleDateString(),
-          size: convertSizeToPrintable(data.length) 
+          size: convertSizeToPrintable(data.length),
         });
       });
     });

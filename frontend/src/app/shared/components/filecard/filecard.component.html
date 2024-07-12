@@ -1,25 +1,32 @@
 <div class="file-card" (click)="onCardClicked()">
-    <div class="file-card-body">
-        <div class="file-image-container">
-            @if (file?.thumbnail != null) {
-            <img class="file-thumbnail" src="{{file?.thumbnail}}">
-            } @else {
-            <img class="file-icon" src="{{icon}}">
-            }
-        </div>
-        <div class="file-card-header">
-            <input type="checkbox" [(checked)]="fileChecked" (click)="onFileSelected($event)" />
-        </div>
+  <div class="file-card-body">
+    <div class="file-image-container">
+      @if (file?.thumbnail !== null) {
+        <img class="file-thumbnail" src="{{ file?.thumbnail }}" />
+      } @else {
+        <img class="file-icon" src="{{ icon }}" />
+      }
     </div>
-    <div class="file-card-footer" [style]="fileChecked? 'background-color: #d7e3fc;' : ''">
-        <div class="file-card-footer-left">
-            <span class="primary">{{printableFilename}}</span>
-            <span class="secondary">{{type}}</span>
-            <span class="secondary">{{file?.printableSize}}</span>
-        </div>
-        <div class="file-card-footer-right">
-            <app-status-chip [status]="status" size='small'></app-status-chip>
-            <span class="secondary">{{file?.date}}</span>
-        </div>
+    <div class="file-card-header">
+      <input
+        type="checkbox"
+        [(checked)]="fileChecked"
+        (click)="onFileSelected($event)"
+      />
     </div>
+  </div>
+  <div
+    class="file-card-footer"
+    [style]="fileChecked ? 'background-color: #d7e3fc;' : ''"
+  >
+    <div class="file-card-footer-left">
+      <span class="primary">{{ printableFilename }}</span>
+      <span class="secondary">{{ type }}</span>
+      <span class="secondary">{{ file?.printableSize }}</span>
+    </div>
+    <div class="file-card-footer-right">
+      <app-status-chip [status]="status" size="small"></app-status-chip>
+      <span class="secondary">{{ file?.date }}</span>
+    </div>
+  </div>
 </div>

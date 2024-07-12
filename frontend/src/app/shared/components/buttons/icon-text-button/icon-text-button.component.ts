@@ -6,7 +6,7 @@ import { ButtonIcon } from '../icon-button-type';
   standalone: true,
   imports: [],
   templateUrl: './icon-text-button.component.html',
-  styleUrl: './icon-text-button.component.css'
+  styleUrl: './icon-text-button.component.css',
 })
 export class IconTextButtonComponent {
   @Input() title = '';
@@ -16,7 +16,12 @@ export class IconTextButtonComponent {
   @Output() click = new EventEmitter();
 
   getIconPath(): string {
-    return 'icons/' + ((this.color == 'blue') ? 'white/' : 'blue/') + this.icon + '.svg';
+    return (
+      'icons/' +
+      (this.color == 'blue' ? 'white/' : 'blue/') +
+      this.icon +
+      '.svg'
+    );
   }
 
   handleClick(event: Event): void {

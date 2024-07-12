@@ -7,22 +7,23 @@ import { ErrorMessageComponent } from '../error-message/error-message.component'
   standalone: true,
   imports: [ReactiveFormsModule, ErrorMessageComponent],
   templateUrl: './input.component.html',
-  styleUrl: './input.component.css'
+  styleUrl: './input.component.css',
 })
 export class InputComponent {
-  @Input() label: string = '';
-  @Input() placeholder: string = '';
+  @Input() label = '';
+  @Input() placeholder = '';
   @Input() type: 'text' | 'password' = 'text';
   @Input() value!: FormControl<string | null>;
   @Input() border = true;
   @Input() disabled = false;
-  @Output() valueChange: EventEmitter<FormControl<string | null>> = new EventEmitter<FormControl<string | null>>();
-  @Output() onChange: EventEmitter<any> = new EventEmitter<any>();
+  @Output() valueChange: EventEmitter<FormControl<string | null>> =
+    new EventEmitter<FormControl<string | null>>();
+  @Output() changed: EventEmitter<null> = new EventEmitter<null>();
 
-  isPasswordVisible: boolean = false;
+  isPasswordVisible = false;
 
-  onInput(event: Event): void {
-    this.onChange.emit();
+  onInput(): void {
+    this.changed.emit();
   }
 
   togglePasswordVisibility(): void {

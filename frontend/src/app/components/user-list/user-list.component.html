@@ -1,41 +1,70 @@
 <div class="header">
-    <h1>Gestion des utilisateurs</h1>
-    <app-icon-text-button [permission]="['user_add']" title="Ajouter un nouvel utilisateur" icon="add"
-        (click)="isDialogOpen = true"></app-icon-text-button>
+  <h1>Gestion des utilisateurs</h1>
+  <app-icon-text-button
+    [permission]="['user_add']"
+    title="Ajouter un nouvel utilisateur"
+    icon="add"
+    (click)="isDialogOpen = true"
+  ></app-icon-text-button>
 </div>
 
 @if (isDialogOpen) {
-<app-add-user-dialog (close)="closeDialog()"></app-add-user-dialog>
+  <app-add-user-dialog (close)="closeDialog()"></app-add-user-dialog>
 }
 
 <div class="search-area">
-    <app-input class="search-element" label="Prénom" placeholder="Saisissez un prénom" [border]="false"
-        [(value)]="firstnameSearched" (onChange)="refreshUserList()"></app-input>
-    <app-input class="search-element" label="Nom" placeholder="Saisissez un nom" [border]="false"
-        [(value)]="lastnameSearched" (onChange)="refreshUserList()"></app-input>
+  <app-input
+    class="search-element"
+    label="Prénom"
+    placeholder="Saisissez un prénom"
+    [border]="false"
+    [(value)]="firstnameSearched"
+    (changed)="refreshUserList()"
+  ></app-input>
+  <app-input
+    class="search-element"
+    label="Nom"
+    placeholder="Saisissez un nom"
+    [border]="false"
+    [(value)]="lastnameSearched"
+    (changed)="refreshUserList()"
+  ></app-input>
 </div>
 
 <div class="header">
-    <h2>Liste des utilisateurs</h2>
-    <div class="action-buttons">
-        <app-icon-button color='white' icon="update" (click)="refreshUserList()"></app-icon-button>
-    </div>
+  <h2>Liste des utilisateurs</h2>
+  <div class="action-buttons">
+    <app-icon-button
+      color="white"
+      icon="update"
+      (click)="refreshUserList()"
+    ></app-icon-button>
+  </div>
 </div>
 
 <div class="file-grid">
-    <app-table class="table" [columns]="[
-            {header: 'FIRSTNAME', field: 'firstname'}, 
-            {header: 'LASTNAME', field: 'lastname'},
-            {header: 'FONCTION', field: 'function'},
-            {header:'EMAIL', field:'email'},
-            {header: 'ROLE', field: 'role'},
-            {header: 'STATUT', field: 'Statut'}
-        ]" [data]="users" [selected]="selectedUsers" (selectedChange)="fileSelectedList($event)"
-        (rowClicked)="clickedRow($event)">
-    </app-table>
+  <app-table
+    class="table"
+    [columns]="[
+      { header: 'FIRSTNAME', field: 'firstname' },
+      { header: 'LASTNAME', field: 'lastname' },
+      { header: 'FONCTION', field: 'function' },
+      { header: 'EMAIL', field: 'email' },
+      { header: 'ROLE', field: 'role' },
+      { header: 'STATUT', field: 'statut' },
+    ]"
+    [data]="users"
+    [selected]="selectedUsers"
+    (selectedChange)="usersSelectedList($event)"
+    (rowClicked)="clickedRow($event)"
+  >
+  </app-table>
 </div>
 
 <div class="footer">
-    <app-page-selector [totalItems]="numberOfElements" [itemsPerPage]="itemsPerPage"
-        (pageChange)="onPageChange($event)"></app-page-selector>
+  <app-page-selector
+    [totalItems]="numberOfElements"
+    [itemsPerPage]="itemsPerPage"
+    (pageChange)="onPageChange($event)"
+  ></app-page-selector>
 </div>

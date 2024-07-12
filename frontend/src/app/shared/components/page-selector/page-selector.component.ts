@@ -1,19 +1,25 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+} from '@angular/core';
 
 @Component({
   selector: 'app-page-selector',
   standalone: true,
   imports: [],
   templateUrl: './page-selector.component.html',
-  styleUrl: './page-selector.component.css'
+  styleUrl: './page-selector.component.css',
 })
-export class PageSelectorComponent implements OnChanges{
-  @Input() totalItems: number = 0;
-  @Input() itemsPerPage: number = 10;
+export class PageSelectorComponent implements OnChanges {
+  @Input() totalItems = 0;
+  @Input() itemsPerPage = 10;
   @Output() pageChange = new EventEmitter<number>();
 
-  currentPage: number = 1;
-  totalPages: number = 1;
+  currentPage = 1;
+  totalPages = 1;
   pages!: number[];
 
   ngOnChanges(): void {
@@ -40,7 +46,6 @@ export class PageSelectorComponent implements OnChanges{
         pages.push(i);
       }
     } else {
-      
       pages.push(this.currentPage - 1);
       pages.push(this.currentPage);
       pages.push(this.currentPage + 1);

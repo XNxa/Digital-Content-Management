@@ -17,13 +17,13 @@ import { FormControl } from '@angular/forms';
     IconTextButtonComponent,
     LongInputComponent,
     SelectComponent,
-    ChipsInputComponent
+    ChipsInputComponent,
   ],
   templateUrl: './upload-dialog.component.html',
-  styleUrl: './upload-dialog.component.css'
+  styleUrl: './upload-dialog.component.css',
 })
 export class UploadDialogComponent implements OnInit {
-  title = "Importer un ficher";
+  title = 'Importer un ficher';
   @Output() closeDialog: EventEmitter<void> = new EventEmitter<void>();
 
   @Input() folder!: string;
@@ -37,16 +37,19 @@ export class UploadDialogComponent implements OnInit {
 
   readonly statusOptions = Status.getStringList();
   status = new FormControl(Status.printableString(Status.PLANIFIE));
-  
+
   fileType: string | undefined;
-  
-  constructor(private api: FileApiService, private snackbar: SnackbarService) { }
+
+  constructor(
+    private api: FileApiService,
+    private snackbar: SnackbarService,
+  ) {}
 
   ngOnInit(): void {
     this.api.getKeywords().subscribe({
       next: (keywords) => {
         this.keywordsSuggestions = keywords;
-      }
+      },
     });
   }
 
@@ -59,7 +62,7 @@ export class UploadDialogComponent implements OnInit {
   }
 
   onFileSelected($event: Event): void {
-    const input = ($event.target as HTMLInputElement);
+    const input = $event.target as HTMLInputElement;
     if (input.files != null) {
       if (input.files.length > 0) {
         const file = input.files[0];
@@ -72,12 +75,12 @@ export class UploadDialogComponent implements OnInit {
           } else {
             resolve('application/octet-stream');
           }
-        }).then(mimeType => {
+        }).then((mimeType) => {
           this.fileType = mimeType;
         });
 
         if (file.size > 50_000_000) {
-          this.snackbar.show("Fichier trop volumineux");
+          this.snackbar.show('Fichier trop volumineux');
           this.selectedFile = undefined;
         }
       }
@@ -86,7 +89,7 @@ export class UploadDialogComponent implements OnInit {
 
   nextStep(): void {
     if (this.currentStep === 1 && !this.selectedFile) {
-      this.snackbar.show("No file selected !");
+      this.snackbar.show('No file selected !');
       return;
     }
     this.currentStep = this.currentStep + 1;
@@ -99,7 +102,7 @@ export class UploadDialogComponent implements OnInit {
 
   save(): void {
     if (!this.selectedFile) {
-      console.error("No file selected!");
+      console.error('No file selected!');
       return;
     }
 
@@ -110,7 +113,7 @@ export class UploadDialogComponent implements OnInit {
       keywords: this.keywords.value,
       status: Status.fromString(this.status.value || ''),
       type: this.fileType || 'application/octet-stream',
-      size: this.selectedFile.size
+      size: this.selectedFile.size,
     } as FileHeader;
 
     this.api.uploadFile(this.selectedFile, metadata).subscribe({
@@ -118,9 +121,9 @@ export class UploadDialogComponent implements OnInit {
         this.api.getKeywords().subscribe({
           next: (keywords) => {
             this.keywordsSuggestions = keywords;
-          }
+          },
         });
-      }
+      },
     });
 
     this.selectedFile = undefined;
@@ -131,4 +134,4 @@ export class UploadDialogComponent implements OnInit {
     this.selectedFile = undefined;
     this.close();
   }
-} 
+}

@@ -1,33 +1,33 @@
 .component {
-    display: flex;
+  display: flex;
 }
 
 button {
-    display: flex;
+  display: flex;
 
-    align-items: center;
-    justify-content: center;
-    
-    width: 40px;
-    height: 40px;
+  align-items: center;
+  justify-content: center;
 
-    border: none;
-    background-color: #404040;
+  width: 40px;
+  height: 40px;
 
-    img {
-        width: 20px;
-        height: 20px;
-    }
+  border: none;
+  background-color: #404040;
+
+  img {
+    width: 20px;
+    height: 20px;
+  }
 }
 
 button:hover {
-    background-color: #5A5C60;
+  background-color: #5a5c60;
 }
 
 .right {
-    border-radius: 0 5px 5px 0;
+  border-radius: 0 5px 5px 0;
 }
 
 .left {
-    border-radius: 5px 0 0 5px;
+  border-radius: 5px 0 0 5px;
 }

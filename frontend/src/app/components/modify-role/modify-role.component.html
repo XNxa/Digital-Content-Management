@@ -1,40 +1,81 @@
 <a routerLink="/roles">
-    <img src="icons/blue_arrow.svg"> Retour à la liste
+  <img src="icons/blue_arrow.svg" /> Retour à la liste
 </a>
 
 <div class="header">
-    @if (mode == 'consult') {
-        <h1>{{roleName.value}}</h1>
+  @if (mode === "consult") {
+    <h1>{{ roleName.value }}</h1>
+  } @else {
+    <h1>Modifier le rôle</h1>
+  }
+
+  <div class="actions">
+    @if (mode === "consult") {
+      <app-icon-text-button
+        [permission]="['role_delete']"
+        color="white"
+        title="Supprimer le rôle"
+        icon="delete"
+        (click)="deleteRole()"
+      ></app-icon-text-button>
+      <app-icon-text-button
+        [permission]="['role_modify']"
+        title="Modifier le rôle"
+        icon="modify"
+        (click)="modify()"
+      ></app-icon-text-button>
     } @else {
-        <h1>Modifier le rôle</h1>
+      <app-icon-text-button
+        color="white"
+        title="Annuler"
+        icon="close"
+        (click)="cancel()"
+      ></app-icon-text-button>
+      <app-icon-text-button
+        [permission]="['role_delete']"
+        title="Supprimer le rôle"
+        icon="delete"
+        (click)="deleteRole()"
+      ></app-icon-text-button>
+      <app-icon-text-button
+        title="Enregistrer"
+        icon="check"
+        (click)="save()"
+      ></app-icon-text-button>
     }
-    
-    <div class="actions">
-        @if (mode == 'consult') {
-        <app-icon-text-button [permission]="['role_delete']" color="white" title="Supprimer le rôle" icon="delete"
-            (click)="deleteRole()"></app-icon-text-button>
-        <app-icon-text-button [permission]="['role_modify']" title="Modifier le rôle" icon="modify" (click)="modify()"></app-icon-text-button>
-        } @else {
-        <app-icon-text-button color="white" title="Annuler" icon="close" (click)="cancel()"></app-icon-text-button>
-        <app-icon-text-button [permission]="['role_delete']" title="Supprimer le rôle" icon="delete" (click)="deleteRole()"></app-icon-text-button>
-        <app-icon-text-button title="Enregistrer" icon="check" (click)="save()"></app-icon-text-button>
-        }
-    </div>
+  </div>
 </div>
 
 <div class="informations">
-    <h3>Informations</h3>
-    <div class="form">
-        <div class="left-form">
-            <app-input label="Nom du rôle" placeholder="Saisissez le nom du rôle" [(value)]="roleName" [disabled]="mode == 'consult'"></app-input>
-            <app-toggle-button label="État" [(checked)]="roleState" [disabled]="mode == 'consult'"></app-toggle-button>
-        </div>
-        <app-long-input class="right-form" label="Description" [rows]="6" [(value)]="roleDescription" [disabled]="mode == 'consult'"></app-long-input>
+  <h3>Informations</h3>
+  <div class="form">
+    <div class="left-form">
+      <app-input
+        label="Nom du rôle"
+        placeholder="Saisissez le nom du rôle"
+        [(value)]="roleName"
+        [disabled]="mode === 'consult'"
+      ></app-input>
+      <app-toggle-button
+        label="État"
+        [(checked)]="roleState"
+        [disabled]="mode === 'consult'"
+      ></app-toggle-button>
     </div>
+    <app-long-input
+      class="right-form"
+      label="Description"
+      [rows]="6"
+      [(value)]="roleDescription"
+      [disabled]="mode === 'consult'"
+    ></app-long-input>
+  </div>
 </div>
 
-<h2>
-    Privilèges du rôle
-</h2>
+<h2>Privilèges du rôle</h2>
 
-<app-permissions-tree [initialPermissions]="initialPermissions" (selectedPermissions)="permissionsSelected($event)" [disabled]="mode == 'consult'"></app-permissions-tree>
+<app-permissions-tree
+  [initialPermissions]="initialPermissions"
+  (selectedPermissions)="permissionsSelected($event)"
+  [disabled]="mode === 'consult'"
+></app-permissions-tree>

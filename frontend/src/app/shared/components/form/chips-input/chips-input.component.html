@@ -1,22 +1,30 @@
 <div class="chips-input-container">
-    <label>{{ label }} <span>{{hint}}</span></label>
-    <div class="chips-input-wrapper">
-        @for (keyword of keywords.value; track $index) {
-        <div class="chip">
-            {{ keyword }}
-            <span class="closebtn" (click)="remove(keyword)">&times;</span>
-        </div>
-        }
-        <input placeholder="..." [(ngModel)]="inputValue" (keyup.enter)="add(inputValue)" (blur)="add(inputValue)"
-            (input)="onInputChange()" (click)="onInputChange()">
-    </div>
-    @if (filteredSuggestions.length > 0) {
-    <ul class="suggestions">
-        @for (suggestion of filteredSuggestions; track $index) {
-        <li (mousedown)="selectSuggestion(suggestion)">
-            {{ suggestion }}
-        </li>
-        }
-    </ul>
+  <label
+    >{{ label }} <span>{{ hint }}</span></label
+  >
+  <div class="chips-input-wrapper">
+    @for (keyword of keywords.value; track $index) {
+      <div class="chip">
+        {{ keyword }}
+        <span class="closebtn" (click)="remove(keyword)">&times;</span>
+      </div>
     }
+    <input
+      placeholder="..."
+      [(ngModel)]="inputValue"
+      (keyup.enter)="add(inputValue)"
+      (blur)="add(inputValue)"
+      (input)="onInputChange()"
+      (click)="onInputChange()"
+    />
+  </div>
+  @if (filteredSuggestions.length > 0) {
+    <ul class="suggestions">
+      @for (suggestion of filteredSuggestions; track $index) {
+        <li (mousedown)="selectSuggestion(suggestion)">
+          {{ suggestion }}
+        </li>
+      }
+    </ul>
+  }
 </div>

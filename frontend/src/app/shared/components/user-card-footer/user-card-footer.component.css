@@ -1,28 +1,28 @@
 .card {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 56px;
 }
 
 .default-pp {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 100%;
-    width: 24px;
-    height: 24px;
-    background-color: #105DFB;
-    color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 100%;
+  width: 24px;
+  height: 24px;
+  background-color: #105dfb;
+  color: white;
 }
 
 .pp {
-    width: 24px;
-    height: 24px;
-    border-radius: 100%;
+  width: 24px;
+  height: 24px;
+  border-radius: 100%;
 }
 
 .name {
-    color: var(--text-color);
+  color: var(--text-color);
 }

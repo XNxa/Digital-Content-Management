@@ -1,11 +1,14 @@
 <div>
-    <button [class]="color + ' icon'" [disabled]="disabled" (click)="openMenu()">
-        <img [class]="color +' icon'" [src]="'icons/' + ((color == 'blue') ? 'white/' : 'blue/') + icon + '.svg'" />
-    </button>
+  <button [class]="color + ' icon'" [disabled]="disabled" (click)="openMenu()">
+    <img
+      [class]="color + ' icon'"
+      [src]="'icons/' + (color === 'blue' ? 'white/' : 'blue/') + icon + '.svg'"
+    />
+  </button>
 
-    @if (menuOpened) {
+  @if (menuOpened) {
     <div class="menu" (click)="openMenu()">
-        <ng-content class="intern"></ng-content>
+      <ng-content class="intern"></ng-content>
     </div>
-    }
+  }
 </div>

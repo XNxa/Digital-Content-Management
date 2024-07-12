@@ -9,8 +9,7 @@
   flex: 3;
 
   display: grid;
-  grid:
-    "top top top" auto "left middle right" auto "bot bot bot" auto / auto auto auto;
+  grid: "top top top" auto "left middle right" auto "bot bot bot" auto / auto auto auto;
   grid-auto-flow: row dense;
 
   justify-items: center;
@@ -81,7 +80,8 @@
   margin-right: 30px;
 }
 
-.previous, .next {
+.previous,
+.next {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -91,8 +91,9 @@
   padding: 8px;
 }
 
-.previous:hover, .next:hover {
-  background-color: #5A5C60;
+.previous:hover,
+.next:hover {
+  background-color: #5a5c60;
 }
 
 .details-section {
@@ -139,7 +140,7 @@
 }
 
 .keyword {
-  border: #0B2866 1px solid;
+  border: #0b2866 1px solid;
   border-radius: 30px;
   padding: 5px;
 }

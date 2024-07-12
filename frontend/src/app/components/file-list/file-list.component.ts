@@ -35,15 +35,14 @@ import { PermissionDirective } from '../../shared/directives/permission.directiv
     SelectComponent,
     DropdownCheckboxComponent,
     FileDetailsComponent,
-    PermissionDirective
+    PermissionDirective,
   ],
   templateUrl: './file-list.component.html',
-  styleUrl: './file-list.component.css'
+  styleUrl: './file-list.component.css',
 })
 export class FileListComponent implements OnInit {
-
   /** The title of the file view. */
-  readonly viewtitle: string = "Fichiers";
+  readonly viewtitle: string = 'Fichiers';
 
   /** The number of items to display per page. */
   readonly itemsPerPage: number = 15;
@@ -52,16 +51,16 @@ export class FileListComponent implements OnInit {
   readonly status: string[] = Status.getStringList();
 
   /** Flag indicating whether to display files in grid layout or list layout. */
-  gridlayout: boolean = true;
+  gridlayout = true;
 
   /** Flag indicating whether the upload dialog is open or not. */
-  isDialogOpen: boolean = false;
+  isDialogOpen = false;
 
   /** Array of file headers to display. */
   files: FileHeader[] = [];
 
   /** The current page number. */
-  currentPage: number = 1;
+  currentPage = 1;
 
   /** The total number of elements. */
   numberOfElements!: number;
@@ -69,15 +68,15 @@ export class FileListComponent implements OnInit {
   /** Array currently defined keywords. */
   keywords!: string[];
 
-  /** The filename being searched. 
+  /** The filename being searched.
    * Binded to the search field */
-  filenameSearched = new FormControl('');;
+  filenameSearched = new FormControl('');
 
-  /** Array of keywords being searched. 
+  /** Array of keywords being searched.
    * Binded to the search field */
   keywordsSearched = new FormControl<string[]>([]);
 
-  /** Array of status strings being searched. 
+  /** Array of status strings being searched.
    * Binded to the search field */
   statusSearched = new FormControl<string[]>([]);
 
@@ -88,7 +87,7 @@ export class FileListComponent implements OnInit {
   fileDetailOpen = false;
 
   /** Index of the file to open in the file detail view. */
-  indexToOpen: number = 0;
+  indexToOpen = 0;
 
   /** Button state for the multi-select button. */
   buttonMultiSelect: 'Empty' | 'Full' = 'Empty';
@@ -101,12 +100,15 @@ export class FileListComponent implements OnInit {
   typeFolder!: string;
   displayableTypeFolder!: string;
 
-
-
-  constructor(private api: FileApiService, private snackbar: SnackbarService, private route: ActivatedRoute, private router: Router) { }
+  constructor(
+    private api: FileApiService,
+    private snackbar: SnackbarService,
+    private route: ActivatedRoute,
+    private router: Router,
+  ) {}
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       const currentUrl = this.router.url;
       const urlSegments = currentUrl.split('/');
       this.folder = urlSegments.slice(0, urlSegments.length - 1).join('');
@@ -128,9 +130,9 @@ export class FileListComponent implements OnInit {
   /**
    * Event handler for page change.
    * @param pageNumber The new page number.
-  */
+   */
   onPageChange(pageNumber: number): void {
-    this.currentPage = pageNumber
+    this.currentPage = pageNumber;
     this.selectedFiles.clear();
     this.refreshFileList();
   }
@@ -148,55 +150,74 @@ export class FileListComponent implements OnInit {
   /** Fetch file list from the server. Get files of current page only. */
   refreshFileList(): void {
     // Get the files for the current page and search criteria
-    this.api.getPages(
-      this.currentPage - 1,
-      this.itemsPerPage,
-      this.folder + '/' + this.filenameSearched.value,
-      getCategoryFromPath(this.typeFolder),
-      (this.keywordsSearched.value || undefined),
-      (this.statusSearched.value || []).map(s => Status.fromString(s))
-    ).subscribe(files => {
-      this.files = files;
-      for (let file of this.files) {
-        if (file.thumbnailName != null) {
-          // Get the thumbnail for each file
-          this.api.getThumbnail(file.filename).subscribe(blob => {
-            file.thumbnail = URL.createObjectURL(blob);
-          });
+    this.api
+      .getPages(
+        this.currentPage - 1,
+        this.itemsPerPage,
+        this.folder + '/' + this.filenameSearched.value,
+        getCategoryFromPath(this.typeFolder),
+        this.keywordsSearched.value || undefined,
+        (this.statusSearched.value || []).map((s) => Status.fromString(s)),
+      )
+      .subscribe((files) => {
+        this.files = files;
+        for (const file of this.files) {
+          if (file.thumbnailName != null) {
+            // Get the thumbnail for each file
+            this.api.getThumbnail(file.filename).subscribe((blob) => {
+              file.thumbnail = URL.createObjectURL(blob);
+            });
+          }
         }
-      }
-    });
+        this.selectedFiles.clear();
+      });
 
     // Refresh the list of keywords
-    this.api.getKeywords().subscribe(keywords => {
+    this.api.getKeywords().subscribe((keywords) => {
       this.keywords = keywords;
     });
 
-    this.api.getNumberOfElement(this.folder + '/' + this.filenameSearched.value,
-      getCategoryFromPath(this.typeFolder),
-      (this.keywordsSearched.value || undefined),
-      (this.statusSearched.value || []).map(s => Status.fromString(s))).subscribe(n => {
+    this.api
+      .getNumberOfElement(
+        this.folder + '/' + this.filenameSearched.value,
+        getCategoryFromPath(this.typeFolder),
+        this.keywordsSearched.value || undefined,
+        (this.statusSearched.value || []).map((s) => Status.fromString(s)),
+      )
+      .subscribe((n) => {
         this.numberOfElements = n;
       });
   }
 
   onDeleteClicked() {
-    this.api.delete([...this.selectedFiles].map(index => this.files[index].filename)).subscribe({
-      next: () => {
-        this.files = this.files.filter((_, index) => !this.selectedFiles.has(index));
-        this.selectedFiles.clear();
-        this.snackbar.show('Fichiers supprimés avec succès');
-        this.api.getNumberOfElement(this.folder + '/' + this.filenameSearched.value,
-        getCategoryFromPath(this.typeFolder),
-        (this.keywordsSearched.value || undefined),
-        (this.statusSearched.value || []).map(s => Status.fromString(s))).subscribe(n => {
-          this.numberOfElements = n;
-        });
-        this.api.getKeywords().subscribe(keywords => {
-          this.keywords = keywords;
-        });
-      }
-    });
+    this.api
+      .delete(
+        [...this.selectedFiles].map((index) => this.files[index].filename),
+      )
+      .subscribe({
+        next: () => {
+          this.files = this.files.filter(
+            (_, index) => !this.selectedFiles.has(index),
+          );
+          this.selectedFiles.clear();
+          this.snackbar.show('Fichiers supprimés avec succès');
+          this.api
+            .getNumberOfElement(
+              this.folder + '/' + this.filenameSearched.value,
+              getCategoryFromPath(this.typeFolder),
+              this.keywordsSearched.value || undefined,
+              (this.statusSearched.value || []).map((s) =>
+                Status.fromString(s),
+              ),
+            )
+            .subscribe((n) => {
+              this.numberOfElements = n;
+            });
+          this.api.getKeywords().subscribe((keywords) => {
+            this.keywords = keywords;
+          });
+        },
+      });
   }
 
   fileSelected(index: number) {
@@ -211,37 +232,45 @@ export class FileListComponent implements OnInit {
   }
 
   onDuplicate(): void {
-    const filenames = [...this.selectedFiles].map(index => this.files[index].filename);
-    filenames.forEach(filename => {
+    const filenames = [...this.selectedFiles].map(
+      (index) => this.files[index].filename,
+    );
+    filenames.forEach((filename) => {
       this.api.duplicate(filename).subscribe({
         next: () => {
           this.snackbar.show('Fichier dupliqué avec succès');
-        }
+        },
       });
     });
   }
 
   onDownload(): void {
-    for (let index of this.selectedFiles) {
+    for (const index of this.selectedFiles) {
       this.api.getFileData(this.files[index].filename).subscribe({
-        next: blob => {
+        next: (blob) => {
           const url = URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
           a.download = this.files[index].filename;
           a.click();
           URL.revokeObjectURL(url);
-        }
+        },
       });
     }
   }
 
   onShare(): void {
-    const selectedFiles = [...this.selectedFiles].map(index => this.files[index]);
-    const linkPromises = selectedFiles.map(file => lastValueFrom(this.api.getLink(file.filename)));
+    const selectedFiles = [...this.selectedFiles].map(
+      (index) => this.files[index],
+    );
+    const linkPromises = selectedFiles.map((file) =>
+      lastValueFrom(this.api.getLink(file.filename)),
+    );
 
-    Promise.all(linkPromises).then(links => {
-      const mailtoLinks = links.map(link => `- ${encodeURIComponent(link)}`).join('%0A%0A');
+    Promise.all(linkPromises).then((links) => {
+      const mailtoLinks = links
+        .map((link) => `- ${encodeURIComponent(link)}`)
+        .join('%0A%0A');
       const mailtoLink = `mailto:?subject=Partage de fichier&body=Bonjour,%0A%0AVeuillez trouver ci-joint les liens vers les fichiers :%0A${mailtoLinks}`;
       window.location.href = mailtoLink;
     });
@@ -257,7 +286,8 @@ export class FileListComponent implements OnInit {
   }
 
   onSelectClick(): void {
-    this.buttonMultiSelect = this.buttonMultiSelect == 'Empty' ? 'Full' : 'Empty';
+    this.buttonMultiSelect =
+      this.buttonMultiSelect == 'Empty' ? 'Full' : 'Empty';
     if (this.buttonMultiSelect == 'Empty') {
       this.selectedFiles.clear();
     } else {
@@ -280,6 +310,7 @@ export class FileListComponent implements OnInit {
   }
 
   previousFile() {
-    this.indexToOpen = (this.indexToOpen - 1 + this.files.length) % this.files.length;
+    this.indexToOpen =
+      (this.indexToOpen - 1 + this.files.length) % this.files.length;
   }
 }

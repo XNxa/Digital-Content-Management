@@ -1,5 +1,13 @@
 import { CdkTreeModule, FlatTreeControl } from '@angular/cdk/tree';
-import { AfterContentInit, AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { RoleApiService } from '../../services/role-api.service';
 import { Permission } from '../../models/Permission';
 import { ToggleButtonComponent } from '../../shared/components/buttons/toggle-button/toggle-button.component';
@@ -20,35 +28,42 @@ export interface PermissionNode {
   standalone: true,
   imports: [CdkTreeModule, ToggleButtonComponent],
   templateUrl: './permissions-tree.component.html',
-  styleUrl: './permissions-tree.component.css'
+  styleUrl: './permissions-tree.component.css',
 })
 export class PermissionsTreeComponent implements OnInit, OnChanges {
-
   @Input() initialPermissions: Set<string> | undefined;
-  @Input() disabled: boolean = false;
-  @Output() selectedPermissions: EventEmitter<Set<string>> = new EventEmitter<Set<string>>();
+  @Input() disabled = false;
+  @Output() selectedPermissions: EventEmitter<Set<string>> = new EventEmitter<
+    Set<string>
+  >();
 
   treeControl = new FlatTreeControl<PermissionNode>(
-    node => node.level, node => node.expandable
+    (node) => node.level,
+    (node) => node.expandable,
   );
 
   dataSource!: PermissionNode[];
 
   isFolder = (_: number, node: PermissionNode) => node.level == 0;
-  isSubfolder = (_: number, node: PermissionNode) => node.level == 1 && !node.hidden;
-  isHiddenSubfolder = (_: number, node: PermissionNode) => node.level == 1 && node.hidden!;
+  isSubfolder = (_: number, node: PermissionNode) =>
+    node.level == 1 && !node.hidden;
+  isHiddenSubfolder = (_: number, node: PermissionNode) =>
+    node.level == 1 && node.hidden!;
   isLeaf = (_: number, node: PermissionNode) => node.level == 2;
 
-  constructor(private api: RoleApiService, private cd : ChangeDetectorRef) { }
+  constructor(
+    private api: RoleApiService,
+    private cd: ChangeDetectorRef,
+  ) {}
 
   ngOnInit(): void {
-    this.api.getPermissions().subscribe(permissions => {
+    this.api.getPermissions().subscribe((permissions) => {
       this.buildDataSource(permissions);
-      this.ngOnChanges({});
+      this.ngOnChanges();
     });
   }
 
-  ngOnChanges(_changes: SimpleChanges): void {
+  ngOnChanges(): void {
     if (this.dataSource && this.initialPermissions) {
       for (let i = this.dataSource.length - 1; i >= 0; i--) {
         const node = this.dataSource[i];
@@ -56,7 +71,7 @@ export class PermissionsTreeComponent implements OnInit, OnChanges {
           node.toggle = this.initialPermissions.has(node.permission);
         }
         if (node.children) {
-          node.toggle = node.children.every(child => child.toggle);
+          node.toggle = node.children.every((child) => child.toggle);
         }
       }
     }
@@ -66,9 +81,14 @@ export class PermissionsTreeComponent implements OnInit, OnChanges {
     const tree: PermissionNode[] = [];
     const map = new Map<string, PermissionNode>();
 
-    permissions.forEach(permission => {
+    permissions.forEach((permission) => {
       if (!map.has(permission.folder)) {
-        const folderNode: PermissionNode = { name: permission.folder, expandable: true, toggle: false, level: 0 };
+        const folderNode: PermissionNode = {
+          name: permission.folder,
+          expandable: true,
+          toggle: false,
+          level: 0,
+        };
         map.set(permission.folder, folderNode);
         tree.push(folderNode);
       }
@@ -77,25 +97,49 @@ export class PermissionsTreeComponent implements OnInit, OnChanges {
       if (permission.subfolder) {
         const subfolderKey = `${permission.folder}/${permission.subfolder}`;
         if (!map.has(subfolderKey)) {
-          const subfolderNode: PermissionNode = { name: permission.subfolder, expandable: true, toggle: false, level: 1 };
+          const subfolderNode: PermissionNode = {
+            name: permission.subfolder,
+            expandable: true,
+            toggle: false,
+            level: 1,
+          };
           map.set(subfolderKey, subfolderNode);
           folderNode.children = folderNode.children || [];
           folderNode.children.push(subfolderNode);
         }
         const subfolderNode = map.get(subfolderKey)!;
         subfolderNode.children = subfolderNode.children || [];
-        subfolderNode.children.push({ name: permission.name, permission: permission.permission, expandable: false, toggle: false, level: 2 });
+        subfolderNode.children.push({
+          name: permission.name,
+          permission: permission.permission,
+          expandable: false,
+          toggle: false,
+          level: 2,
+        });
       } else {
         const noSubfolderKey = `${permission.folder}/no-subfolder`;
         if (!map.has(noSubfolderKey)) {
-          const noSubfolderNode: PermissionNode = { name: '', expandable: false, expanded: true, level: 1, toggle: false, hidden: true };
+          const noSubfolderNode: PermissionNode = {
+            name: '',
+            expandable: false,
+            expanded: true,
+            level: 1,
+            toggle: false,
+            hidden: true,
+          };
           map.set(noSubfolderKey, noSubfolderNode);
           folderNode.children = folderNode.children || [];
           folderNode.children.push(noSubfolderNode);
         }
         const noSubfolderNode = map.get(noSubfolderKey)!;
         noSubfolderNode.children = noSubfolderNode.children || [];
-        noSubfolderNode.children.push({ name: permission.name, permission: permission.permission, expandable: false, toggle: false, level: 2 });
+        noSubfolderNode.children.push({
+          name: permission.name,
+          permission: permission.permission,
+          expandable: false,
+          toggle: false,
+          level: 2,
+        });
       }
     });
 
@@ -104,13 +148,15 @@ export class PermissionsTreeComponent implements OnInit, OnChanges {
 
   flatten(tree: PermissionNode[]): PermissionNode[] {
     const result: PermissionNode[] = [];
-    tree.forEach(node => {
+    tree.forEach((node) => {
       result.push(node);
       if (node.children) {
         result.push(...this.flatten(node.children));
       }
     });
-    result.forEach(node => { if (node.expandable) node.expanded = false; });
+    result.forEach((node) => {
+      if (node.expandable) node.expanded = false;
+    });
     return result;
   }
 
@@ -144,40 +190,44 @@ export class PermissionsTreeComponent implements OnInit, OnChanges {
   }
 
   setAll(value: boolean): void {
-    this.dataSource.forEach(node => {
+    this.dataSource.forEach((node) => {
       node.toggle = value;
     });
 
-    this.selectedPermissions.emit(new Set(this.dataSource.filter(node => node.toggle).map(node => node.permission!)));
+    this.selectedPermissions.emit(
+      new Set(
+        this.dataSource
+          .filter((node) => node.toggle)
+          .map((node) => node.permission!),
+      ),
+    );
   }
 
   toggle(node: PermissionNode): void {
     if (node.level == 0) {
       if (!node.toggle) {
         node.toggle = true;
-        node.children!.forEach(child => {
+        node.children!.forEach((child) => {
           child.toggle = true;
-          child.children!.forEach(grandchild => grandchild.toggle = true);
+          child.children!.forEach((grandchild) => (grandchild.toggle = true));
         });
       } else {
         node.toggle = false;
       }
-    }
-    else if (node.level == 1) {
+    } else if (node.level == 1) {
       if (!node.toggle) {
         node.toggle = true;
-        node.children!.forEach(child => child.toggle = true);
-        let parent = this.getParentNode(node);
-        if (parent!.children!.every(child => child.toggle)) {
+        node.children!.forEach((child) => (child.toggle = true));
+        const parent = this.getParentNode(node);
+        if (parent!.children!.every((child) => child.toggle)) {
           parent!.toggle = true;
         }
       } else {
         node.toggle = false;
-        let parent = this.getParentNode(node);
+        const parent = this.getParentNode(node);
         parent!.toggle = false;
       }
-    }
-    else {
+    } else {
       if (node.toggle) {
         node.toggle = false;
         let parent = this.getParentNode(node);
@@ -189,7 +239,7 @@ export class PermissionsTreeComponent implements OnInit, OnChanges {
         node.toggle = true;
         let parent = this.getParentNode(node);
         while (parent) {
-          if (parent.children!.every(child => child.toggle)) {
+          if (parent.children!.every((child) => child.toggle)) {
             parent.toggle = true;
           }
           parent = this.getParentNode(parent);
@@ -197,7 +247,12 @@ export class PermissionsTreeComponent implements OnInit, OnChanges {
       }
     }
 
-    this.selectedPermissions.emit(new Set(this.dataSource.filter(node => node.toggle).map(node => node.permission!)));
+    this.selectedPermissions.emit(
+      new Set(
+        this.dataSource
+          .filter((node) => node.toggle)
+          .map((node) => node.permission!),
+      ),
+    );
   }
 }
-

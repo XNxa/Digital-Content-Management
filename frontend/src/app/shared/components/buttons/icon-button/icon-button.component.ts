@@ -6,7 +6,7 @@ import { ButtonIcon } from '../icon-button-type';
   standalone: true,
   imports: [],
   templateUrl: './icon-button.component.html',
-  styleUrl: './icon-button.component.css'
+  styleUrl: './icon-button.component.css',
 })
 export class IconButtonComponent {
   @Input() icon!: ButtonIcon;
@@ -15,7 +15,12 @@ export class IconButtonComponent {
   @Output() click: EventEmitter<void> = new EventEmitter<void>();
 
   getIconPath(): string {
-    return 'icons/' + ((this.color == 'blue' || this.color == 'dark') ? 'white/' : 'blue/') + this.icon + '.svg';
+    return (
+      'icons/' +
+      (this.color == 'blue' || this.color == 'dark' ? 'white/' : 'blue/') +
+      this.icon +
+      '.svg'
+    );
   }
 
   handleClick(event: Event): void {

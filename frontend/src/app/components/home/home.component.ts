@@ -8,8 +8,6 @@ import { RouterModule } from '@angular/router';
   standalone: true,
   imports: [SidebarComponent, FileListComponent, RouterModule],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+  styleUrl: './home.component.css',
 })
-export class HomeComponent {
-
-}
+export class HomeComponent {}

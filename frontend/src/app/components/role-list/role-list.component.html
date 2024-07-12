@@ -1,34 +1,53 @@
 <div class="header">
-    <h1>Gestion des rôles</h1>
-    <app-icon-text-button [permission]="['role_add']" title="Ajouter un nouveau rôle" icon="add"
-        (click)="addNewRole()"></app-icon-text-button>
+  <h1>Gestion des rôles</h1>
+  <app-icon-text-button
+    [permission]="['role_add']"
+    title="Ajouter un nouveau rôle"
+    icon="add"
+    (click)="addNewRole()"
+  ></app-icon-text-button>
 </div>
 
 <div class="search-area">
-    <app-select class="search-element" [border]="false" label="Statut" [options]="statutOptions" [(value)]="selectedStatut"></app-select>
+  <app-select
+    class="search-element"
+    [border]="false"
+    label="Statut"
+    [options]="statutOptions"
+    [(value)]="selectedStatut"
+  ></app-select>
 </div>
 
 <div class="header">
-    <h2>Liste des rôles</h2>
-    <div class="action-buttons">
-        <app-icon-button color='white' icon="update" (click)="refreshRoleList()"></app-icon-button>
-    </div>
+  <h2>Liste des rôles</h2>
+  <div class="action-buttons">
+    <app-icon-button
+      color="white"
+      icon="update"
+      (click)="refreshRoleList()"
+    ></app-icon-button>
+  </div>
 </div>
 
 <div class="file-grid">
-    <app-table class="table"
-        [columns]="[
-            {header: 'NOM DU RÔLE', field: 'name'}, 
-            {header: 'STATUT', field: 'statut'}
-        ]"
-        [data]="roles" 
-        [selected]="selectedRoles"
-        (selectedChange)="roleSelectedList($event)"
-        (rowClicked)="modifyRole($event)">
-    </app-table>
+  <app-table
+    class="table"
+    [columns]="[
+      { header: 'NOM DU RÔLE', field: 'name' },
+      { header: 'STATUT', field: 'state' },
+    ]"
+    [data]="roles"
+    [selected]="selectedRoles"
+    (selectedChange)="roleSelectedList($event)"
+    (rowClicked)="modifyRole($event)"
+  >
+  </app-table>
 </div>
 
 <div class="footer">
-    <app-page-selector [totalItems]="numberOfElements" [itemsPerPage]="itemsPerPage"
-        (pageChange)="onPageChange($event)"></app-page-selector>
+  <app-page-selector
+    [totalItems]="numberOfElements"
+    [itemsPerPage]="itemsPerPage"
+    (pageChange)="onPageChange($event)"
+  ></app-page-selector>
 </div>
