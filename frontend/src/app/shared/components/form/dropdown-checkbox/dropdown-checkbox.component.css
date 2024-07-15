@@ -12,13 +12,15 @@
 
 .placeholder {
   color: #757575;
-  font-size: 13px;
+  font-size: 13.33px;
+  font-weight: 200;
   user-select: none;
   text-wrap: nowrap;
 }
 
 .selected-chips {
-  padding: 5px;
+  height: 36px;
+  padding-left: 10px;
   display: flex;
   align-items: center;
   gap: 4px;
