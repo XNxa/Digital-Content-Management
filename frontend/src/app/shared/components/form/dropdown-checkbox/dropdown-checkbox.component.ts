@@ -1,4 +1,10 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  HostListener,
+  Input,
+  Output,
+} from '@angular/core';
 import { FormControl, FormsModule } from '@angular/forms';
 
 @Component({
@@ -21,6 +27,14 @@ export class DropdownCheckboxComponent {
   dropdownOpen = false;
   filterText = '';
   filteredOptions!: string[];
+
+  @HostListener('document:click', ['$event'])
+  clickout(event: MouseEvent): void {
+    const targetElement = event.target as HTMLElement;
+    if (!targetElement.closest('.chips-container') && this.dropdownOpen) {
+      this.toggleDropdown();
+    }
+  }
 
   isSelected(option: string): boolean {
     return this.selectedChips.includes(option);

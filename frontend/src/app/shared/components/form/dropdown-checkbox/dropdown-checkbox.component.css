@@ -14,6 +14,7 @@
   color: #757575;
   font-size: 13px;
   user-select: none;
+  text-wrap: nowrap;
 }
 
 .selected-chips {
@@ -38,6 +39,7 @@
   padding: 2px 8px;
   margin: 2px;
   font-size: 14px;
+  user-select: none;
 }
 
 .remove-chip {
@@ -46,6 +48,7 @@
 }
 
 .dropdown-button {
+  user-select: none;
   margin-left: auto;
 }
 
@@ -62,6 +65,7 @@
   box-shadow: 0px 48px 64px -36px #18181c21;
   margin-bottom: -250px;
   z-index: 1;
+  user-select: none;
 }
 
 .option {
