@@ -27,28 +27,63 @@
   }
 
   <div class="search-area">
-    <app-input
-      class="search-element"
-      label="ID du fichier"
-      placeholder="Saisissez l'ID du fichier"
-      [border]="false"
-      [(value)]="filenameSearched"
-      (changed)="refreshFileList()"
-    ></app-input>
-    <app-dropdown-checkbox
-      class="search-element"
-      label="Mots-clés"
-      placeholder="Selectionnez des tags"
-      [options]="keywords"
-      [(value)]="keywordsSearched"
-    ></app-dropdown-checkbox>
-    <app-dropdown-checkbox
-      class="search-element"
-      label="Statut"
-      placeholder="Selectionnez un statut"
-      [options]="status"
-      [(value)]="statusSearched"
-    ></app-dropdown-checkbox>
+    <div class="search-row">
+      <app-input
+        class="search-element"
+        label="ID du fichier"
+        placeholder="Saisissez l'ID du fichier"
+        [border]="false"
+        [(value)]="filenameSearched"
+        (changed)="refreshFileList()"
+      ></app-input>
+      <app-dropdown-checkbox
+        class="search-element"
+        label="Mots-clés"
+        placeholder="Sélectionnez des tags"
+        [options]="keywords"
+        [(value)]="keywordsSearched"
+      ></app-dropdown-checkbox>
+      <app-dropdown-checkbox
+        class="search-element"
+        label="Statut"
+        placeholder="Sélectionnez un statut"
+        [options]="status"
+        [(value)]="statusSearched"
+      ></app-dropdown-checkbox>
+      <app-icon-button
+        class="toggle-extended-search"
+        icon="settings"
+        (click)="extendedSearch = !extendedSearch"
+      ></app-icon-button>
+    </div>
+    @if (extendedSearch) {
+      <div class="search-row">
+        <app-input
+          class="search-element"
+          label="Version du fichier"
+          placeholder="Sélectionnez une version du fichier"
+          [border]="false"
+          [(value)]="filenameSearched"
+          (changed)="refreshFileList()"
+        ></app-input>
+        <app-dropdown-checkbox
+          class="search-element"
+          label="Type du fichier"
+          placeholder="Sélectionnez le type du fichier"
+          [options]="keywords"
+          [(value)]="keywordsSearched"
+        ></app-dropdown-checkbox>
+        <app-date-input
+          class="search-element"
+          label="Plage de dates"
+          [(value)]="dateSearched"
+        ></app-date-input>
+        <app-icon-button
+          style="visibility: hidden"
+          icon="settings"
+        ></app-icon-button>
+      </div>
+    }
   </div>
 
   <div class="header">

@@ -19,6 +19,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { getCategoryFromPath, getNameFromPath } from '../../models/Tabs';
 import { FormControl } from '@angular/forms';
 import { PermissionDirective } from '../../shared/directives/permission.directive';
+import { DateInputComponent } from '../../shared/components/form/date-input/date-input.component';
 
 @Component({
   selector: 'app-file-list',
@@ -36,6 +37,7 @@ import { PermissionDirective } from '../../shared/directives/permission.directiv
     DropdownCheckboxComponent,
     FileDetailsComponent,
     PermissionDirective,
+    DateInputComponent,
   ],
   templateUrl: './file-list.component.html',
   styleUrl: './file-list.component.css',
@@ -80,6 +82,11 @@ export class FileListComponent implements OnInit {
    * Binded to the search field */
   statusSearched = new FormControl<string[]>([]);
 
+  /**
+   * The date range being searched.
+   */
+  dateSearched = new FormControl<[Date, Date] | null>(null);
+
   /** Files currently selected */
   selectedFiles: Set<number> = new Set<number>();
 
@@ -99,6 +106,9 @@ export class FileListComponent implements OnInit {
   /** Type of media selected */
   typeFolder!: string;
   displayableTypeFolder!: string;
+
+  /** is extended search bar shown  */
+  extendedSearch = false;
 
   constructor(
     private api: FileApiService,
