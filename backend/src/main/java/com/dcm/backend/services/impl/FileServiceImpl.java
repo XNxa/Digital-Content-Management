@@ -280,6 +280,12 @@ public class FileServiceImpl implements FileService {
         keywordService.deleteUnusedKeywords();
     }
 
+    @Override
+    public Collection<String> getTypes(String folder) { // TODO
+        return fileRepository.findAllDistinctTypes(folder).stream().map(t -> t.split(
+                "/")[1].toUpperCase()).toList();
+    }
+
     /**
      * Generate a thumbnail for the file if it is an image or a video
      *

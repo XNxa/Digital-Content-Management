@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collection;
 
 public interface FileService {
 
@@ -123,4 +124,11 @@ public interface FileService {
             ErrorResponseException, IOException, NoSuchAlgorithmException,
             InvalidKeyException, InvalidResponseException, XmlParserException,
             InternalException;
+
+    /**
+     * Returns the differents types of files in a folder
+     * @param folder Folder to search
+     * @return Collection of types names
+     */
+    Collection<String> getTypes(String folder);
 }
