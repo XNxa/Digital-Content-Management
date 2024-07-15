@@ -1,0 +1,22 @@
+<div class="component-container">
+  <label class="label">{{ label }}</label>
+  <div class="input-container">
+    <input
+      (click)="toggleCalendar()"
+      [value]="printDates(startDate, endDate)"
+      (keydown)="keyPress($event)"
+      readonly
+    />
+    <img src="icons/calendar.svg" />
+  </div>
+  @if (calendarOpen) {
+    <div class="calendar-container">
+      <app-calendar
+        class="calendar"
+        [(selectedStartDate)]="startDate"
+        [(selectedEndDate)]="endDate"
+        (blurEvent)="closeCalendar()"
+      ></app-calendar>
+    </div>
+  }
+</div>

@@ -1,0 +1,54 @@
+<div class="date-selector">
+  <div class="calendar">
+    <div class="calendar-header">
+      <button (click)="prevMonth(leftCalendar)"><</button>
+      <span>{{ monthNames[leftCalendar.month] }} {{ leftCalendar.year }}</span>
+      <button (click)="nextMonth(leftCalendar)">></button>
+    </div>
+    <div class="calendar-body">
+      <div class="week-days">
+        @for (day of weekDays; track $index) {
+          <span class="week-day">{{ day }}</span>
+        }
+      </div>
+      <div class="dates">
+        @for (date of leftCalendar.dates; track $index) {
+          <span
+            [class]="isSelected(date)"
+            [style.visibility]="isHidden(date, leftCalendar)"
+            (click)="selectDate(date)"
+          >
+            {{ date.getDate() }}
+          </span>
+        }
+      </div>
+    </div>
+  </div>
+  <div class="calendar">
+    <div class="calendar-header">
+      <button (click)="prevMonth(rightCalendar)">&lt;</button>
+      <span
+        >{{ monthNames[rightCalendar.month] }} {{ rightCalendar.year }}</span
+      >
+      <button (click)="nextMonth(rightCalendar)">&gt;</button>
+    </div>
+    <div class="calendar-body">
+      <div class="week-days">
+        @for (day of weekDays; track $index) {
+          <span class="week-day">{{ day }}</span>
+        }
+      </div>
+      <div class="dates">
+        @for (date of rightCalendar.dates; track $index) {
+          <span
+            [class]="isSelected(date)"
+            [style.visibility]="isHidden(date, rightCalendar)"
+            (click)="selectDate(date)"
+          >
+            {{ date.getDate() }}
+          </span>
+        }
+      </div>
+    </div>
+  </div>
+</div>
