@@ -12,6 +12,7 @@ public final class ErrorMessages {
     public static final String EXCEED_MAX_SIZE_CODE = "EXCEED.MAX.SIZE";
     public static final String INVALID_MIME_TYPE_CODE = "INVALID.MIME.TYPE";
     public static final String INVALID_EMAIL_CODE = "INVALID.EMAIL";
+    public static final String INVALID_FOLDER_CODE = "INVALID.FOLDER";
 
     private ErrorMessages() {
         // Not called

@@ -2,6 +2,7 @@ package com.dcm.backend.services;
 
 import com.dcm.backend.dto.FileFilterDTO;
 import com.dcm.backend.dto.FileHeaderDTO;
+import com.dcm.backend.dto.FilenameDTO;
 import com.dcm.backend.entities.FileHeader;
 import com.dcm.backend.exceptions.FileNotFoundException;
 import com.dcm.backend.exceptions.NoThumbnailException;
@@ -14,7 +15,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Collection;
 
 public interface FileService {
 
@@ -48,9 +48,9 @@ public interface FileService {
     /**
      * Deletes a file from the Minio server
      *
-     * @param filename Name of the file
+     * @param file DTO containing the folder and name of the file
      */
-    void delete(String[] filename) throws FileNotFoundException, ServerException,
+    void delete(FilenameDTO file) throws FileNotFoundException, ServerException,
             InsufficientDataException, ErrorResponseException, IOException,
             NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
             XmlParserException, InternalException;
@@ -58,11 +58,11 @@ public interface FileService {
     /**
      * Gets a file data from the Minio server
      *
-     * @param filename Name of the file
+     * @param file DTO containing the folder and name of the file
      * @return InputStreamResource of the file
      * @throws FileNotFoundException If the file is not found
      */
-    InputStreamResource getFile(String filename) throws ServerException,
+    InputStreamResource getFile(FilenameDTO file) throws ServerException,
             InsufficientDataException, ErrorResponseException, IOException,
             NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
             XmlParserException, InternalException, FileNotFoundException;
@@ -70,12 +70,12 @@ public interface FileService {
     /**
      * Gets the thumbnail of a file
      *
-     * @param filename Name of the file
+     * @param file DTO containing the folder and name of the file
      * @return InputStreamResource of the thumbnail
      * @throws FileNotFoundException If the file is not found
      * @throws NoThumbnailException  If the file has no thumbnail
      */
-    InputStreamResource getThumbnail(String filename) throws ServerException,
+    InputStreamResource getThumbnail(FilenameDTO file) throws ServerException,
             InsufficientDataException, ErrorResponseException, IOException,
             NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
             XmlParserException, InternalException, FileNotFoundException,
@@ -84,18 +84,18 @@ public interface FileService {
     /**
      * Gets the type of file
      *
-     * @param filename Name of the file
+     * @param file DTO containing the folder and name of the file
      * @return MediaType of the file
      * @throws FileNotFoundException If the file is not found
      */
-    MediaType getFileType(String filename) throws FileNotFoundException;
+    MediaType getFileType(FilenameDTO file) throws FileNotFoundException;
 
     /**
      * Gets the link of a file
      *
-     * @param filename Name of the file
+     * @param file DTO containing the folder and name of the file
      */
-    String getLink(String filename) throws ServerException,
+    String getLink(FilenameDTO file) throws ServerException,
             InsufficientDataException, ErrorResponseException, IOException,
             NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
             XmlParserException, InternalException, FileNotFoundException;
@@ -103,32 +103,23 @@ public interface FileService {
     /**
      * Duplicates a file
      *
-     * @param filename file to duplicate
-     * @throws FileNotFoundException If the file is
-     *                               not found
+     * @param file DTO containing the folder and name of the file
+     * @throws FileNotFoundException If the file is not found
      */
-    void duplicate(String filename) throws FileNotFoundException, ServerException,
+    void duplicate(FilenameDTO file) throws FileNotFoundException, ServerException,
             InsufficientDataException, ErrorResponseException, IOException,
             NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
             XmlParserException, InternalException;
 
-
     /**
      * Updates the metadata of a file
      *
-     * @param filename Name of the file
+     * @param file     DTO containing the folder and name of the file
      * @param metadata Metadata of the file
      */
-    void update(String filename, FileHeaderDTO metadata) throws
+    void update(FilenameDTO file, FileHeaderDTO metadata) throws
             FileNotFoundException, ServerException, InsufficientDataException,
             ErrorResponseException, IOException, NoSuchAlgorithmException,
             InvalidKeyException, InvalidResponseException, XmlParserException,
             InternalException;
-
-    /**
-     * Returns the differents types of files in a folder
-     * @param folder Folder to search
-     * @return Collection of types names
-     */
-    Collection<String> getTypes(String folder);
 }

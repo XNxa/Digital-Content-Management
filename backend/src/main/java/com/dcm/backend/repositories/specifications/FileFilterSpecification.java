@@ -17,19 +17,16 @@ import java.util.List;
 @AllArgsConstructor
 public class FileFilterSpecification implements Specification<FileHeader> {
 
-    private final static String[] imageTypes =
-            {"image/jpeg", "image/png", "image/gif", "image/bmp", "image/webp",
-                    "image/tiff",};
-    private final static String[] videoTypes = {"video/%",};
-    private final static String[] pictoTypes = {"image/svg+xml",};
-    String filename;
-    List<Keyword> keywords;
-    List<Status> status;
-    String category;
+    private String folder;
+    private String filename;
+    private List<Keyword> keywords;
+    private List<Status> status;
 
     @Override
     public Predicate toPredicate(Root<FileHeader> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
         List<Predicate> predicates = new ArrayList<>();
+
+        predicates.add(criteriaBuilder.like(root.get("folder"), folder));
 
         if (!filename.isBlank()) {
             predicates.add(
@@ -52,40 +49,6 @@ public class FileFilterSpecification implements Specification<FileHeader> {
             }
             predicates.add(
                     criteriaBuilder.or(statusPredicates.toArray(new Predicate[0])));
-        }
-
-        switch (category) {
-            case "images":
-                predicates.add(criteriaBuilder.or(Arrays.stream(imageTypes)
-                        .map(type -> criteriaBuilder.like(root.get("type"), type))
-                        .toArray(Predicate[]::new)));
-                break;
-            case "videos":
-                predicates.add(criteriaBuilder.or(Arrays.stream(videoTypes)
-                        .map(type -> criteriaBuilder.like(root.get("type"), type))
-                        .toArray(Predicate[]::new)));
-                break;
-            case "pictos":
-                predicates.add(criteriaBuilder.or(Arrays.stream(pictoTypes)
-                        .map(type -> criteriaBuilder.like(root.get("type"), type))
-                        .toArray(Predicate[]::new)));
-                break;
-            case "docs":
-                predicates.add(criteriaBuilder.not(criteriaBuilder.or(
-                        Arrays.stream(imageTypes)
-                                .map(type -> criteriaBuilder.like(root.get("type"), type))
-                                .toArray(Predicate[]::new))));
-                predicates.add(criteriaBuilder.not(criteriaBuilder.or(
-                        Arrays.stream(videoTypes)
-                                .map(type -> criteriaBuilder.like(root.get("type"), type))
-                                .toArray(Predicate[]::new))));
-                predicates.add(criteriaBuilder.not(criteriaBuilder.or(
-                        Arrays.stream(pictoTypes)
-                                .map(type -> criteriaBuilder.like(root.get("type"), type))
-                                .toArray(Predicate[]::new))));
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid category: " + category);
         }
 
         return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

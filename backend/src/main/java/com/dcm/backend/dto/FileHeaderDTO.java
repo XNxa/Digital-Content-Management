@@ -2,7 +2,8 @@ package com.dcm.backend.dto;
 
 import com.dcm.backend.enumeration.Status;
 import com.dcm.backend.utils.ErrorMessages;
-import com.dcm.backend.validation.constraints.ValidMimeType;
+import com.dcm.backend.validation.constraints.Folder;
+import com.dcm.backend.validation.constraints.MimeType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -18,6 +19,9 @@ import java.util.Collection;
 @AllArgsConstructor
 @Builder
 public class FileHeaderDTO {
+
+    @Folder(message = ErrorMessages.INVALID_FOLDER_CODE)
+    private String folder;
 
     @NotBlank(message = ErrorMessages.REQUIERED_FIELD_MISSING_CODE)
     private String filename;
@@ -37,7 +41,7 @@ public class FileHeaderDTO {
 
     private String date;
 
-    @ValidMimeType(message = ErrorMessages.INVALID_MIME_TYPE_CODE)
+    @MimeType(message = ErrorMessages.INVALID_MIME_TYPE_CODE)
     @NotNull(message = ErrorMessages.REQUIERED_FIELD_MISSING_CODE)
     private String type;
 

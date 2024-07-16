@@ -2,6 +2,7 @@ package com.dcm.backend.api;
 
 import com.dcm.backend.dto.FileFilterDTO;
 import com.dcm.backend.dto.FileHeaderDTO;
+import com.dcm.backend.dto.FilenameDTO;
 import com.dcm.backend.entities.FileHeader;
 import com.dcm.backend.services.FileService;
 import com.dcm.backend.services.KeywordService;
@@ -17,7 +18,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,23 +50,22 @@ public class FileController {
     @PostMapping("/files")
     public List<FileHeaderDTO> getFiles(@RequestBody @Valid FileFilterDTO filter) {
         Page<FileHeader> p = fs.getPage(filter);
-        p.getTotalPages();
 
         return p.stream().map(fileHeaderMapper::toDto).collect(Collectors.toList());
     }
 
     @SneakyThrows
     @GetMapping("/filedata")
-    public ResponseEntity<Resource> getFileData(@RequestParam("filename") String filename) {
-        InputStreamResource resource = fs.getFile(filename);
-        return ResponseEntity.ok().contentType(fs.getFileType(filename)).body(resource);
+    public ResponseEntity<Resource> getFileData(@ModelAttribute @Valid FilenameDTO file) {
+        InputStreamResource resource = fs.getFile(file);
+        return ResponseEntity.ok().contentType(fs.getFileType(file)).body(resource);
     }
 
     @SneakyThrows
     @GetMapping("/thumbnail")
-    public ResponseEntity<Resource> getThumbnail(@RequestParam("filename") String filename) {
-        InputStreamResource resource = fs.getThumbnail(filename);
-        return ResponseEntity.ok().contentType(fs.getFileType(filename)).body(resource);
+    public ResponseEntity<Resource> getThumbnail(@ModelAttribute @Valid FilenameDTO file) {
+        InputStreamResource resource = fs.getThumbnail(file);
+        return ResponseEntity.ok().contentType(fs.getFileType(file)).body(resource);
     }
 
     @GetMapping("/keywords")
@@ -76,35 +75,30 @@ public class FileController {
 
     @SneakyThrows
     @DeleteMapping("/delete")
-    @PreAuthorize("hasRole(@util.buildPermission(#filename[0], 'delete'))")
-    public void deleteFile(@RequestParam("filename") String[] filename) {
-        fs.delete(filename);
+    @PreAuthorize("hasRole(@util.buildPErmission(#file, 'delete'))")
+    public void deleteFile(@ModelAttribute @Valid FilenameDTO file) {
+        fs.delete(file);
     }
 
     @SneakyThrows
     @GetMapping("/link")
-    @PreAuthorize("hasRole(@util.buildPermission(#filename,'share')) or hasRole(@util.buildPermission(#filename, 'copy_link'))")
-    public String getLink(@RequestParam("filename") String filename) {
-        return fs.getLink(filename);
+    @PreAuthorize("hasRole(@util.buildPErmission(#file,'share')) or hasRole(@util.buildPErmission(#file, 'copy_link'))")
+    public String getLink(@ModelAttribute @Valid FilenameDTO file) {
+        return fs.getLink(file);
     }
 
     @SneakyThrows
     @PostMapping("/duplicate")
-    @PreAuthorize("hasRole(@util.buildPermission(#filename, 'duplicate'))")
-    public void duplicateFile(@RequestParam("filename") String filename) {
-        fs.duplicate(filename);
+    @PreAuthorize("hasRole(@util.buildPErmission(#file, 'duplicate'))")
+    public void duplicateFile(@ModelAttribute @Valid FilenameDTO file) {
+        fs.duplicate(file);
     }
 
     @SneakyThrows
     @PutMapping("/update")
-    @PreAuthorize("hasRole(@util.buildPermission(#filename, 'modify'))")
-    public void updateFile(@RequestParam("filename") String filename, @RequestBody @Valid FileHeaderDTO metadata) {
-        fs.update(filename, metadata);
-    }
-
-    @GetMapping("/types") // TODO
-    public Collection<String> getTypes(String folder) {
-        return fs.getTypes(folder);
+    @PreAuthorize("hasRole(@util.buildPErmission(#file, 'modify'))")
+    public void updateFile(@ModelAttribute @Valid FilenameDTO file, @RequestBody @Valid FileHeaderDTO metadata) {
+        fs.update(file, metadata);
     }
 }
 

@@ -18,6 +18,8 @@ public class FileHeader {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    private String folder;
+
     private String filename;
 
     private String thumbnailName;
@@ -36,28 +38,5 @@ public class FileHeader {
 
     @ManyToMany
     private Collection<Keyword> keywords;
-
-    public FileHeader(String filename, String description, String version, Status status, String date, String type, Long size, Collection<Keyword> keywords) {
-        this.filename = filename;
-        this.description = description;
-        this.version = version;
-        this.status = status;
-        this.date = date;
-        this.type = type;
-        this.size = size;
-        this.keywords = keywords;
-    }
-
-    @SuppressWarnings("CopyConstructorMissesField")
-    public FileHeader(FileHeader fileHeader) {
-        this.filename = fileHeader.getFilename();
-        this.thumbnailName = fileHeader.getThumbnailName();
-        this.description = fileHeader.getDescription();
-        this.version = fileHeader.getVersion();
-        this.status = fileHeader.getStatus();
-        this.date = fileHeader.getDate();
-        this.type = fileHeader.getType();
-        this.size = fileHeader.getSize();
-        this.keywords = fileHeader.getKeywords();
-    }
+    
 }

@@ -1,6 +1,6 @@
 package com.dcm.backend.validation.constraints;
 
-import com.dcm.backend.validation.validators.ValidMimeTypeValidator;
+import com.dcm.backend.validation.validators.FolderValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
@@ -12,10 +12,10 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER,
         ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = ValidMimeTypeValidator.class)
-public @interface ValidMimeType {
+@Constraint(validatedBy = FolderValidator.class)
+public @interface Folder {
 
-    String message() default "Not a valid mime type";
+    String message() default "Invalid folder";
 
     Class<?>[] groups() default {};
 

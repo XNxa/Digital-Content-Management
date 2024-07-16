@@ -4,6 +4,7 @@ import com.dcm.backend.config.MinioConfig;
 import com.dcm.backend.config.MinioProperties;
 import com.dcm.backend.dto.FileFilterDTO;
 import com.dcm.backend.dto.FileHeaderDTO;
+import com.dcm.backend.dto.FilenameDTO;
 import com.dcm.backend.entities.FileHeader;
 import com.dcm.backend.entities.Keyword;
 import com.dcm.backend.exceptions.FileNotFoundException;
@@ -13,9 +14,11 @@ import com.dcm.backend.repositories.specifications.FileFilterSpecification;
 import com.dcm.backend.services.FileService;
 import com.dcm.backend.services.KeywordService;
 import com.dcm.backend.services.ThumbnailService;
+import com.dcm.backend.utils.mappers.FileHeaderMapper;
 import io.minio.*;
 import io.minio.errors.*;
 import io.minio.http.Method;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -54,6 +57,9 @@ public class FileServiceImpl implements FileService {
     @Autowired
     private ThumbnailService thumbnailService;
 
+    @Autowired
+    private FileHeaderMapper fileHeaderMapper;
+
     @Override
     public void upload(InputStream is, FileHeaderDTO metadata) throws IOException,
             ServerException, InsufficientDataException, ErrorResponseException,
@@ -79,9 +85,9 @@ public class FileServiceImpl implements FileService {
     @Override
     public long count(FileFilterDTO filter) {
         FileFilterSpecification spec =
-                new FileFilterSpecification(filter.getFilename(),
+                new FileFilterSpecification(filter.getFolder(), filter.getFilename(),
                         filter.getKeywords().stream().map(Keyword::new).toList(),
-                        filter.getStatus(), filter.getCategory());
+                        filter.getStatus());
 
         return fileRepository.count(spec);
     }
@@ -91,72 +97,73 @@ public class FileServiceImpl implements FileService {
         Pageable pageRequest = PageRequest.of(filter.getPage(), filter.getSize());
 
         FileFilterSpecification spec =
-                new FileFilterSpecification(filter.getFilename(),
+                new FileFilterSpecification(filter.getFolder(), filter.getFilename(),
                         filter.getKeywords().stream().map(Keyword::new).toList(),
-                        filter.getStatus(), filter.getCategory());
+                        filter.getStatus());
 
         return fileRepository.findAll(spec, pageRequest);
     }
 
     @Override
-    public void delete(String[] filename) throws FileNotFoundException, ServerException,
+    public void delete(FilenameDTO file) throws FileNotFoundException, ServerException,
             InsufficientDataException, ErrorResponseException, IOException,
             NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
             XmlParserException, InternalException {
-        for (String f : filename) {
-            FileHeader fileHeader = fileRepository.findByFilename(f).orElseThrow(
-                    () -> new FileNotFoundException("delete : " + f + " not found")
-            );
 
+        FileHeader fileHeader = fileRepository.findByFolderAndFilename(file.getFolder(),
+                        file.getFilename())
+                .orElseThrow(() -> new FileNotFoundException(
+                        "delete : " + file.getFilename() + " not found in " + file.getFolder()));
+
+        mc.minioClient()
+                .removeObject(RemoveObjectArgs.builder()
+                        .bucket(mp.getBucketName())
+                        .object(fileHeader.getFolder() + "/" + fileHeader.getFilename())
+                        .build());
+
+        if (fileHeader.getThumbnailName() != null) {
             mc.minioClient()
                     .removeObject(RemoveObjectArgs.builder()
                             .bucket(mp.getBucketName())
-                            .object(fileHeader.getFilename())
+                            .object(fileHeader.getThumbnailName())
                             .build());
-
-            if (fileHeader.getThumbnailName() != null) {
-                mc.minioClient()
-                        .removeObject(RemoveObjectArgs.builder()
-                                .bucket(mp.getBucketName())
-                                .object(fileHeader.getThumbnailName())
-                                .build());
-            }
-
-            fileRepository.delete(fileHeader);
-            keywordService.deleteUnusedKeywords();
         }
+
+        fileRepository.delete(fileHeader);
+        keywordService.deleteUnusedKeywords();
     }
 
     @Override
-    public InputStreamResource getFile(String filename) throws ServerException,
+    public InputStreamResource getFile(FilenameDTO file) throws ServerException,
             InsufficientDataException, ErrorResponseException, IOException,
             NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
             XmlParserException, InternalException, FileNotFoundException {
-        FileHeader fileHeader = fileRepository.findByFilename(filename).orElseThrow(
-                () -> new FileNotFoundException("getFile : " + filename + " not found")
-        );
+        FileHeader fileHeader = fileRepository.findByFolderAndFilename(file.getFolder(),
+                        file.getFilename())
+                .orElseThrow(() -> new FileNotFoundException(
+                        "getFile : " + file.getFilename() + " not found in " + file.getFolder()));
 
         return new InputStreamResource(mc.minioClient()
                 .getObject(GetObjectArgs.builder()
                         .bucket(mp.getBucketName())
-                        .object(fileHeader.getFilename())
+                        .object(fileHeader.getFolder() + "/" + fileHeader.getFilename())
                         .build()));
     }
 
     @Override
-    public InputStreamResource getThumbnail(String filename) throws ServerException,
+    public InputStreamResource getThumbnail(FilenameDTO file) throws ServerException,
             InsufficientDataException, ErrorResponseException, IOException,
             NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
             XmlParserException, InternalException, FileNotFoundException,
             NoThumbnailException {
-        FileHeader fileHeader = fileRepository.findByFilename(filename).orElseThrow(
-                () -> new FileNotFoundException("getThumbnail : " + filename + " not " +
-                        "found")
-        );
+        FileHeader fileHeader = fileRepository.findByFolderAndFilename(file.getFolder(),
+                        file.getFilename())
+                .orElseThrow(() -> new FileNotFoundException(
+                        "getThumbnail : " + file.getFilename() + " not found in " + file.getFolder()));
 
         if (fileHeader.getThumbnailName() == null) {
             throw new NoThumbnailException(
-                    "getThumbnail : " + filename + " no thumbnail");
+                    "getThumbnail : " + file.getFilename() + " has no thumbnail");
         }
 
         return new InputStreamResource(mc.minioClient()
@@ -167,47 +174,122 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public MediaType getFileType(String filename) throws FileNotFoundException {
-        FileHeader fileHeader = fileRepository.findByFilename(filename).orElseThrow(
-                () -> new FileNotFoundException("getFileType : " + filename + " not " +
-                        "found")
-        );
+    public MediaType getFileType(FilenameDTO file) throws FileNotFoundException {
+        FileHeader fileHeader = fileRepository.findByFolderAndFilename(file.getFolder(),
+                        file.getFilename())
+                .orElseThrow(() -> new FileNotFoundException(
+                        "getFileType : " + file.getFilename() + " not found in " + file.getFolder()));
 
         return MediaType.parseMediaType(fileHeader.getType());
     }
 
     @Override
-    public String getLink(String filename) throws ServerException,
+    public String getLink(FilenameDTO file) throws ServerException,
             InsufficientDataException, ErrorResponseException, IOException,
             NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
             XmlParserException, InternalException, FileNotFoundException {
-        if (fileRepository.findByFilename(filename).isEmpty())
-            throw new FileNotFoundException("getLink : " + filename + " not found");
+        FileHeader fileHeader = fileRepository.findByFolderAndFilename(file.getFolder(),
+                        file.getFilename())
+                .orElseThrow(() -> new FileNotFoundException(
+                        "getLink : " + file.getFilename() + " not found in " + file.getFolder()));
 
-        return mc.minioClient().getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
-                .method(Method.GET)
-                .bucket(mp.getBucketName())
-                .object(filename)
-                .expiry(1, TimeUnit.DAYS)
-                .build());
+        return mc.minioClient()
+                .getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
+                        .method(Method.GET)
+                        .bucket(mp.getBucketName())
+                        .object(fileHeader.getFolder() + "/" + fileHeader.getFilename())
+                        .expiry(1, TimeUnit.DAYS)
+                        .build());
     }
 
     @Override
-    public void duplicate(String filename) throws FileNotFoundException, ServerException,
+    public void duplicate(FilenameDTO file) throws FileNotFoundException, ServerException,
             InsufficientDataException, ErrorResponseException, IOException,
             NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
             XmlParserException, InternalException {
-        FileHeader fileHeader = fileRepository.findByFilename(filename).orElseThrow(
-                () -> new FileNotFoundException("duplicate : " + filename + " not found")
-        );
+        FileHeader fileHeader = fileRepository.findByFolderAndFilename(file.getFolder(),
+                        file.getFilename())
+                .orElseThrow(() -> new FileNotFoundException(
+                        "duplicate : " + file.getFilename() + " not found in " + file.getFolder()));
 
-        FileHeader newFileHeader = new FileHeader(fileHeader);
+        FileHeader newFileHeader = fileHeaderMapper.copy(fileHeader);
 
+        updateMetadata(fileHeader, newFileHeader);
+
+        mc.minioClient()
+                .copyObject(CopyObjectArgs.builder()
+                        .source(CopySource.builder()
+                                .bucket(mp.getBucketName())
+                                .object(fileHeader.getFolder() + "/" + fileHeader.getFilename())
+                                .build())
+                        .bucket(mp.getBucketName())
+                        .object(newFileHeader.getFolder() + "/" + newFileHeader.getFilename())
+                        .build());
+
+        if (fileHeader.getThumbnailName() != null) {
+            mc.minioClient()
+                    .copyObject(CopyObjectArgs.builder()
+                            .source(CopySource.builder()
+                                    .bucket(mp.getBucketName())
+                                    .object(fileHeader.getThumbnailName())
+                                    .build())
+                            .bucket(mp.getBucketName())
+                            .object(newFileHeader.getThumbnailName())
+                            .build());
+        }
+
+        fileRepository.save(newFileHeader);
+    }
+
+    @Override
+    public void update(FilenameDTO file, FileHeaderDTO metadata) throws
+            FileNotFoundException, ServerException, InsufficientDataException,
+            ErrorResponseException, IOException, NoSuchAlgorithmException,
+            InvalidKeyException, InvalidResponseException, XmlParserException,
+            InternalException {
+
+        FileHeader fileHeader = fileRepository.findByFolderAndFilename(file.getFolder(),
+                        file.getFilename())
+                .orElseThrow(() -> new FileNotFoundException(
+                        "update : " + file.getFilename() + " not found in " + file.getFolder()));
+
+        fileHeader.setDescription(metadata.getDescription());
+        fileHeader.setVersion(metadata.getVersion());
+        fileHeader.setStatus(metadata.getStatus());
+        fileHeader.setKeywords(getKeywords(metadata));
+
+        mc.minioClient()
+                .setObjectTags(SetObjectTagsArgs.builder()
+                        .bucket(mp.getBucketName())
+                        .object(fileHeader.getFolder() + "/" + fileHeader.getFilename())
+                        .tags(metadata.getKeywords()
+                                .stream()
+                                .collect(Collectors.toMap(k -> k, v -> "")))
+                        .build());
+
+        fileRepository.save(fileHeader);
+        keywordService.deleteUnusedKeywords();
+    }
+
+    private void updateMetadata(FileHeader fileHeader, FileHeader newFileHeader) {
+        String newName = getNewName(fileHeader);
+        newFileHeader.setFilename(newName);
+        if (fileHeader.getThumbnailName() != null) newFileHeader.setThumbnailName(
+                "thumbnail/" + newFileHeader.getFolder() + "/" + newFileHeader.getFilename());
+        newFileHeader.setDate(LocalDate.now().toString());
+        List<Keyword> newKeywords = fileHeader.getKeywords()
+                .stream()
+                .map(Keyword::new)
+                .collect(Collectors.toList());
+        newFileHeader.setKeywords(newKeywords);
+    }
+
+    private @NotNull String getNewName(FileHeader fileHeader) {
         String baseName = fileHeader.getFilename();
         String extension = "";
         if (baseName.contains(".")) {
-            baseName = fileHeader.getFilename().substring(0,
-                    fileHeader.getFilename().lastIndexOf('.'));
+            baseName = fileHeader.getFilename()
+                    .substring(0, fileHeader.getFilename().lastIndexOf('.'));
             extension = fileHeader.getFilename()
                     .substring(fileHeader.getFilename().lastIndexOf('.'));
         }
@@ -215,75 +297,12 @@ public class FileServiceImpl implements FileService {
         String newName = baseName + "_copy" + extension;
         int copyCounter = 1;
 
-        while (fileRepository.findByFilename(newName).isPresent()) {
+        while (fileRepository.findByFolderAndFilename(fileHeader.getFolder(), newName)
+                .isPresent()) {
             newName = baseName + "_copy" + copyCounter + extension;
             copyCounter++;
         }
-
-        newFileHeader.setFilename(newName);
-        if (fileHeader.getThumbnailName() != null)
-            newFileHeader.setThumbnailName("thumbnail/" + newFileHeader.getFilename());
-        newFileHeader.setDate(LocalDate.now().toString());
-
-        List<Keyword> newKeywords = fileHeader.getKeywords().stream()
-                .map(Keyword::new)
-                .collect(Collectors.toList());
-        newFileHeader.setKeywords(newKeywords);
-
-        mc.minioClient().copyObject(CopyObjectArgs.builder()
-                .source(CopySource.builder()
-                        .bucket(mp.getBucketName())
-                        .object(fileHeader.getFilename())
-                        .build())
-                .bucket(mp.getBucketName())
-                .object(newFileHeader.getFilename())
-                .build());
-
-        if (fileHeader.getThumbnailName() != null) {
-            mc.minioClient().copyObject(CopyObjectArgs.builder()
-                    .source(CopySource.builder()
-                            .bucket(mp.getBucketName())
-                            .object(fileHeader.getThumbnailName())
-                            .build())
-                    .bucket(mp.getBucketName())
-                    .object(newFileHeader.getThumbnailName())
-                    .build());
-        }
-
-        fileRepository.save(newFileHeader);
-    }
-
-    @Override
-    public void update(String filename, FileHeaderDTO metadata) throws
-            FileNotFoundException, ServerException, InsufficientDataException,
-            ErrorResponseException, IOException, NoSuchAlgorithmException,
-            InvalidKeyException, InvalidResponseException, XmlParserException,
-            InternalException {
-
-        FileHeader fileHeader = fileRepository.findByFilename(filename).orElseThrow(
-                () -> new FileNotFoundException("update : " + filename + " not found")
-        );
-
-        fileHeader.setDescription(metadata.getDescription());
-        fileHeader.setVersion(metadata.getVersion());
-        fileHeader.setStatus(metadata.getStatus());
-        fileHeader.setKeywords(getKeywords(metadata));
-
-        mc.minioClient().setObjectTags(SetObjectTagsArgs.builder()
-                .bucket(mp.getBucketName())
-                .object(fileHeader.getFilename())
-                .tags(metadata.getKeywords().stream()
-                        .collect(Collectors.toMap(k -> k, v -> "")))
-                .build());
-
-        fileRepository.save(fileHeader);
-        keywordService.deleteUnusedKeywords();
-    }
-
-    @Override
-    public Collection<String> getTypes(String folder) { // TODO
-        return fileRepository.findAllDistinctTypes(folder).stream().map(t -> t.split(
-                "/")[1].toUpperCase()).toList();
+        return newName;
     }
 
     /**
@@ -316,8 +335,7 @@ public class FileServiceImpl implements FileService {
      * @param is       InputStream of the file
      * @param metadata FileHeaderDTO metadata of the file
      */
-    private void uploadFileToMinio(InputStream is, FileHeaderDTO metadata,
-                                   Collection<Keyword> keywords) throws
+    private void uploadFileToMinio(InputStream is, FileHeaderDTO metadata, Collection<Keyword> keywords) throws
             IOException, ServerException, InsufficientDataException,
             ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException,
             InvalidResponseException, XmlParserException, InternalException {
@@ -330,7 +348,7 @@ public class FileServiceImpl implements FileService {
         mc.minioClient()
                 .putObject(PutObjectArgs.builder()
                         .bucket(mp.getBucketName())
-                        .object(metadata.getFilename())
+                        .object(metadata.getFolder() + "/" + metadata.getFilename())
                         .tags(keywordsTags)
                         .stream(is, -1, 5_000_000_000L)
                         .contentType(metadata.getType())
@@ -350,12 +368,13 @@ public class FileServiceImpl implements FileService {
         if (thumbnail != null) {
             InputStream thumbnailInputStream =
                     thumbnailService.getInputStreamFromBufferedImage(thumbnail, "png");
-            mc.minioClient().putObject(PutObjectArgs.builder()
-                    .bucket(mp.getBucketName())
-                    .object("thumbnail/" + metadata.getFilename())
-                    .stream(thumbnailInputStream, -1, 5_000_000_000L)
-                    .contentType("image/png")
-                    .build());
+            mc.minioClient()
+                    .putObject(PutObjectArgs.builder()
+                            .bucket(mp.getBucketName())
+                            .object("thumbnail/" + metadata.getFolder() + "/" + metadata.getFilename())
+                            .stream(thumbnailInputStream, -1, 5_000_000_000L)
+                            .contentType("image/png")
+                            .build());
         }
     }
 
@@ -367,11 +386,11 @@ public class FileServiceImpl implements FileService {
      * @param keywordCollection Collection of keywords of the file
      */
     private void saveFileMetadata(FileHeaderDTO metadata, @Nullable BufferedImage thumbnail, Collection<Keyword> keywordCollection) {
-        FileHeader f = new FileHeader(metadata.getFilename(), metadata.getDescription(),
-                metadata.getVersion(), metadata.getStatus(), LocalDate.now().toString(),
-                metadata.getType(), metadata.getSize(), keywordCollection);
+        FileHeader f = fileHeaderMapper.toMinimalEntity(metadata);
+        f.setKeywords(keywordCollection);
         if (thumbnail != null) {
-            f.setThumbnailName("thumbnail/" + metadata.getFilename());
+            f.setThumbnailName(
+                    "thumbnail/" + metadata.getFolder() + '/' + metadata.getFilename());
         }
         fileRepository.save(f);
     }
