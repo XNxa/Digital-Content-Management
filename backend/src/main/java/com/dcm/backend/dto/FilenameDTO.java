@@ -4,9 +4,11 @@ import com.dcm.backend.utils.ErrorMessages;
 import com.dcm.backend.validation.constraints.Folder;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class FilenameDTO {
 
     @NotNull(message = ErrorMessages.REQUIERED_FIELD_MISSING_CODE)

@@ -4,6 +4,7 @@ import com.dcm.backend.config.MinioConfig;
 import com.dcm.backend.config.MinioProperties;
 import com.dcm.backend.dto.FileFilterDTO;
 import com.dcm.backend.dto.FileHeaderDTO;
+import com.dcm.backend.dto.FilenameDTO;
 import com.dcm.backend.entities.FileHeader;
 import com.dcm.backend.entities.Keyword;
 import com.dcm.backend.enumeration.Status;
@@ -12,13 +13,16 @@ import com.dcm.backend.exceptions.NoThumbnailException;
 import com.dcm.backend.repositories.FileRepository;
 import com.dcm.backend.services.impl.FileServiceImpl;
 import com.dcm.backend.services.impl.KeywordServiceImpl;
+import com.dcm.backend.utils.mappers.FileHeaderMapper;
 import io.minio.*;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
@@ -38,7 +42,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-
 
 @SpringBootTest
 public class FileServiceTest {
@@ -61,6 +64,10 @@ public class FileServiceTest {
     @Mock
     private MinioClient mockMinioClient;
 
+    @Spy
+    private FileHeaderMapper mockFileHeaderMapper =
+            Mappers.getMapper(FileHeaderMapper.class);
+
     @InjectMocks
     private FileServiceImpl fileService;
 
@@ -76,11 +83,13 @@ public class FileServiceTest {
 
         FileHeaderDTO metadata = FileHeaderDTO.builder()
                 .filename(filename)
+                .folder("web/images")
                 .description("Test file")
                 .keywords(List.of("test", "file"))
                 .type(type)
                 .size(18L)
                 .version("1")
+                .date(LocalDate.now().toString())
                 .status(Status.PLANIFIE)
                 .build();
 
@@ -141,8 +150,8 @@ public class FileServiceTest {
     @Test
     void testCount() {
         when(fileRepository.count(any(Specification.class))).thenReturn(10L);
-        long count =
-                fileService.count(new FileFilterDTO(0, 0, "", "", List.of(), List.of()));
+        long count = fileService.count(
+                new FileFilterDTO(0, 0, "web/images", "", List.of(), List.of()));
         assertEquals(10L, count);
     }
 
@@ -158,13 +167,20 @@ public class FileServiceTest {
 
         List<FileHeader> files = new LinkedList<>();
         for (int i = 0; i < 10; i++) {
-            files.add(new FileHeader("testfile" + i + ".txt", "Test file", "1",
-                    Status.PUBLIE, LocalDate.now().toString(), "text/plain", 123L,
-                    List.of(new Keyword("test"), new Keyword("file"))));
+            files.add(FileHeader.builder()
+                    .filename("testfile" + i + ".txt")
+                    .folder("web/images")
+                    .version("1")
+                    .status(Status.PUBLIE)
+                    .date(LocalDate.now().toString())
+                    .type("text/plain")
+                    .size(123L)
+                    .keywords(List.of(new Keyword("test"), new Keyword("file")))
+                    .build());
         }
 
         Page<FileHeader> page = new PageImpl<>(files);
-        //noinspection unchecked
+
         when(fileRepository.findAll(any(Specification.class),
                 any(Pageable.class))).thenReturn(page);
 
@@ -177,15 +193,22 @@ public class FileServiceTest {
     @Test
     @SneakyThrows
     void testDelete() {
-        FileHeader fileHeader =
-                new FileHeader("testfile.txt", "Test file", "1", Status.PUBLIE,
-                        LocalDate.now().toString(), "text/plain", 123L,
-                        new LinkedList<>());
+        FileHeader fileHeader = FileHeader.builder()
+                .folder("web/images")
+                .filename("testfile.txt")
+                .description("Test file")
+                .version("1")
+                .status(Status.PUBLIE)
+                .date(LocalDate.now().toString())
+                .type("text/plain")
+                .size(123L)
+                .keywords(new LinkedList<>())
+                .build();
 
-        when(fileRepository.findByFilename("testfile.txt")).thenReturn(
+        when(fileRepository.findByFolderAndFilename(anyString(), anyString())).thenReturn(
                 Optional.of(fileHeader));
 
-        fileService.delete(new String[]{"testfile.txt"});
+        fileService.delete(new FilenameDTO("web/images", "testfile.txt"));
 
         verify(fileRepository, times(1)).delete(fileHeader);
         verify(mockMinioClient, times(1)).removeObject(any(RemoveObjectArgs.class));
@@ -195,6 +218,7 @@ public class FileServiceTest {
     @SneakyThrows
     void testDeleteImage() {
         FileHeader fileHeader = FileHeader.builder()
+                .folder("web/images")
                 .filename("testfile.png")
                 .thumbnailName("thumbnail/testfile.png")
                 .description("Test file")
@@ -206,10 +230,10 @@ public class FileServiceTest {
                 .keywords(new LinkedList<>())
                 .build();
 
-        when(fileRepository.findByFilename(anyString())).thenReturn(
+        when(fileRepository.findByFolderAndFilename(anyString(), anyString())).thenReturn(
                 Optional.of(fileHeader));
 
-        fileService.delete(new String[]{"testfile.txt"});
+        fileService.delete(new FilenameDTO("web/images", "testfile.png"));
 
         verify(fileRepository, times(1)).delete(fileHeader);
         verify(mockMinioClient, times(2)).removeObject(any(RemoveObjectArgs.class));
@@ -220,11 +244,11 @@ public class FileServiceTest {
     void testDeleteNotFound() {
         String nonExistentFilename = "testfilee.txt";
 
-        when(fileRepository.findByFilename(nonExistentFilename)).thenReturn(
+        when(fileRepository.findByFolderAndFilename(anyString(), anyString())).thenReturn(
                 Optional.empty());
 
-        assertThrows(FileNotFoundException.class,
-                () -> fileService.delete(new String[]{nonExistentFilename}));
+        assertThrows(FileNotFoundException.class, () -> fileService.delete(
+                new FilenameDTO("web/images", nonExistentFilename)));
 
         verify(fileRepository, never()).delete(any(FileHeader.class));
         verify(mockMinioClient, never()).removeObject(any(RemoveObjectArgs.class));
@@ -233,24 +257,32 @@ public class FileServiceTest {
     @Test
     void testGetFileExists() throws Exception {
         String filename = "existingFile.txt";
-        FileHeader existingFileHeader =
-                new FileHeader(filename, "Test file", "1", Status.PUBLIE,
-                        LocalDate.now().toString(), "text/plain", 123L,
-                        new LinkedList<>());
+        FileHeader existingFileHeader = FileHeader.builder()
+                .folder("web/images")
+                .filename(filename)
+                .description("Test file")
+                .version("1")
+                .status(Status.PUBLIE)
+                .date(LocalDate.now().toString())
+                .type("text/plain")
+                .size(123L)
+                .keywords(new LinkedList<>())
+                .build();
 
         InputStream fakeStream = new ByteArrayInputStream("file content".getBytes());
 
         GetObjectArgs getObjectArgs =
-                GetObjectArgs.builder().bucket("test").object(filename).build();
+                GetObjectArgs.builder().bucket("test").object("web/images/" + filename).build();
 
         GetObjectResponse getObjectResponse =
                 new GetObjectResponse(null, "test", null, filename, fakeStream);
 
-        when(fileRepository.findByFilename(filename)).thenReturn(
-                Optional.of(existingFileHeader));
+        when(fileRepository.findByFolderAndFilename(anyString(),
+                eq(filename))).thenReturn(Optional.of(existingFileHeader));
         when(mockMinioClient.getObject(getObjectArgs)).thenReturn(getObjectResponse);
 
-        InputStreamResource result = fileService.getFile(filename);
+        InputStreamResource result =
+                fileService.getFile(new FilenameDTO("web/images", filename));
 
         assertNotNull(result);
         verify(mc.minioClient(), times(1)).getObject(getObjectArgs);
@@ -260,10 +292,11 @@ public class FileServiceTest {
     @SneakyThrows
     void testGetFileNotFound() {
         String filename = "nonExistentFile.txt";
-        when(fileRepository.findByFilename(filename)).thenReturn(Optional.empty());
+        when(fileRepository.findByFolderAndFilename(anyString(),
+                eq(filename))).thenReturn(Optional.empty());
 
-        assertThrows(FileNotFoundException.class, () -> fileService.getFile(filename));
-
+        assertThrows(FileNotFoundException.class,
+                () -> fileService.getFile(new FilenameDTO("web/images", filename)));
         verify(mockMinioClient, never()).getObject(any(GetObjectArgs.class));
     }
 
@@ -273,6 +306,7 @@ public class FileServiceTest {
         String filename = "existingFile.jpg";
         String thumbnailName = "thumbnail/existingFile.jpg";
         FileHeader existingFileHeader = FileHeader.builder()
+                .folder("web/images")
                 .filename(filename)
                 .thumbnailName(thumbnailName)
                 .description("Test file")
@@ -292,11 +326,12 @@ public class FileServiceTest {
         GetObjectResponse getObjectResponse =
                 new GetObjectResponse(null, "test", null, thumbnailName, fakeStream);
 
-        when(fileRepository.findByFilename(filename)).thenReturn(
-                Optional.of(existingFileHeader));
+        when(fileRepository.findByFolderAndFilename(anyString(),
+                eq(filename))).thenReturn(Optional.of(existingFileHeader));
         when(mockMinioClient.getObject(getObjectArgs)).thenReturn(getObjectResponse);
 
-        InputStreamResource result = fileService.getThumbnail(filename);
+        InputStreamResource result =
+                fileService.getThumbnail(new FilenameDTO("web/images", filename));
 
         assertNotNull(result);
         verify(mockMinioClient, times(1)).getObject(getObjectArgs);
@@ -306,12 +341,12 @@ public class FileServiceTest {
     @SneakyThrows
     void testGetThumbnailFileNotFound() {
         String filename = "nonExistentFile.txt";
-        when(fileRepository.findByFilename(filename)).thenReturn(Optional.empty());
+        when(fileRepository.findByFolderAndFilename(anyString(),
+                eq(filename))).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(FileNotFoundException.class,
-                () -> fileService.getThumbnail(filename));
+                () -> fileService.getThumbnail(new FilenameDTO("web/images", filename)));
 
-        assertEquals("getThumbnail : " + filename + " not found", exception.getMessage());
         verify(mockMinioClient, never()).getObject(any(GetObjectArgs.class));
     }
 
@@ -320,16 +355,23 @@ public class FileServiceTest {
     void testGetThumbnailNoThumbnail() {
         // Setup
         String filename = "fileWithoutThumbnail.txt";
-        FileHeader fileWithoutThumbnail =
-                new FileHeader(filename, "Test file", "1", Status.PUBLIE,
-                        LocalDate.now().toString(), "text/plain", 123L,
-                        new LinkedList<>());
+        FileHeader fileWithoutThumbnail = FileHeader.builder()
+                .folder("web/images")
+                .filename(filename)
+                .description("Test file")
+                .version("1")
+                .status(Status.PUBLIE)
+                .date(LocalDate.now().toString())
+                .type("text/plain")
+                .size(123L)
+                .keywords(new LinkedList<>())
+                .build();
 
-        when(fileRepository.findByFilename(filename)).thenReturn(
-                Optional.of(fileWithoutThumbnail));
+        when(fileRepository.findByFolderAndFilename(anyString(),
+                eq(filename))).thenReturn(Optional.of(fileWithoutThumbnail));
 
         assertThrows(NoThumbnailException.class,
-                () -> fileService.getThumbnail(filename));
+                () -> fileService.getThumbnail(new FilenameDTO("web/images", filename)));
 
         verify(mockMinioClient, never()).getObject(any(GetObjectArgs.class));
     }
@@ -337,28 +379,37 @@ public class FileServiceTest {
     @Test
     void testGetFileTypeExists() throws FileNotFoundException {
         String filename = "existingFile.txt";
-        FileHeader existingFileHeader =
-                new FileHeader(filename, "Test file", "1", Status.PUBLIE,
-                        LocalDate.now().toString(), "text/plain", 123L,
-                        new LinkedList<>());
+        FileHeader existingFileHeader = FileHeader.builder()
+                .folder("web/images")
+                .filename(filename)
+                .description("Test file")
+                .version("1")
+                .status(Status.PUBLIE)
+                .date(LocalDate.now().toString())
+                .type("text/plain")
+                .size(123L)
+                .keywords(new LinkedList<>())
+                .build();
 
-        when(fileRepository.findByFilename(filename)).thenReturn(
-                Optional.of(existingFileHeader));
+        when(fileRepository.findByFolderAndFilename(anyString(),
+                eq(filename))).thenReturn(Optional.of(existingFileHeader));
 
-        MediaType result = fileService.getFileType(filename);
+        MediaType result =
+                fileService.getFileType(new FilenameDTO("web/images", filename));
 
         assertNotNull(result);
         assertEquals(MediaType.TEXT_PLAIN, result);
-        verify(fileRepository, times(1)).findByFilename(filename);
+        verify(fileRepository, times(1)).findByFolderAndFilename(any(), eq(filename));
     }
 
     @Test
     void testGetFileTypeNotFound() {
         String filename = "nonExistentFile.txt";
-        when(fileRepository.findByFilename(filename)).thenReturn(Optional.empty());
+        when(fileRepository.findByFolderAndFilename(anyString(),
+                eq(filename))).thenReturn(Optional.empty());
 
         assertThrows(FileNotFoundException.class,
-                () -> fileService.getFileType(filename));
+                () -> fileService.getFileType(new FilenameDTO("web/images", filename)));
     }
 
     @Test
@@ -369,12 +420,20 @@ public class FileServiceTest {
 
         when(mockMinioClient.getPresignedObjectUrl(
                 any(GetPresignedObjectUrlArgs.class))).thenReturn(expectedUrl);
-        when(fileRepository.findByFilename(filename)).thenReturn(Optional.of(
-                new FileHeader(filename, "Test file", "1", Status.PUBLIE,
-                        LocalDate.now().toString(), "text/plain", 123L,
-                        new LinkedList<>())));
+        when(fileRepository.findByFolderAndFilename(any(), eq(filename))).thenReturn(
+                Optional.of(FileHeader.builder()
+                        .folder("web/images")
+                        .filename(filename)
+                        .description("Test file")
+                        .version("1")
+                        .status(Status.PUBLIE)
+                        .date(LocalDate.now().toString())
+                        .type("text/plain")
+                        .size(123L)
+                        .keywords(new LinkedList<>())
+                        .build()));
 
-        String result = fileService.getLink(filename);
+        String result = fileService.getLink(new FilenameDTO("web/images", filename));
 
         assertEquals(expectedUrl, result);
         verify(mockMinioClient, times(1)).getPresignedObjectUrl(
@@ -385,9 +444,11 @@ public class FileServiceTest {
     @SneakyThrows
     void testGetLinkFail() {
         String filename = "nonExistentFile.txt";
-        when(fileRepository.findByFilename(filename)).thenReturn(Optional.empty());
+        when(fileRepository.findByFolderAndFilename(anyString(),
+                eq(filename))).thenReturn(Optional.empty());
 
-        assertThrows(FileNotFoundException.class, () -> fileService.getLink(filename));
+        assertThrows(FileNotFoundException.class,
+                () -> fileService.getLink(new FilenameDTO("web/images", filename)));
         verify(mockMinioClient, never()).getPresignedObjectUrl(
                 any(GetPresignedObjectUrlArgs.class));
     }
@@ -395,15 +456,22 @@ public class FileServiceTest {
     @Test
     void testDuplicateFileSuccess() throws Exception {
         String filename = "originalFile.txt";
-        FileHeader originalFileHeader =
-                new FileHeader(filename, "Original file", "1", Status.PUBLIE,
-                        LocalDate.now().toString(), "text/plain", 123L,
-                        List.of(new Keyword("keyword1")));
+        FileHeader originalFileHeader = FileHeader.builder()
+                .folder("web/images")
+                .filename(filename)
+                .description("Original file")
+                .version("1")
+                .status(Status.PUBLIE)
+                .date(LocalDate.now().toString())
+                .type("text/plain")
+                .size(123L)
+                .keywords(List.of(new Keyword("keyword1")))
+                .build();
 
-        when(fileRepository.findByFilename(filename)).thenReturn(
-                Optional.of(originalFileHeader));
+        when(fileRepository.findByFolderAndFilename(anyString(),
+                eq(filename))).thenReturn(Optional.of(originalFileHeader));
 
-        fileService.duplicate(filename);
+        fileService.duplicate(new FilenameDTO("web/images", filename));
 
         ArgumentCaptor<FileHeader> fileHeaderCaptor =
                 ArgumentCaptor.forClass(FileHeader.class);
@@ -420,16 +488,23 @@ public class FileServiceTest {
     @Test
     void testDuplicateFileSuccessImage() throws Exception {
         String filename = "originalFile.jpg";
-        FileHeader originalFileHeader =
-                new FileHeader(filename, "Original file", "1", Status.PUBLIE,
-                        LocalDate.now().toString(), "image/jpeg", 123L,
-                        List.of(new Keyword("keyword1")));
-        originalFileHeader.setThumbnailName("thumbnail/originalFile.jpg");
+        FileHeader originalFileHeader = FileHeader.builder()
+                .folder("web/images")
+                .filename(filename)
+                .thumbnailName("thumbnail/originalFile.jpg")
+                .description("Original file")
+                .version("1")
+                .status(Status.PUBLIE)
+                .date(LocalDate.now().toString())
+                .type("image/jpeg")
+                .size(123L)
+                .keywords(List.of(new Keyword("keyword1")))
+                .build();
 
-        when(fileRepository.findByFilename(filename)).thenReturn(
-                Optional.of(originalFileHeader));
+        when(fileRepository.findByFolderAndFilename(anyString(),
+                eq(filename))).thenReturn(Optional.of(originalFileHeader));
 
-        fileService.duplicate(filename);
+        fileService.duplicate(new FilenameDTO("web/images", filename));
 
         ArgumentCaptor<FileHeader> fileHeaderCaptor =
                 ArgumentCaptor.forClass(FileHeader.class);
@@ -437,7 +512,7 @@ public class FileServiceTest {
 
         FileHeader capturedFileHeader = fileHeaderCaptor.getValue();
         assertEquals("originalFile_copy.jpg", capturedFileHeader.getFilename());
-        assertEquals("thumbnail/originalFile_copy.jpg",
+        assertEquals("thumbnail/web/images/originalFile_copy.jpg",
                 capturedFileHeader.getThumbnailName());
         assertNotNull(capturedFileHeader.getDate());
 
@@ -448,9 +523,11 @@ public class FileServiceTest {
     @SneakyThrows
     void testDuplicateFileNotFound() {
         String filename = "nonexistentFile.txt";
-        when(fileRepository.findByFilename(filename)).thenReturn(Optional.empty());
+        when(fileRepository.findByFolderAndFilename(anyString(),
+                eq(filename))).thenReturn(Optional.empty());
 
-        assertThrows(FileNotFoundException.class, () -> fileService.duplicate(filename));
+        assertThrows(FileNotFoundException.class,
+                () -> fileService.duplicate(new FilenameDTO("web/images", filename)));
 
         verify(mockMinioClient, never()).copyObject(any(CopyObjectArgs.class));
         verify(fileRepository, never()).save(any(FileHeader.class));
@@ -459,18 +536,26 @@ public class FileServiceTest {
     @Test
     void testDuplicateThrowsMinioException() throws Exception {
         String filename = "originalFile.txt";
-        FileHeader originalFileHeader =
-                new FileHeader(filename, "Original file", "1", Status.PUBLIE,
-                        LocalDate.now().toString(), "text/plain", 123L,
-                        List.of(new Keyword("keyword1")));
-        originalFileHeader.setThumbnailName("thumbnail/originalFile.jpg");
+        FileHeader originalFileHeader = FileHeader.builder()
+                .folder("web/images")
+                .filename(filename)
+                .thumbnailName("thumbnail/originalFile.jpg")
+                .description("Original file")
+                .version("1")
+                .status(Status.PUBLIE)
+                .date(LocalDate.now().toString())
+                .type("text/plain")
+                .size(123L)
+                .keywords(List.of(new Keyword("keyword1")))
+                .build();
 
-        when(fileRepository.findByFilename(filename)).thenReturn(
-                Optional.of(originalFileHeader));
+        when(fileRepository.findByFolderAndFilename(anyString(),
+                eq(filename))).thenReturn(Optional.of(originalFileHeader));
         when(mockMinioClient.copyObject(any(CopyObjectArgs.class))).thenThrow(
                 IOException.class);
 
-        assertThrows(IOException.class, () -> fileService.duplicate(filename));
+        assertThrows(IOException.class,
+                () -> fileService.duplicate(new FilenameDTO("web/images", filename)));
 
         verify(fileRepository, never()).save(any(FileHeader.class));
     }
@@ -478,10 +563,18 @@ public class FileServiceTest {
     @Test
     void testUpdateFileSuccess() throws Exception {
         String filename = "existingFile.txt";
-        FileHeader existingFileHeader =
-                new FileHeader(filename, "Original description", "1", Status.PUBLIE,
-                        LocalDate.now().toString(), "text/plain", 123L,
-                        List.of(new Keyword("keyword1")));
+        FileHeader existingFileHeader = FileHeader.builder()
+                .folder("web/images")
+                .filename(filename)
+                .description("Original description")
+                .version("1")
+                .status(Status.PUBLIE)
+                .date(LocalDate.now().toString())
+                .type("text/plain")
+                .size(123L)
+                .keywords(List.of(new Keyword("keyword1")))
+                .build();
+
         FileHeaderDTO metadata = FileHeaderDTO.builder()
                 .description("Updated description")
                 .version("2")
@@ -489,18 +582,17 @@ public class FileServiceTest {
                 .keywords(List.of("keyword2"))
                 .build();
 
-        when(fileRepository.findByFilename(filename)).thenReturn(
-                Optional.of(existingFileHeader));
+        when(fileRepository.findByFolderAndFilename(anyString(),
+                eq(filename))).thenReturn(Optional.of(existingFileHeader));
         when(keywordService.getOrAddKeyword("keyword2")).thenReturn(
                 new Keyword("keyword2"));
 
 
         ArgumentCaptor<FileHeader> fileHeaderCaptor =
                 ArgumentCaptor.forClass(FileHeader.class);
-        when(fileRepository.save(fileHeaderCaptor.capture())).thenReturn(
-                any(FileHeader.class));
+        when(fileRepository.save(fileHeaderCaptor.capture())).thenReturn(null);
 
-        fileService.update(filename, metadata);
+        fileService.update(new FilenameDTO("web/images", filename), metadata);
 
         assertEquals("Updated description", fileHeaderCaptor.getValue().getDescription());
         assertEquals("2", fileHeaderCaptor.getValue().getVersion());
@@ -524,10 +616,12 @@ public class FileServiceTest {
                 .keywords(List.of("keyword2"))
                 .build();
 
-        when(fileRepository.findByFilename(filename)).thenReturn(Optional.empty());
+        when(fileRepository.findByFolderAndFilename(anyString(),
+                eq(filename))).thenReturn(Optional.empty());
 
         assertThrows(FileNotFoundException.class,
-                () -> fileService.update(filename, metadata));
+                () -> fileService.update(new FilenameDTO("web/images", filename),
+                        metadata));
 
         verify(mockMinioClient, never()).setObjectTags(any(SetObjectTagsArgs.class));
         verify(fileRepository, never()).save(any(FileHeader.class));
@@ -536,10 +630,18 @@ public class FileServiceTest {
     @Test
     void testUpdateThrowsMinioException() throws Exception {
         String filename = "existingFile.txt";
-        FileHeader existingFileHeader =
-                new FileHeader(filename, "Original description", "1", Status.PUBLIE,
-                        LocalDate.now().toString(), "text/plain", 123L,
-                        List.of(new Keyword("keyword1")));
+        FileHeader existingFileHeader = FileHeader.builder()
+                .folder("web/images")
+                .filename(filename)
+                .description("Original description")
+                .version("1")
+                .status(Status.PUBLIE)
+                .date(LocalDate.now().toString())
+                .type("text/plain")
+                .size(123L)
+                .keywords(List.of(new Keyword("keyword1")))
+                .build();
+
         FileHeaderDTO metadata = FileHeaderDTO.builder()
                 .description("Updated description")
                 .version("2")
@@ -547,12 +649,14 @@ public class FileServiceTest {
                 .keywords(List.of("keyword2"))
                 .build();
 
-        when(fileRepository.findByFilename(filename)).thenReturn(
-                Optional.of(existingFileHeader));
+        when(fileRepository.findByFolderAndFilename(anyString(),
+                eq(filename))).thenReturn(Optional.of(existingFileHeader));
         doThrow(new IOException()).when(mockMinioClient)
                 .setObjectTags(any(SetObjectTagsArgs.class));
 
-        assertThrows(IOException.class, () -> fileService.update(filename, metadata));
+        assertThrows(IOException.class,
+                () -> fileService.update(new FilenameDTO("web" + "/images", filename),
+                        metadata));
 
         verify(fileRepository, never()).save(existingFileHeader);
     }
