@@ -24,15 +24,12 @@ public class FileFilterDTO {
     @NotNull(message = ErrorMessages.REQUIERED_FIELD_MISSING_CODE)
     private int size;
 
+    @NotNull(message = ErrorMessages.REQUIERED_FIELD_MISSING_CODE)
     @Folder(message = ErrorMessages.INVALID_FOLDER_CODE)
     private String folder;
 
     @Size(max = 255, message = ErrorMessages.EXCEED_MAX_SIZE_CODE)
     private String filename;
-
-    @Size(max = 255, message = ErrorMessages.EXCEED_MAX_SIZE_CODE)
-    @NotNull(message = ErrorMessages.REQUIERED_FIELD_MISSING_CODE)
-    private String category;
 
     private List<String> keywords;
 

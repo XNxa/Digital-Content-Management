@@ -22,6 +22,7 @@ public interface FileHeaderMapper {
             ".map(Keyword::getName).toList())")
     FileHeaderDTO toDto(FileHeader fileHeader);
 
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "folder", source = "folder")
     @Mapping(target = "filename", source = "filename")
     @Mapping(target = "description", source = "description")
@@ -30,8 +31,10 @@ public interface FileHeaderMapper {
     @Mapping(target = "date", source = "date")
     @Mapping(target = "type", source = "type")
     @Mapping(target = "size", source = "size")
+    @Mapping(target = "keywords", ignore = true)
     FileHeader toMinimalEntity(FileHeaderDTO fileHeaderDTO);
 
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "folder", source = "folder")
     @Mapping(target = "filename", source = "filename")
     @Mapping(target = "thumbnailName", source = "thumbnailName")

@@ -75,28 +75,28 @@ public class FileController {
 
     @SneakyThrows
     @DeleteMapping("/delete")
-    @PreAuthorize("hasRole(@util.buildPErmission(#file, 'delete'))")
+    @PreAuthorize("hasRole(@util.buildPermission(#file, 'delete'))")
     public void deleteFile(@ModelAttribute @Valid FilenameDTO file) {
         fs.delete(file);
     }
 
     @SneakyThrows
     @GetMapping("/link")
-    @PreAuthorize("hasRole(@util.buildPErmission(#file,'share')) or hasRole(@util.buildPErmission(#file, 'copy_link'))")
+    @PreAuthorize("hasRole(@util.buildPermission(#file,'share')) or hasRole(@util.buildPermission(#file, 'copy_link'))")
     public String getLink(@ModelAttribute @Valid FilenameDTO file) {
         return fs.getLink(file);
     }
 
     @SneakyThrows
     @PostMapping("/duplicate")
-    @PreAuthorize("hasRole(@util.buildPErmission(#file, 'duplicate'))")
+    @PreAuthorize("hasRole(@util.buildPermission(#file, 'duplicate'))")
     public void duplicateFile(@ModelAttribute @Valid FilenameDTO file) {
         fs.duplicate(file);
     }
 
     @SneakyThrows
     @PutMapping("/update")
-    @PreAuthorize("hasRole(@util.buildPErmission(#file, 'modify'))")
+    @PreAuthorize("hasRole(@util.buildPermission(#file, 'modify'))")
     public void updateFile(@ModelAttribute @Valid FilenameDTO file, @RequestBody @Valid FileHeaderDTO metadata) {
         fs.update(file, metadata);
     }
