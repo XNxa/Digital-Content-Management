@@ -55,6 +55,8 @@ export class ErrorHandlerInterceptor implements HttpInterceptor {
         return 'The uploaded file has an invalid MIME type.';
       case 'INVALID.EMAIL':
         return 'The provided email address is invalid.';
+      case 'INVALID.FOLDER':
+        return 'The provided folder name or format is invalid.';
       default:
         return 'An unknown error occurred.';
     }
