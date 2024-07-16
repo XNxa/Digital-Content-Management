@@ -89,7 +89,7 @@ public class FileServiceTest {
                 .type(type)
                 .size(18L)
                 .version("1")
-                .date(LocalDate.now().toString())
+                .date(LocalDate.now())
                 .status(Status.PLANIFIE)
                 .build();
 
@@ -118,7 +118,7 @@ public class FileServiceTest {
                 .equals(metadata.getStatus()) && argument.getType()
                 .equals(metadata.getType()) && argument.getSize()
                 .equals(metadata.getSize()) && argument.getDate()
-                .equals(LocalDate.now().toString()) && argument.getKeywords()
+                .equals(LocalDate.now()) && argument.getKeywords()
                 .size() == (metadata.getKeywords().size())));
 
         verify(mockMinioClient, times(isMedia ? 2 : 1)).putObject(
@@ -151,7 +151,8 @@ public class FileServiceTest {
     void testCount() {
         when(fileRepository.count(any(Specification.class))).thenReturn(10L);
         long count = fileService.count(
-                new FileFilterDTO(0, 0, "web/images", "", List.of(), List.of()));
+                new FileFilterDTO(0, 0, "web/images", "", List.of(), List.of(), "", "",
+                        LocalDate.now(), LocalDate.now()));
         assertEquals(10L, count);
     }
 
@@ -172,7 +173,7 @@ public class FileServiceTest {
                     .folder("web/images")
                     .version("1")
                     .status(Status.PUBLIE)
-                    .date(LocalDate.now().toString())
+                    .date(LocalDate.now())
                     .type("text/plain")
                     .size(123L)
                     .keywords(List.of(new Keyword("test"), new Keyword("file")))
@@ -199,7 +200,7 @@ public class FileServiceTest {
                 .description("Test file")
                 .version("1")
                 .status(Status.PUBLIE)
-                .date(LocalDate.now().toString())
+                .date(LocalDate.now())
                 .type("text/plain")
                 .size(123L)
                 .keywords(new LinkedList<>())
@@ -224,7 +225,7 @@ public class FileServiceTest {
                 .description("Test file")
                 .version("1")
                 .status(Status.PUBLIE)
-                .date(LocalDate.now().toString())
+                .date(LocalDate.now())
                 .type("image/png")
                 .size(123L)
                 .keywords(new LinkedList<>())
@@ -263,7 +264,7 @@ public class FileServiceTest {
                 .description("Test file")
                 .version("1")
                 .status(Status.PUBLIE)
-                .date(LocalDate.now().toString())
+                .date(LocalDate.now())
                 .type("text/plain")
                 .size(123L)
                 .keywords(new LinkedList<>())
@@ -312,7 +313,7 @@ public class FileServiceTest {
                 .description("Test file")
                 .version("1")
                 .status(Status.PUBLIE)
-                .date(LocalDate.now().toString())
+                .date(LocalDate.now())
                 .type("image/jpeg")
                 .size(123L)
                 .keywords(new LinkedList<>())
@@ -361,7 +362,7 @@ public class FileServiceTest {
                 .description("Test file")
                 .version("1")
                 .status(Status.PUBLIE)
-                .date(LocalDate.now().toString())
+                .date(LocalDate.now())
                 .type("text/plain")
                 .size(123L)
                 .keywords(new LinkedList<>())
@@ -385,7 +386,7 @@ public class FileServiceTest {
                 .description("Test file")
                 .version("1")
                 .status(Status.PUBLIE)
-                .date(LocalDate.now().toString())
+                .date(LocalDate.now())
                 .type("text/plain")
                 .size(123L)
                 .keywords(new LinkedList<>())
@@ -427,7 +428,7 @@ public class FileServiceTest {
                         .description("Test file")
                         .version("1")
                         .status(Status.PUBLIE)
-                        .date(LocalDate.now().toString())
+                        .date(LocalDate.now())
                         .type("text/plain")
                         .size(123L)
                         .keywords(new LinkedList<>())
@@ -462,7 +463,7 @@ public class FileServiceTest {
                 .description("Original file")
                 .version("1")
                 .status(Status.PUBLIE)
-                .date(LocalDate.now().toString())
+                .date(LocalDate.now())
                 .type("text/plain")
                 .size(123L)
                 .keywords(List.of(new Keyword("keyword1")))
@@ -495,7 +496,7 @@ public class FileServiceTest {
                 .description("Original file")
                 .version("1")
                 .status(Status.PUBLIE)
-                .date(LocalDate.now().toString())
+                .date(LocalDate.now())
                 .type("image/jpeg")
                 .size(123L)
                 .keywords(List.of(new Keyword("keyword1")))
@@ -543,7 +544,7 @@ public class FileServiceTest {
                 .description("Original file")
                 .version("1")
                 .status(Status.PUBLIE)
-                .date(LocalDate.now().toString())
+                .date(LocalDate.now())
                 .type("text/plain")
                 .size(123L)
                 .keywords(List.of(new Keyword("keyword1")))
@@ -569,7 +570,7 @@ public class FileServiceTest {
                 .description("Original description")
                 .version("1")
                 .status(Status.PUBLIE)
-                .date(LocalDate.now().toString())
+                .date(LocalDate.now())
                 .type("text/plain")
                 .size(123L)
                 .keywords(List.of(new Keyword("keyword1")))
@@ -636,7 +637,7 @@ public class FileServiceTest {
                 .description("Original description")
                 .version("1")
                 .status(Status.PUBLIE)
-                .date(LocalDate.now().toString())
+                .date(LocalDate.now())
                 .type("text/plain")
                 .size(123L)
                 .keywords(List.of(new Keyword("keyword1")))

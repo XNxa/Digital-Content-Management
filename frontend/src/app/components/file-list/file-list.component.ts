@@ -168,6 +168,8 @@ export class FileListComponent implements OnInit {
         this.filenameSearched.value ?? '',
         this.keywordsSearched.value || undefined,
         (this.statusSearched.value || []).map((s) => Status.fromString(s)),
+        this.dateSearched.value?.[0],
+        this.dateSearched.value?.[1],
       )
       .subscribe((files) => {
         this.files = files;
@@ -195,6 +197,8 @@ export class FileListComponent implements OnInit {
         this.filenameSearched.value ?? '',
         this.keywordsSearched.value || undefined,
         (this.statusSearched.value || []).map((s) => Status.fromString(s)),
+        this.dateSearched.value?.[0],
+        this.dateSearched.value?.[1],
       )
       .subscribe((n) => {
         this.numberOfElements = n;
@@ -232,6 +236,8 @@ export class FileListComponent implements OnInit {
           this.filenameSearched.value ?? '',
           this.keywordsSearched.value || undefined,
           (this.statusSearched.value || []).map((s) => Status.fromString(s)),
+          this.dateSearched.value?.[0],
+          this.dateSearched.value?.[1],
         )
         .subscribe((n) => {
           this.numberOfElements = n;

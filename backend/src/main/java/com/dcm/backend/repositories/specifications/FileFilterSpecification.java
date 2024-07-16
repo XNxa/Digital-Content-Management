@@ -10,8 +10,8 @@ import jakarta.persistence.criteria.Root;
 import lombok.AllArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @AllArgsConstructor
@@ -21,6 +21,10 @@ public class FileFilterSpecification implements Specification<FileHeader> {
     private String filename;
     private List<Keyword> keywords;
     private List<Status> status;
+    private String version;
+    private String type;
+    private LocalDate dateFrom;
+    private LocalDate dateTo;
 
     @Override
     public Predicate toPredicate(Root<FileHeader> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
@@ -49,6 +53,26 @@ public class FileFilterSpecification implements Specification<FileHeader> {
             }
             predicates.add(
                     criteriaBuilder.or(statusPredicates.toArray(new Predicate[0])));
+        }
+
+        if (version != null && !version.isBlank()) {
+            predicates.add(
+                    criteriaBuilder.like(root.get("version"), "%" + version + "%"));
+        }
+
+        if (type != null && !type.isBlank()){
+            predicates.add(criteriaBuilder.like(root.get("type"), "%" + type + "%"));
+        }
+
+        if (dateFrom != null) {
+            System.out.println(dateFrom);
+            predicates.add(
+                    criteriaBuilder.greaterThanOrEqualTo(root.get("date"), dateFrom));
+        }
+
+        if (dateTo != null) {
+            System.out.println(dateTo);
+            predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("date"), dateTo));
         }
 
         return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

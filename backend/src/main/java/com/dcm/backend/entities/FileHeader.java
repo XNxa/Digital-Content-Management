@@ -4,6 +4,7 @@ import com.dcm.backend.enumeration.Status;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Collection;
 
 @Entity
@@ -30,7 +31,7 @@ public class FileHeader {
 
     private Status status;
 
-    private String date;
+    private LocalDate date;
 
     private String type;
 

@@ -29,6 +29,8 @@ export class FileApiService {
     filename: string,
     keywords?: string[],
     status?: Status[],
+    dateFrom?: Date,
+    dateTo?: Date,
   ): Observable<number> {
     const filter = {
       page: 0,
@@ -37,6 +39,8 @@ export class FileApiService {
       filename: filename,
       keywords: keywords || [],
       status: status || [],
+      dateFrom: dateToString(dateFrom),
+      dateTo: dateToString(dateTo),
     };
     return this.httpClient.post<number>(`${this.API}/count`, filter);
   }
@@ -48,6 +52,8 @@ export class FileApiService {
     filename: string,
     keywords?: string[],
     status?: Status[],
+    dateFrom?: Date,
+    dateTo?: Date,
   ): Observable<FileHeader[]> {
     const filter = {
       page: page,
@@ -56,6 +62,8 @@ export class FileApiService {
       filename: filename,
       keywords: keywords || [],
       status: status || [],
+      dateFrom: dateToString(dateFrom),
+      dateTo: dateToString(dateTo),
     };
     return this.httpClient.post<FileHeader[]>(`${this.API}/files`, filter).pipe(
       map((files: FileHeader[]) => {
@@ -129,4 +137,16 @@ export class FileApiService {
       params,
     });
   }
+}
+
+function dateToString(date: Date | undefined): string | undefined {
+  if (date == undefined) {
+    return undefined;
+  }
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based in JavaScript, so add 1
+  const day = String(date.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
 }

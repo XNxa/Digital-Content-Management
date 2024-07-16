@@ -12,6 +12,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Collection;
 
 @Data
@@ -40,7 +41,7 @@ public class FileHeaderDTO {
     @NotNull(message = ErrorMessages.REQUIERED_FIELD_MISSING_CODE)
     private Status status;
 
-    private String date;
+    private LocalDate date;
 
     @MimeType(message = ErrorMessages.INVALID_MIME_TYPE_CODE)
     @NotNull(message = ErrorMessages.REQUIERED_FIELD_MISSING_CODE)

@@ -87,7 +87,8 @@ public class FileServiceImpl implements FileService {
         FileFilterSpecification spec =
                 new FileFilterSpecification(filter.getFolder(), filter.getFilename(),
                         filter.getKeywords().stream().map(Keyword::new).toList(),
-                        filter.getStatus());
+                        filter.getStatus(), filter.getVersion(), filter.getType(),
+                        filter.getDateFrom(), filter.getDateTo());
 
         return fileRepository.count(spec);
     }
@@ -99,7 +100,8 @@ public class FileServiceImpl implements FileService {
         FileFilterSpecification spec =
                 new FileFilterSpecification(filter.getFolder(), filter.getFilename(),
                         filter.getKeywords().stream().map(Keyword::new).toList(),
-                        filter.getStatus());
+                        filter.getStatus(), filter.getVersion(), filter.getType(),
+                        filter.getDateFrom(), filter.getDateTo());
 
         return fileRepository.findAll(spec, pageRequest);
     }
@@ -276,7 +278,7 @@ public class FileServiceImpl implements FileService {
         newFileHeader.setFilename(newName);
         if (fileHeader.getThumbnailName() != null) newFileHeader.setThumbnailName(
                 "thumbnail/" + newFileHeader.getFolder() + "/" + newFileHeader.getFilename());
-        newFileHeader.setDate(LocalDate.now().toString());
+        newFileHeader.setDate(LocalDate.now());
         List<Keyword> newKeywords = fileHeader.getKeywords()
                 .stream()
                 .map(Keyword::new)
@@ -388,6 +390,7 @@ public class FileServiceImpl implements FileService {
     private void saveFileMetadata(FileHeaderDTO metadata, @Nullable BufferedImage thumbnail, Collection<Keyword> keywordCollection) {
         FileHeader f = fileHeaderMapper.toMinimalEntity(metadata);
         f.setKeywords(keywordCollection);
+        f.setDate(LocalDate.now());
         if (thumbnail != null) {
             f.setThumbnailName(
                     "thumbnail/" + metadata.getFolder() + '/' + metadata.getFilename());

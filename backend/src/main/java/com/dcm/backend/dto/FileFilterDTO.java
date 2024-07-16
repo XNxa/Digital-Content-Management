@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -34,4 +35,14 @@ public class FileFilterDTO {
     private List<String> keywords;
 
     private List<Status> status;
+
+    @Size(max = 255, message = ErrorMessages.EXCEED_MAX_SIZE_CODE)
+    private String version;
+
+    @Size(max = 255, message = ErrorMessages.EXCEED_MAX_SIZE_CODE)
+    private String type;
+
+    private LocalDate dateFrom;
+
+    private LocalDate dateTo;
 }
