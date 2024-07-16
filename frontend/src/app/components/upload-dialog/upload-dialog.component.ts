@@ -9,6 +9,7 @@ import { FileHeader } from '../../models/FileHeader';
 import { SnackbarService } from '../../shared/components/snackbar/snackbar.service';
 import { MimeTypes } from '../../utils/mime-types';
 import { FormControl } from '@angular/forms';
+import { getTabForType } from '../../models/Tabs';
 
 @Component({
   selector: 'app-upload-dialog',
@@ -27,6 +28,7 @@ export class UploadDialogComponent implements OnInit {
   @Output() closeDialog: EventEmitter<void> = new EventEmitter<void>();
 
   @Input() folder!: string;
+  @Input() typeFolder!: string;
   selectedFile: File | undefined;
   description = new FormControl('');
   version = new FormControl('VF');
@@ -88,9 +90,15 @@ export class UploadDialogComponent implements OnInit {
   }
 
   nextStep(): void {
-    if (this.currentStep === 1 && !this.selectedFile) {
-      this.snackbar.show('No file selected !');
-      return;
+    if (this.currentStep == 1) {
+      if (!this.selectedFile) {
+        this.snackbar.show('Aucun fichier sélectionné !');
+        return;
+      } else if (getTabForType(this.selectedFile.type) != this.typeFolder) {
+        this.snackbar.show('Le type de fichier ne correspond pas au dossier !');
+        this.selectedFile = undefined;
+        return;
+      }
     }
     this.currentStep = this.currentStep + 1;
   }
@@ -107,7 +115,8 @@ export class UploadDialogComponent implements OnInit {
     }
 
     const metadata: FileHeader = {
-      filename: this.folder + '/' + this.selectedFile.name,
+      folder: this.folder + '/' + this.typeFolder, // TODO
+      filename: this.selectedFile.name,
       description: this.description.value,
       version: this.version.value,
       keywords: this.keywords.value,

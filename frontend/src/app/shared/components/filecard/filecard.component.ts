@@ -31,11 +31,10 @@ export class FilecardComponent implements OnChanges {
   icon!: string;
 
   ngOnChanges(): void {
-    if (this.file && this.file?.printableFilename.length > 12) {
-      this.printableFilename =
-        this.file.printableFilename.substring(0, 12) + '...';
+    if (this.file && this.file?.filename.length > 12) {
+      this.printableFilename = this.file.filename.substring(0, 12) + '...';
     } else {
-      this.printableFilename = this.file?.printableFilename || '';
+      this.printableFilename = this.file?.filename || '';
     }
 
     this.type = MimeTypes.extension(this.file?.type || '') || 'unknown';

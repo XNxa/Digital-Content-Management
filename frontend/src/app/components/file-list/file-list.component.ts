@@ -16,7 +16,7 @@ import { Status } from '../../enums/status';
 import { lastValueFrom } from 'rxjs';
 import { FileDetailsComponent } from '../file-details/file-details.component';
 import { ActivatedRoute, Router } from '@angular/router';
-import { getCategoryFromPath, getNameFromPath } from '../../models/Tabs';
+import { getNameFromPath } from '../../models/Tabs';
 import { FormControl } from '@angular/forms';
 import { PermissionDirective } from '../../shared/directives/permission.directive';
 import { DateInputComponent } from '../../shared/components/form/date-input/date-input.component';
@@ -164,8 +164,8 @@ export class FileListComponent implements OnInit {
       .getPages(
         this.currentPage - 1,
         this.itemsPerPage,
-        this.folder + '/' + this.filenameSearched.value,
-        getCategoryFromPath(this.typeFolder),
+        this.folder + '/' + this.typeFolder,
+        this.filenameSearched.value ?? '',
         this.keywordsSearched.value || undefined,
         (this.statusSearched.value || []).map((s) => Status.fromString(s)),
       )
@@ -174,9 +174,11 @@ export class FileListComponent implements OnInit {
         for (const file of this.files) {
           if (file.thumbnailName != null) {
             // Get the thumbnail for each file
-            this.api.getThumbnail(file.filename).subscribe((blob) => {
-              file.thumbnail = URL.createObjectURL(blob);
-            });
+            this.api
+              .getThumbnail(file.folder, file.filename)
+              .subscribe((blob) => {
+                file.thumbnail = URL.createObjectURL(blob);
+              });
           }
         }
         this.selectedFiles.clear();
@@ -189,44 +191,13 @@ export class FileListComponent implements OnInit {
 
     this.api
       .getNumberOfElement(
-        this.folder + '/' + this.filenameSearched.value,
-        getCategoryFromPath(this.typeFolder),
+        this.folder + '/' + this.typeFolder,
+        this.filenameSearched.value ?? '',
         this.keywordsSearched.value || undefined,
         (this.statusSearched.value || []).map((s) => Status.fromString(s)),
       )
       .subscribe((n) => {
         this.numberOfElements = n;
-      });
-  }
-
-  onDeleteClicked() {
-    this.api
-      .delete(
-        [...this.selectedFiles].map((index) => this.files[index].filename),
-      )
-      .subscribe({
-        next: () => {
-          this.files = this.files.filter(
-            (_, index) => !this.selectedFiles.has(index),
-          );
-          this.selectedFiles.clear();
-          this.snackbar.show('Fichiers supprimés avec succès');
-          this.api
-            .getNumberOfElement(
-              this.folder + '/' + this.filenameSearched.value,
-              getCategoryFromPath(this.typeFolder),
-              this.keywordsSearched.value || undefined,
-              (this.statusSearched.value || []).map((s) =>
-                Status.fromString(s),
-              ),
-            )
-            .subscribe((n) => {
-              this.numberOfElements = n;
-            });
-          this.api.getKeywords().subscribe((keywords) => {
-            this.keywords = keywords;
-          });
-        },
       });
   }
 
@@ -241,31 +212,68 @@ export class FileListComponent implements OnInit {
     }
   }
 
+  onDeleteClicked() {
+    const deletePromises = [...this.selectedFiles].map((index) => {
+      const filename = this.files[index].filename;
+      return lastValueFrom(
+        this.api.delete(this.folder + '/' + this.typeFolder, filename),
+      );
+    });
+
+    Promise.all(deletePromises).then(() => {
+      this.files = this.files.filter(
+        (_, index) => !this.selectedFiles.has(index),
+      );
+      this.selectedFiles.clear();
+      this.snackbar.show('Fichiers supprimés avec succès');
+      this.api
+        .getNumberOfElement(
+          this.folder + '/' + this.typeFolder,
+          this.filenameSearched.value ?? '',
+          this.keywordsSearched.value || undefined,
+          (this.statusSearched.value || []).map((s) => Status.fromString(s)),
+        )
+        .subscribe((n) => {
+          this.numberOfElements = n;
+        });
+      this.api.getKeywords().subscribe((keywords) => {
+        this.keywords = keywords;
+      });
+    });
+  }
+
   onDuplicate(): void {
     const filenames = [...this.selectedFiles].map(
       (index) => this.files[index].filename,
     );
     filenames.forEach((filename) => {
-      this.api.duplicate(filename).subscribe({
-        next: () => {
-          this.snackbar.show('Fichier dupliqué avec succès');
-        },
-      });
+      this.api
+        .duplicate(this.folder + '/' + this.typeFolder, filename)
+        .subscribe({
+          next: () => {
+            this.snackbar.show('Fichier dupliqué avec succès');
+          },
+        });
     });
   }
 
   onDownload(): void {
     for (const index of this.selectedFiles) {
-      this.api.getFileData(this.files[index].filename).subscribe({
-        next: (blob) => {
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = this.files[index].filename;
-          a.click();
-          URL.revokeObjectURL(url);
-        },
-      });
+      this.api
+        .getFileData(
+          this.folder + '/' + this.typeFolder,
+          this.files[index].filename,
+        )
+        .subscribe({
+          next: (blob) => {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = this.files[index].filename;
+            a.click();
+            URL.revokeObjectURL(url);
+          },
+        });
     }
   }
 
@@ -274,7 +282,9 @@ export class FileListComponent implements OnInit {
       (index) => this.files[index],
     );
     const linkPromises = selectedFiles.map((file) =>
-      lastValueFrom(this.api.getLink(file.filename)),
+      lastValueFrom(
+        this.api.getLink(this.folder + '/' + this.typeFolder, file.filename),
+      ),
     );
 
     Promise.all(linkPromises).then((links) => {

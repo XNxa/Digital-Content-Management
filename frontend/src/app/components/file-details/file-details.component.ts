@@ -76,7 +76,7 @@ export class FileDetailsComponent implements OnChanges {
       this.displaytype = undefined;
     }
 
-    this.api.getFileData(this.file.filename).subscribe({
+    this.api.getFileData(this.file.folder, this.file.filename).subscribe({
       next: (blob) => {
         const fr = new FileReader();
         fr.readAsDataURL(blob);
@@ -102,14 +102,14 @@ export class FileDetailsComponent implements OnChanges {
   }
 
   onSendByEmail(): void {
-    this.api.getLink(this.file.filename).subscribe((link) => {
+    this.api.getLink(this.file.folder, this.file.filename).subscribe((link) => {
       const mailtoLink = `mailto:?subject=Partage de fichier&body=Bonjour,%0A%0AVeuillez trouver ci-joint le lien vers le fichier :%0A${encodeURIComponent(link)}`;
       window.location.href = mailtoLink;
     });
   }
 
   onGetLink(): void {
-    this.api.getLink(this.file.filename).subscribe((link) => {
+    this.api.getLink(this.file.folder, this.file.filename).subscribe((link) => {
       navigator.clipboard.writeText(link).then(() => {
         this.snackbar.show('Lien copié dans le presse-papier');
       });
@@ -117,7 +117,7 @@ export class FileDetailsComponent implements OnChanges {
   }
 
   onDownload(): void {
-    this.api.getFileData(this.file.filename).subscribe({
+    this.api.getFileData(this.file.folder, this.file.filename).subscribe({
       next: (blob) => {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -130,7 +130,7 @@ export class FileDetailsComponent implements OnChanges {
   }
 
   onDuplicate(): void {
-    this.api.duplicate(this.file.filename).subscribe({
+    this.api.duplicate(this.file.folder, this.file.filename).subscribe({
       next: () => {
         this.snackbar.show('Fichier dupliqué avec succès');
       },
@@ -138,7 +138,7 @@ export class FileDetailsComponent implements OnChanges {
   }
 
   onDelete(): void {
-    this.api.delete([this.file.filename]).subscribe({
+    this.api.delete(this.file.folder, this.file.filename).subscribe({
       next: () => {
         this.snackbar.show('Fichiers supprimés avec succès');
       },

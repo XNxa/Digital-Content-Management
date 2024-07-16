@@ -150,8 +150,14 @@ export function getNameFromPath(path: string): string {
   return TREE.find((node) => node.path == path)?.name || '';
 }
 
-export type FileCategory = 'images' | 'videos' | 'pictos' | 'docs';
-
-export function getCategoryFromPath(path: string): FileCategory {
-  return path as FileCategory;
+export function getTabForType(type: string): string {
+  if (type == 'image/svg+xml') {
+    return 'pictos';
+  } else if (type.startsWith('image')) {
+    return 'images';
+  } else if (type.startsWith('video')) {
+    return 'videos';
+  } else {
+    return 'docs';
+  }
 }

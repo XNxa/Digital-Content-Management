@@ -22,6 +22,7 @@
   @if (isDialogOpen) {
     <app-upload-dialog
       [folder]="folder"
+      [typeFolder]="typeFolder"
       (closeDialog)="onCloseDialog()"
     ></app-upload-dialog>
   }

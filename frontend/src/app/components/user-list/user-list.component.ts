@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { OnInit } from '@angular/core';
 import { IconTextButtonComponent } from '../../shared/components/buttons/icon-text-button/icon-text-button.component';
-import { UploadDialogComponent } from '../upload-dialog/upload-dialog.component';
 import { DropdownCheckboxComponent } from '../../shared/components/form/dropdown-checkbox/dropdown-checkbox.component';
 import { IconButtonComponent } from '../../shared/components/buttons/icon-button/icon-button.component';
 import { TableComponent } from '../../shared/components/table/table.component';
@@ -21,7 +20,6 @@ import { PermissionDirective } from '../../shared/directives/permission.directiv
   styleUrl: './user-list.component.css',
   imports: [
     IconTextButtonComponent,
-    UploadDialogComponent,
     DropdownCheckboxComponent,
     IconButtonComponent,
     InputComponent,

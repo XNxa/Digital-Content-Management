@@ -4,7 +4,6 @@ import { Observable, map } from 'rxjs';
 import { FileHeader, convertSizeToPrintable } from '../models/FileHeader';
 import { environment } from '../../environments/environment.development';
 import { Status } from '../enums/status';
-import { FileCategory } from '../models/Tabs';
 
 @Injectable({
   providedIn: 'root',
@@ -26,18 +25,18 @@ export class FileApiService {
   }
 
   public getNumberOfElement(
+    folder: string,
     filename: string,
-    type: FileCategory,
     keywords?: string[],
     status?: Status[],
   ): Observable<number> {
     const filter = {
-      page: '0',
-      size: '0',
+      page: 0,
+      size: 0,
+      folder: folder,
       filename: filename,
       keywords: keywords || [],
       status: status || [],
-      category: type,
     };
     return this.httpClient.post<number>(`${this.API}/count`, filter);
   }
@@ -45,40 +44,43 @@ export class FileApiService {
   public getPages(
     page: number,
     size: number,
+    folder: string,
     filename: string,
-    type: FileCategory,
     keywords?: string[],
     status?: Status[],
   ): Observable<FileHeader[]> {
     const filter = {
-      page: page.toString(),
-      size: size.toString(),
+      page: page,
+      size: size,
+      folder: folder,
       filename: filename,
       keywords: keywords || [],
       status: status || [],
-      category: type,
     };
     return this.httpClient.post<FileHeader[]>(`${this.API}/files`, filter).pipe(
       map((files: FileHeader[]) => {
         return files.map((file: FileHeader) => {
-          file.printableFilename = file.filename.split('/').pop() || '';
           file.printableSize = convertSizeToPrintable(file.size);
           return file;
-        }, this);
+        });
       }),
     );
   }
 
-  public getFileData(filename: string): Observable<Blob> {
-    const params = new HttpParams().set('filename', filename);
+  public getFileData(folder: string, filename: string): Observable<Blob> {
+    const params = new HttpParams()
+      .set('folder', folder)
+      .set('filename', filename);
     return this.httpClient.get<Blob>(`${this.API}/filedata`, {
       params,
       responseType: 'blob' as 'json',
     });
   }
 
-  public getThumbnail(filename: string): Observable<Blob> {
-    const params = new HttpParams().set('filename', filename);
+  public getThumbnail(folder: string, filename: string): Observable<Blob> {
+    const params = new HttpParams()
+      .set('folder', folder)
+      .set('filename', filename);
     return this.httpClient.get<Blob>(`${this.API}/thumbnail`, {
       params,
       responseType: 'blob' as 'json',
@@ -89,28 +91,42 @@ export class FileApiService {
     return this.httpClient.get<string[]>(`${this.API}/keywords`);
   }
 
-  public delete(filename: string[]): Observable<void> {
-    return this.httpClient.delete<void>(`${this.API}/delete`, {
-      params: new HttpParams().set('filename', filename.join(',')),
-    });
+  public delete(folder: string, filename: string): Observable<void> {
+    const params = new HttpParams()
+      .set('folder', folder)
+      .set('filename', filename);
+    return this.httpClient.delete<void>(`${this.API}/delete`, { params });
   }
 
-  public getLink(filename: string): Observable<string> {
+  public getLink(folder: string, filename: string): Observable<string> {
+    const params = new HttpParams()
+      .set('folder', folder)
+      .set('filename', filename);
     return this.httpClient.get<string>(`${this.API}/link`, {
-      params: new HttpParams().set('filename', filename),
+      params,
       responseType: 'text' as 'json',
     });
   }
 
-  public duplicate(filename: string): Observable<void> {
+  public duplicate(folder: string, filename: string): Observable<void> {
+    const params = new HttpParams()
+      .set('folder', folder)
+      .set('filename', filename);
     return this.httpClient.post<void>(`${this.API}/duplicate`, null, {
-      params: new HttpParams().set('filename', filename),
+      params,
     });
   }
 
-  public update(filename: string, metadata: FileHeader): Observable<void> {
+  public update(
+    folder: string,
+    filename: string,
+    metadata: FileHeader,
+  ): Observable<void> {
+    const params = new HttpParams()
+      .set('folder', folder)
+      .set('filename', filename);
     return this.httpClient.put<void>(`${this.API}/update`, metadata, {
-      params: new HttpParams().set('filename', filename),
+      params,
     });
   }
 }
