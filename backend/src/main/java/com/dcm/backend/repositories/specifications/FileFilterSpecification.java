@@ -22,7 +22,7 @@ public class FileFilterSpecification implements Specification<FileHeader> {
     private List<Keyword> keywords;
     private List<Status> status;
     private String version;
-    private String type;
+    private List<String> types;
     private LocalDate dateFrom;
     private LocalDate dateTo;
 
@@ -60,18 +60,21 @@ public class FileFilterSpecification implements Specification<FileHeader> {
                     criteriaBuilder.like(root.get("version"), "%" + version + "%"));
         }
 
-        if (type != null && !type.isBlank()){
-            predicates.add(criteriaBuilder.like(root.get("type"), "%" + type + "%"));
+        if (types != null && !types.isEmpty()) {
+            List<Predicate> typePredicates = new ArrayList<>();
+            for (String type : types) {
+                typePredicates.add(criteriaBuilder.equal(root.get("type"), type));
+            }
+            predicates.add(
+                    criteriaBuilder.or(typePredicates.toArray(new Predicate[0])));
         }
 
         if (dateFrom != null) {
-            System.out.println(dateFrom);
             predicates.add(
                     criteriaBuilder.greaterThanOrEqualTo(root.get("date"), dateFrom));
         }
 
         if (dateTo != null) {
-            System.out.println(dateTo);
             predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("date"), dateTo));
         }
 

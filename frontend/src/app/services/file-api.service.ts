@@ -29,6 +29,8 @@ export class FileApiService {
     filename: string,
     keywords?: string[],
     status?: Status[],
+    version?: string,
+    type?: string[],
     dateFrom?: Date,
     dateTo?: Date,
   ): Observable<number> {
@@ -39,6 +41,8 @@ export class FileApiService {
       filename: filename,
       keywords: keywords || [],
       status: status || [],
+      version: version,
+      type: type,
       dateFrom: dateToString(dateFrom),
       dateTo: dateToString(dateTo),
     };
@@ -52,6 +56,8 @@ export class FileApiService {
     filename: string,
     keywords?: string[],
     status?: Status[],
+    version?: string,
+    type?: string[],
     dateFrom?: Date,
     dateTo?: Date,
   ): Observable<FileHeader[]> {
@@ -62,6 +68,8 @@ export class FileApiService {
       filename: filename,
       keywords: keywords || [],
       status: status || [],
+      version: version,
+      type: type,
       dateFrom: dateToString(dateFrom),
       dateTo: dateToString(dateTo),
     };
@@ -136,6 +144,11 @@ export class FileApiService {
     return this.httpClient.put<void>(`${this.API}/update`, metadata, {
       params,
     });
+  }
+
+  getTypes(folder: string) {
+    const params = new HttpParams().set('folder', folder).set('filename', '');
+    return this.httpClient.get<string[]>(`${this.API}/types`, { params });
   }
 }
 

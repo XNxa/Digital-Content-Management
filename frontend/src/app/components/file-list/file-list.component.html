@@ -64,15 +64,15 @@
           label="Version du fichier"
           placeholder="Sélectionnez une version du fichier"
           [border]="false"
-          [(value)]="filenameSearched"
+          [(value)]="versionSearched"
           (changed)="refreshFileList()"
         ></app-input>
         <app-dropdown-checkbox
           class="search-element"
           label="Type du fichier"
           placeholder="Sélectionnez le type du fichier"
-          [options]="keywords"
-          [(value)]="keywordsSearched"
+          [options]="types"
+          [(value)]="typeSearched"
         ></app-dropdown-checkbox>
         <app-date-input
           class="search-element"

@@ -40,7 +40,7 @@ public class FileFilterDTO {
     private String version;
 
     @Size(max = 255, message = ErrorMessages.EXCEED_MAX_SIZE_CODE)
-    private String type;
+    private List<String> type;
 
     private LocalDate dateFrom;
 

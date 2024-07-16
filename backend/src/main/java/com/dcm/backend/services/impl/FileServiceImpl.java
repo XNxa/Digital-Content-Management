@@ -273,6 +273,11 @@ public class FileServiceImpl implements FileService {
         keywordService.deleteUnusedKeywords();
     }
 
+    @Override
+    public Collection<String> getTypes(String folder) {
+        return fileRepository.findTypesByFolder(folder);
+    }
+
     private void updateMetadata(FileHeader fileHeader, FileHeader newFileHeader) {
         String newName = getNewName(fileHeader);
         newFileHeader.setFilename(newName);

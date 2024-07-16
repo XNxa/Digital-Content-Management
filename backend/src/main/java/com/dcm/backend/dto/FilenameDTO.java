@@ -4,6 +4,7 @@ import com.dcm.backend.utils.ErrorMessages;
 import com.dcm.backend.validation.constraints.Folder;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -15,7 +16,8 @@ public class FilenameDTO {
     @Folder(message = ErrorMessages.INVALID_FOLDER_CODE)
     private String folder;
 
-    @NotBlank(message = ErrorMessages.REQUIERED_FIELD_MISSING_CODE)
+    @Size(max = 255, message = ErrorMessages.EXCEED_MAX_SIZE_CODE)
+    @NotNull(message = ErrorMessages.REQUIERED_FIELD_MISSING_CODE)
     private String filename;
 
 }

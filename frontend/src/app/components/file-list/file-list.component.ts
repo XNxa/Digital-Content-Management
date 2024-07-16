@@ -69,6 +69,9 @@ export class FileListComponent implements OnInit {
 
   /** Array currently defined keywords. */
   keywords!: string[];
+  
+  /** Array of types present in this folder  */
+  types!: string[];
 
   /** The filename being searched.
    * Binded to the search field */
@@ -81,6 +84,14 @@ export class FileListComponent implements OnInit {
   /** Array of status strings being searched.
    * Binded to the search field */
   statusSearched = new FormControl<string[]>([]);
+
+  /** The version being searched.
+   * Binded to the search field */
+  versionSearched = new FormControl('');
+
+  /** The type being searched.
+   * Binded to the search field */
+  typeSearched = new FormControl<string[]>([]);
 
   /**
    * The date range being searched.
@@ -168,6 +179,8 @@ export class FileListComponent implements OnInit {
         this.filenameSearched.value ?? '',
         this.keywordsSearched.value || undefined,
         (this.statusSearched.value || []).map((s) => Status.fromString(s)),
+        this.versionSearched.value ?? undefined,
+        this.typeSearched.value || undefined,
         this.dateSearched.value?.[0],
         this.dateSearched.value?.[1],
       )
@@ -191,12 +204,18 @@ export class FileListComponent implements OnInit {
       this.keywords = keywords;
     });
 
+    this.api.getTypes(this.folder + '/' + this.typeFolder).subscribe((types) => {
+      this.types = types;
+    });
+
     this.api
       .getNumberOfElement(
         this.folder + '/' + this.typeFolder,
         this.filenameSearched.value ?? '',
         this.keywordsSearched.value || undefined,
         (this.statusSearched.value || []).map((s) => Status.fromString(s)),
+        this.versionSearched.value ?? undefined,
+        this.typeSearched.value || undefined,
         this.dateSearched.value?.[0],
         this.dateSearched.value?.[1],
       )
@@ -236,6 +255,8 @@ export class FileListComponent implements OnInit {
           this.filenameSearched.value ?? '',
           this.keywordsSearched.value || undefined,
           (this.statusSearched.value || []).map((s) => Status.fromString(s)),
+          this.versionSearched.value ?? undefined,
+          this.typeSearched.value || undefined,
           this.dateSearched.value?.[0],
           this.dateSearched.value?.[1],
         )

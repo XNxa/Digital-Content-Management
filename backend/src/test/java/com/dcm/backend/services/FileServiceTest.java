@@ -151,7 +151,7 @@ public class FileServiceTest {
     void testCount() {
         when(fileRepository.count(any(Specification.class))).thenReturn(10L);
         long count = fileService.count(
-                new FileFilterDTO(0, 0, "web/images", "", List.of(), List.of(), "", "",
+                new FileFilterDTO(0, 0, "web/images", "", List.of(), List.of(), "", List.of(),
                         LocalDate.now(), LocalDate.now()));
         assertEquals(10L, count);
     }

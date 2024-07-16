@@ -18,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -99,6 +100,11 @@ public class FileController {
     @PreAuthorize("hasRole(@util.buildPermission(#file, 'modify'))")
     public void updateFile(@ModelAttribute @Valid FilenameDTO file, @RequestBody @Valid FileHeaderDTO metadata) {
         fs.update(file, metadata);
+    }
+
+    @GetMapping("/types")
+    public Collection<String> getTypes(@ModelAttribute @Valid FilenameDTO file) {
+        return fs.getTypes(file.getFolder());
     }
 }
 
