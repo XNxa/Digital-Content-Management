@@ -2,17 +2,14 @@
   visibility: hidden;
 
   position: fixed;
-  bottom: 50px;
-  left: 50%;
+  top: 10px;
+  right: 10px;
 
   padding: 10px 10px;
-  border-radius: 8px;
 
   min-width: 20%;
-  transform-origin: center center;
-  transform: translate(-50%, 0%);
 
-  background: var(--primary-accent);
+  background: #d81a1a;
 
   text-align: center;
   color: white;
