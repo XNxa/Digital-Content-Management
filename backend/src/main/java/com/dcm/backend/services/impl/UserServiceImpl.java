@@ -104,6 +104,11 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toSet());
     }
 
+    @Override
+    public boolean validateEmail(String email) {
+        return findUserByEmail(email) == null;
+    }
+
     private String buildQuery(UserDTO filter) {
         StringBuilder queryBuilder = new StringBuilder();
         if (filter.getEmail() != null)
@@ -127,7 +132,7 @@ public class UserServiceImpl implements UserService {
     private UserRepresentation findUserByEmail(String email) {
         return keycloak.realm(keycloakProperties.getRealm())
                 .users()
-                .search(email)
+                .search(email, true)
                 .stream()
                 .findFirst()
                 .orElse(null);

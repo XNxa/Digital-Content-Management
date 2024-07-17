@@ -63,4 +63,14 @@ public class RoleController {
     public Collection<PermissionDTO> listPermissions() {
         return roleService.getPermissions();
     }
+
+    @GetMapping("/validate")
+    public boolean validateRole(@RequestParam("name") String name) {
+        return roleService.validateRole(name);
+    }
+
+    @GetMapping("deactivatable")
+    public boolean isDeactivatable(@RequestParam("id") String id) {
+        return roleService.isDeactivatable(id);
+    }
 }

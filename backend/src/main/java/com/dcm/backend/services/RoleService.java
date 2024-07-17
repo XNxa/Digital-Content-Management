@@ -66,4 +66,20 @@ public interface RoleService {
      * @return the active roles
      */
     Collection<String> getActiveRoles();
+
+    /**
+     * Validate a role name
+     *
+     * @param name the future name of the role
+     * @return true if the name is valid, false otherwise
+     */
+    boolean validateRole(String name);
+
+    /**
+     * Check if a role is currently used by a user
+     *
+     * @param id the id of the role
+     * @return true if the role is not used, false otherwise
+     */
+    boolean isDeactivatable(String id);
 }

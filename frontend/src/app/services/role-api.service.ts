@@ -55,4 +55,16 @@ export class RoleApiService {
   public getActiveRoles(): Observable<string[]> {
     return this.http.get<string[]>(`${this.API}/actives`);
   }
+
+  public validateRoleName(name: string): Observable<boolean> {
+    return this.http.get<boolean>(`${this.API}/validate`, {
+      params: { name: name },
+    });
+  }
+
+  public isDeactivatable(id: string): Observable<boolean> {
+    return this.http.get<boolean>(`${this.API}/deactivatable`, {
+      params: { id: id },
+    });
+  }
 }

@@ -59,4 +59,12 @@ public interface UserService {
      * @return the functions
      */
     Collection<String> getFunctions();
+
+    /**
+     * Validate an email
+     *
+     * @param email the email to validate
+     * @return true if the email is valid, false otherwise
+     */
+    boolean validateEmail(String email);
 }

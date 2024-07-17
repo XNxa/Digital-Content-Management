@@ -116,6 +116,23 @@ public class RoleServiceImpl implements RoleService {
                 .toList();
     }
 
+    @Override
+    public boolean validateRole(String name) {
+        return keycloak.realm(keycloakProperties.getRealm())
+                .groups()
+                .groups(name, true, 0, 1, true)
+                .isEmpty();
+    }
+
+    @Override
+    public boolean isDeactivatable(String id) {
+        return keycloak.realm(keycloakProperties.getRealm())
+                .groups()
+                .group(id)
+                .members(0, 1)
+                .isEmpty();
+    }
+
     private GroupRepresentation getGroupRepresentation(String id) {
         return keycloak.realm(keycloakProperties.getRealm())
                 .groups()

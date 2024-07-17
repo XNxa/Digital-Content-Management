@@ -52,4 +52,10 @@ export class UserApiService {
   public getFunctions(): Observable<string[]> {
     return this.http.get<string[]>(`${this.API}/functions`);
   }
+
+  public validateEmail(email: string): Observable<boolean> {
+    return this.http.get<boolean>(`${this.API}/validate`, {
+      params: { email: email },
+    });
+  }
 }

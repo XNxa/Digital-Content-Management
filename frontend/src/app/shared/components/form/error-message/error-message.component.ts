@@ -29,7 +29,9 @@ export class ErrorMessageComponent {
     } else if (form.hasError('max')) {
       return `La valeur maximale est ${form.errors?.['max'].max}`;
     } else if (form.hasError('invalid')) {
-      return 'Valeur invalide';
+      return 'La valeur est invalide';
+    } else if (form.hasError('unique')) {
+      return 'La valeur est déjà utilisée';
     }
     return '';
   }

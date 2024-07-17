@@ -61,4 +61,8 @@ public class UserController {
         return userService.getFunctions();
     }
 
+    @GetMapping("/validate")
+    public boolean validateEmail(@RequestParam("email") String email) {
+        return userService.validateEmail(email);
+    }
 }

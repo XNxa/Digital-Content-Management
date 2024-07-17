@@ -1,6 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import {
   AbstractControl,
+  AsyncValidatorFn,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
@@ -17,6 +18,7 @@ import { ErrorMessageComponent } from '../../shared/components/form/error-messag
 import { User } from '../../models/User';
 import { UserApiService } from '../../services/user-api.service';
 import { RoleApiService } from '../../services/role-api.service';
+import { Observable, of, map, catchError } from 'rxjs';
 
 @Component({
   selector: 'app-add-user-dialog',
@@ -52,11 +54,15 @@ export class AddUserDialogComponent implements OnInit {
     Validators.required,
     Validators.maxLength(255),
   ]);
-  email = new FormControl('', [
-    Validators.required,
-    Validators.email,
-    Validators.maxLength(255),
-  ]);
+  email = new FormControl('', {
+    validators: [
+      Validators.required,
+      Validators.email,
+      Validators.maxLength(255),
+    ],
+    asyncValidators: this.emailValidator(),
+    updateOn: 'blur',
+  });
 
   role = new FormControl('', [Validators.required]);
   statut = false;
@@ -161,5 +167,18 @@ export class AddUserDialogComponent implements OnInit {
         this.close.emit();
       });
     }
+  }
+
+  emailValidator(): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      if (!control.value) {
+        return of(null);
+      }
+
+      return this.userapi.validateEmail(control.value).pipe(
+        map((isValid) => (isValid ? null : { unique: true })),
+        catchError(() => of(null)), // Treat as valid if there's an issue with the request
+      );
+    };
   }
 }
