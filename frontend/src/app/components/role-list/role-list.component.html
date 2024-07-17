@@ -9,6 +9,14 @@
 </div>
 
 <div class="search-area">
+  <app-input
+    class="search-element"
+    label="Nom du rôle"
+    [border]="false"
+    placeholder="Saisissez le nom d'un rôle"
+    [(value)]="searchRoleName"
+    (changed)="refreshRoleList()"
+  ></app-input>
   <app-select
     class="search-element"
     [border]="false"

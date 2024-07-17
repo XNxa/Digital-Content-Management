@@ -42,9 +42,12 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Collection<RoleDTO> getRoles(int firstResult, int maxResults, RoleDTO filter) {
+        String query = "";
+        if (filter.getName() != null) query = filter.getName();
+
         return keycloak.realm(keycloakProperties.getRealm())
                 .groups()
-                .groups("", firstResult, maxResults, false)
+                .groups(query, firstResult, maxResults, false)
                 .stream()
                 .map(roleMapper::toRoleDTO)
                 .toList();

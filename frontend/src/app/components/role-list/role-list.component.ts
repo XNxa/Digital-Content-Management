@@ -9,6 +9,7 @@ import { SelectComponent } from '../../shared/components/form/select/select.comp
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { PermissionDirective } from '../../shared/directives/permission.directive';
+import { InputComponent } from '../../shared/components/form/input/input.component';
 
 @Component({
   selector: 'app-role-list',
@@ -22,6 +23,7 @@ import { PermissionDirective } from '../../shared/directives/permission.directiv
     IconTextButtonComponent,
     SelectComponent,
     PermissionDirective,
+    InputComponent,
   ],
 })
 export class RoleListComponent implements OnInit {
@@ -34,6 +36,7 @@ export class RoleListComponent implements OnInit {
   currentPage = 1;
   statutOptions = ['', 'Actif', 'Inactif'];
   selectedStatut = new FormControl('');
+  searchRoleName = new FormControl('');
 
   constructor(
     private api: RoleApiService,
@@ -49,11 +52,10 @@ export class RoleListComponent implements OnInit {
       this.numberOfElements = count;
     });
     this.api
-      .getRoles(
-        (this.currentPage - 1) * this.itemsPerPage,
-        this.itemsPerPage,
-        {} as Role,
-      )
+      .getRoles((this.currentPage - 1) * this.itemsPerPage, this.itemsPerPage, {
+        state: this.toState(this.selectedStatut.value),
+        name: this.valueIfPresent(this.searchRoleName.value),
+      } as Role)
       .subscribe((roles) => {
         this.roles = roles;
       });
@@ -74,5 +76,19 @@ export class RoleListComponent implements OnInit {
 
   modifyRole($event: number) {
     this.router.navigate(['role', this.roles[$event].id]);
+  }
+
+  private toState(value: string | null): boolean | undefined {
+    if (value === 'Actif') {
+      return true;
+    } else if (value === 'Inactif') {
+      return false;
+    } else {
+      return undefined;
+    }
+  }
+
+  private valueIfPresent(value: string | null): string | undefined {
+    return value ? (value.length > 0 ? value : undefined) : undefined;
   }
 }
