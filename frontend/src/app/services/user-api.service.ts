@@ -48,4 +48,8 @@ export class UserApiService {
       },
     });
   }
+
+  public getFunctions(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.API}/functions`);
+  }
 }

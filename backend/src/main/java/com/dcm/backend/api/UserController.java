@@ -56,4 +56,9 @@ public class UserController {
         userService.update(user);
     }
 
+    @GetMapping("/functions")
+    public Collection<String> getFunctions() {
+        return userService.getFunctions();
+    }
+
 }

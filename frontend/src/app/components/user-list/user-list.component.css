@@ -6,7 +6,21 @@
 
 .search-area {
   display: flex;
+  flex-direction: column;
   gap: 10px;
+}
+
+.search-row {
+  display: flex;
+  gap: 10px;
+}
+
+.search-element {
+  flex: 1;
+}
+
+.toggle-extended-search {
+  align-self: flex-end;
 }
 
 .action-buttons {
@@ -26,8 +40,4 @@
 
 .footer {
   padding: 5px;
-}
-
-.search-element {
-  flex: 1;
 }

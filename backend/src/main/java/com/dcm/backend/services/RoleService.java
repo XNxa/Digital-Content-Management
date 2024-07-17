@@ -61,7 +61,7 @@ public interface RoleService {
     RoleDTO getRole(String id);
 
     /**
-     * Get active roles
+     * Get the names of all active roles
      *
      * @return the active roles
      */

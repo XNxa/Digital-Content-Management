@@ -13,22 +13,68 @@
 }
 
 <div class="search-area">
-  <app-input
-    class="search-element"
-    label="Prénom"
-    placeholder="Saisissez un prénom"
-    [border]="false"
-    [(value)]="firstnameSearched"
-    (changed)="refreshUserList()"
-  ></app-input>
-  <app-input
-    class="search-element"
-    label="Nom"
-    placeholder="Saisissez un nom"
-    [border]="false"
-    [(value)]="lastnameSearched"
-    (changed)="refreshUserList()"
-  ></app-input>
+  <div class="search-row">
+    <app-input
+      class="search-element"
+      label="Prénom"
+      placeholder="Saisissez un prénom"
+      [border]="false"
+      [(value)]="firstnameSearched"
+      (changed)="refreshUserList()"
+    ></app-input>
+    <app-input
+      class="search-element"
+      label="Nom"
+      placeholder="Saisissez un nom"
+      [border]="false"
+      [(value)]="lastnameSearched"
+      (changed)="refreshUserList()"
+    ></app-input>
+    <app-select
+      class="search-element"
+      label="Statut"
+      [border]="false"
+      [options]="['Actif', 'Inactif']"
+      [(value)]="statutSearched"
+      (changed)="refreshUserList()"
+    >
+    </app-select>
+    <app-icon-button
+      class="toggle-extended-search"
+      icon="settings"
+      (click)="isExtendedSearch = !isExtendedSearch"
+    >
+    </app-icon-button>
+  </div>
+  @if (isExtendedSearch) {
+    <div class="search-row">
+      <app-select
+        class="search-element"
+        label="Fonction"
+        [border]="false"
+        [options]="functions"
+        [(value)]="functionSearched"
+      >
+      </app-select>
+      <app-input
+        class="search-element"
+        label="Email"
+        placeholder="Saisissez un email"
+        [border]="false"
+        [(value)]="emailSearched"
+        (changed)="refreshUserList()"
+      ></app-input>
+      <app-select
+        class="search-element"
+        label="Role"
+        [border]="false"
+        [options]="roles"
+        [(value)]="roleSearched"
+      ></app-select>
+      <app-icon-button icon="settings" style="visibility: hidden">
+      </app-icon-button>
+    </div>
+  }
 </div>
 
 <div class="header">
@@ -39,6 +85,14 @@
       icon="update"
       (click)="refreshUserList()"
     ></app-icon-button>
+    @if (selectedUsers.size > 0) {
+      <app-icon-button
+        [permission]="['user_delete']"
+        color="white"
+        icon="delete"
+        (click)="deleteUsers()"
+      ></app-icon-button>
+    }
   </div>
 </div>
 

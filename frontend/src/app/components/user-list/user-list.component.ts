@@ -12,6 +12,10 @@ import { FormControl } from '@angular/forms';
 import { AddUserDialogComponent } from '../add-user-dialog/add-user-dialog.component';
 import { Router } from '@angular/router';
 import { PermissionDirective } from '../../shared/directives/permission.directive';
+import { SelectComponent } from '../../shared/components/form/select/select.component';
+import { RoleApiService } from '../../services/role-api.service';
+import { Role } from '../../models/Role';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-user-list',
@@ -27,6 +31,7 @@ import { PermissionDirective } from '../../shared/directives/permission.directiv
     PageSelectorComponent,
     AddUserDialogComponent,
     PermissionDirective,
+    SelectComponent,
   ],
 })
 export class UserListComponent implements OnInit {
@@ -40,22 +45,34 @@ export class UserListComponent implements OnInit {
 
   firstnameSearched = new FormControl('');
   lastnameSearched = new FormControl('');
+  statutSearched = new FormControl<string>('');
+  functionSearched = new FormControl('');
+  emailSearched = new FormControl('');
+  roleSearched = new FormControl('');
 
   users!: User[];
 
+  functions!: string[];
+  roles!: string[];
+
   selectedUsers: Set<number> = new Set<number>();
+
+  isExtendedSearch = false;
 
   constructor(
     private api: UserApiService,
+    private roleapi: RoleApiService,
     private router: Router,
   ) {}
 
   ngOnInit(): void {
+    this.api.getFunctions().subscribe((functions: string[]) => {
+      this.functions = functions;
+    });
+    this.roleapi.getActiveRoles().subscribe((roles) => {
+      this.roles = roles;
+    });
     this.refreshUserList();
-  }
-
-  valueIfPresent(value: string | null): string | undefined {
-    return value ? (value.length > 0 ? value : undefined) : undefined;
   }
 
   refreshUserList() {
@@ -66,10 +83,10 @@ export class UserListComponent implements OnInit {
       .getUsers((this.currentPage - 1) * this.itemsPerPage, this.itemsPerPage, {
         firstname: this.valueIfPresent(this.firstnameSearched.value),
         lastname: this.valueIfPresent(this.lastnameSearched.value),
-        function: undefined,
-        email: undefined,
-        role: undefined,
-        statut: undefined,
+        function: this.valueIfPresent(this.functionSearched.value),
+        email: this.valueIfPresent(this.emailSearched.value),
+        role: this.valueIfPresent(this.roleSearched.value),
+        statut: this.toStatut(this.statutSearched.value),
         password: undefined,
       })
       .subscribe((users: User[]) => {
@@ -78,7 +95,22 @@ export class UserListComponent implements OnInit {
   }
 
   usersSelectedList($event: Set<number>) {
-    throw new Error('Method not implemented.');
+    this.selectedUsers = $event;
+  }
+
+  deleteUsers() {
+    Promise.all(
+      Array.from(this.selectedUsers).map((id) => lastValueFrom(this.api.deleteUser(this.users[id].id!))),
+    ).then(() => {
+      this.refreshUserList();
+      this.selectedUsers.clear();
+      this.api.getFunctions().subscribe((functions: string[]) => {
+        this.functions = functions;
+      });
+      this.roleapi.getActiveRoles().subscribe((roles) => {
+        this.roles = roles;
+      });
+    });
   }
 
   onPageChange($event: number) {
@@ -92,5 +124,19 @@ export class UserListComponent implements OnInit {
 
   clickedRow($event: number) {
     this.router.navigate(['user', this.users[$event].id]);
+  }
+
+  private valueIfPresent(value: string | null): string | undefined {
+    return value ? (value.length > 0 ? value : undefined) : undefined;
+  }
+
+  private toStatut(value: string | null): 'active' | 'inactive' | undefined {
+    if (value == 'Actif') {
+      return 'active';
+    } else if (value == 'Inactif') {
+      return 'inactive';
+    } else {
+      return undefined;
+    }
   }
 }

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -91,6 +92,16 @@ public class UserServiceImpl implements UserService {
                         .toRepresentation(true);
 
         return userMapper.toUserDTO(userRepresentation);
+    }
+
+    @Override
+    public Collection<String> getFunctions() {
+        return keycloak.realm(keycloakProperties.getRealm())
+                .users()
+                .list()
+                .stream()
+                .map(user -> user.getAttributes().get("function").get(0))
+                .collect(Collectors.toSet());
     }
 
     private String buildQuery(UserDTO filter) {

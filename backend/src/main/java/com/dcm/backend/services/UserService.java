@@ -52,4 +52,11 @@ public interface UserService {
      * @return the user
      */
     UserDTO getUser(String id);
+
+    /**
+     * Get the functions of all users
+     *
+     * @return the functions
+     */
+    Collection<String> getFunctions();
 }
