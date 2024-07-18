@@ -22,7 +22,6 @@ spring:
           issuer-uri: http://localhost:8080/realms/dcm
           jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
 
-
 minio:
   endpoint: http://localhost:9000
   accessKey: admin
@@ -41,3 +40,9 @@ mes:
           - /api/user/**
         method: GET
       - paths: /public/**
+
+application:
+  keycloak-username: admin
+  keycloak-password: admin
+  elasticsearch-host: localhost:9200
+  use-elasticsearch: true

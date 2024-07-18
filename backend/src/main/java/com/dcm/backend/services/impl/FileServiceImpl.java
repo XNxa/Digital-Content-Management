@@ -1,5 +1,6 @@
 package com.dcm.backend.services.impl;
 
+import com.dcm.backend.config.ApplicationProperties;
 import com.dcm.backend.config.MinioConfig;
 import com.dcm.backend.config.MinioProperties;
 import com.dcm.backend.dto.FileFilterDTO;
@@ -9,6 +10,7 @@ import com.dcm.backend.entities.FileHeader;
 import com.dcm.backend.entities.Keyword;
 import com.dcm.backend.exceptions.FileNotFoundException;
 import com.dcm.backend.exceptions.NoThumbnailException;
+import com.dcm.backend.repositories.FileElasticRepository;
 import com.dcm.backend.repositories.FileRepository;
 import com.dcm.backend.repositories.specifications.FileFilterSpecification;
 import com.dcm.backend.services.FileService;
@@ -43,6 +45,9 @@ import java.util.stream.Collectors;
 public class FileServiceImpl implements FileService {
 
     @Autowired
+    private ApplicationProperties ap;
+
+    @Autowired
     private MinioConfig mc;
 
     @Autowired
@@ -50,6 +55,9 @@ public class FileServiceImpl implements FileService {
 
     @Autowired
     private FileRepository fileRepository;
+
+    @Autowired
+    private FileElasticRepository fileElasticRepository;
 
     @Autowired
     private KeywordService keywordService;
@@ -129,6 +137,10 @@ public class FileServiceImpl implements FileService {
                             .bucket(mp.getBucketName())
                             .object(fileHeader.getThumbnailName())
                             .build());
+        }
+
+        if (ap.isUseElasticsearch()) {
+            fileElasticRepository.deleteById(fileHeader.getId());
         }
 
         fileRepository.delete(fileHeader);
@@ -240,7 +252,10 @@ public class FileServiceImpl implements FileService {
                             .build());
         }
 
-        fileRepository.save(newFileHeader);
+        newFileHeader = fileRepository.save(newFileHeader);
+        if (ap.isUseElasticsearch()) {
+            fileElasticRepository.save(newFileHeader);
+        }
     }
 
     @Override
@@ -269,7 +284,10 @@ public class FileServiceImpl implements FileService {
                                 .collect(Collectors.toMap(k -> k, v -> "")))
                         .build());
 
-        fileRepository.save(fileHeader);
+        fileHeader = fileRepository.save(fileHeader);
+        if (ap.isUseElasticsearch()) {
+            fileElasticRepository.save(fileHeader);
+        }
         keywordService.deleteUnusedKeywords();
     }
 
@@ -400,7 +418,12 @@ public class FileServiceImpl implements FileService {
             f.setThumbnailName(
                     "thumbnail/" + metadata.getFolder() + '/' + metadata.getFilename());
         }
-        fileRepository.save(f);
+
+        f = fileRepository.save(f);
+
+        if (ap.isUseElasticsearch()) {
+            fileElasticRepository.save(f);
+        }
     }
 
     /**

@@ -3,16 +3,17 @@ package com.dcm.backend.entities;
 import com.dcm.backend.enumeration.Status;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 import java.time.LocalDate;
 import java.util.Collection;
 
 @Entity
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Document(indexName = "fileheader-index")
 public class FileHeader {
 
     @Id
