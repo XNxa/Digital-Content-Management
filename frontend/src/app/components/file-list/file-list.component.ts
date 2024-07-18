@@ -69,7 +69,7 @@ export class FileListComponent implements OnInit {
 
   /** Array currently defined keywords. */
   keywords!: string[];
-  
+
   /** Array of types present in this folder  */
   types!: string[];
 
@@ -204,9 +204,11 @@ export class FileListComponent implements OnInit {
       this.keywords = keywords;
     });
 
-    this.api.getTypes(this.folder + '/' + this.typeFolder).subscribe((types) => {
-      this.types = types;
-    });
+    this.api
+      .getTypes(this.folder + '/' + this.typeFolder)
+      .subscribe((types) => {
+        this.types = types;
+      });
 
     this.api
       .getNumberOfElement(
@@ -248,7 +250,6 @@ export class FileListComponent implements OnInit {
         (_, index) => !this.selectedFiles.has(index),
       );
       this.selectedFiles.clear();
-      this.snackbar.show('Fichiers supprimés avec succès');
       this.api
         .getNumberOfElement(
           this.folder + '/' + this.typeFolder,
@@ -276,11 +277,7 @@ export class FileListComponent implements OnInit {
     filenames.forEach((filename) => {
       this.api
         .duplicate(this.folder + '/' + this.typeFolder, filename)
-        .subscribe({
-          next: () => {
-            this.snackbar.show('Fichier dupliqué avec succès');
-          },
-        });
+        .subscribe();
     });
   }
 

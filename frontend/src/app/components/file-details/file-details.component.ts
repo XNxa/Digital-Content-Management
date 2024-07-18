@@ -130,19 +130,11 @@ export class FileDetailsComponent implements OnChanges {
   }
 
   onDuplicate(): void {
-    this.api.duplicate(this.file.folder, this.file.filename).subscribe({
-      next: () => {
-        this.snackbar.show('Fichier dupliqué avec succès');
-      },
-    });
+    this.api.duplicate(this.file.folder, this.file.filename).subscribe();
   }
 
   onDelete(): void {
-    this.api.delete(this.file.folder, this.file.filename).subscribe({
-      next: () => {
-        this.snackbar.show('Fichiers supprimés avec succès');
-      },
-    });
+    this.api.delete(this.file.folder, this.file.filename).subscribe();
     this.next.emit();
   }
 

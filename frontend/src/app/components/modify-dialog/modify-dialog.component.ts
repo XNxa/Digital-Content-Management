@@ -77,11 +77,7 @@ export class ModifyDialogComponent implements OnInit {
     metadata.keywords = this.keywords.value || [];
     metadata.status = Status.fromString(this.status.value || '');
 
-    this.api.update(this.file.folder, this.file.filename, metadata).subscribe({
-      next: () => {
-        this.snackbar.show('Fichier modifié avec succès');
-      },
-    });
+    this.api.update(this.file.folder, this.file.filename, metadata).subscribe();
 
     this.close();
   }
