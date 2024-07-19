@@ -1,0 +1,70 @@
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+h2 {
+    font-size: 25px;
+    margin-bottom: 0;
+}
+
+p {
+    font-size: 14px;
+    color: #8D9CAD;
+}
+
+.chart-container {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+}
+
+.donut-chart {
+    width: 100%;
+    height: 100%;
+}
+
+.donut-hole {
+    fill: #fff;
+}
+
+.donut-segment {
+    fill: transparent;
+    stroke-width: 8px;
+}
+
+.color-planned {
+    stroke: #CBC0FE;
+}
+
+.color-published {
+    stroke: #BAE5C8;
+}
+
+.color-pending {
+    stroke: #FFDB9E;
+}
+
+.color-unpublished {
+    stroke: #FDBA8C;
+}
+
+.color-archived {
+    stroke: #CBCBCB;
+}
+
+.color-error {
+    stroke: #F1ABAB;
+}
+
+.status-list {
+    width: 500px;
+    display: grid;
+    grid-template-columns: 2fr 3fr;
+    list-style-type: disc;
+    list-style-position: inside;
+
+}

@@ -1,0 +1,32 @@
+<div class="dashboard">
+  <h2>État des fichiers</h2>
+  <p>Images, vidéos et campagnes</p>
+  <div class="chart-container">
+    <svg viewBox="0 0 42 42" class="donut-chart">
+      <circle class="donut-hole" cx="21" cy="21" r="15"></circle>
+        @for (status of statuses; track $index) {
+            <ng-container>
+              <circle
+                class="donut-segment"
+                [attr.class]="'donut-segment ' + status.color"
+                cx="21"
+                cy="21"
+                r="15"
+                [attr.stroke-dasharray]="getStrokeDasharray(status.value)"
+                [attr.stroke-dashoffset]="getStrokeDashoffset($index)"
+              ></circle>
+            </ng-container>
+        }
+    </svg>
+  </div>
+  <ul class="status-list">
+    @for (status of statuses; track $index) {
+        <li>
+            {{ status.name }} {{ status.value }}
+          <!-- <span [class]="status.color">
+            
+          </span> -->
+        </li>
+    }
+  </ul>
+</div>

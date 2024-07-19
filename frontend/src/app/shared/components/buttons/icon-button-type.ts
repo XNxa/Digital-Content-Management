@@ -18,4 +18,5 @@ export type ButtonIcon =
   | 'duplicate'
   | 'send'
   | 'link'
-  | 'check';
+  | 'check'
+  | 'search';

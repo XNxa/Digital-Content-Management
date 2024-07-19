@@ -1,0 +1,18 @@
+<div class="top">
+  <H1>Bonjour, Hassania</H1>
+  <app-icon-button color="white" icon="search"></app-icon-button>
+</div>
+
+<div class="newcard">
+  <app-small-card [valueFunction]="a" description="Nouvelles images" icon="image"></app-small-card>
+  <app-small-card [valueFunction]="a" description="Nouvelles vidéos" icon="video"></app-small-card>
+  <app-small-card [valueFunction]="a" description="Nouveaux pictos" icon="picto"></app-small-card>
+  <app-small-card [valueFunction]="a" description="Nouveaux documents" icon="doc"></app-small-card>
+</div>
+
+<div class="second-row">
+  <app-files-state></app-files-state>
+  <div class="placeholder">
+    <img src="/icons/home/placeholder.svg" alt="">
+  </div>
+</div>

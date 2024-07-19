@@ -1,0 +1,31 @@
+.top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.newcard {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+
+    app-small-card {
+        flex: 1;
+        max-width: 300px;
+    }
+}
+
+.placeholder {
+    background-color: #D7E3FC;
+    border-radius: 8px;
+    padding: 34px 100px;
+    width: fit-content;
+    height: fit-content;
+}
+
+.second-row {
+    display: flex;
+    gap: 18px;
+    margin-top: 16px;
+    
+}

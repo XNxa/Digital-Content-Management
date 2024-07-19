@@ -8,20 +8,22 @@ import { RoleListComponent } from './components/role-list/role-list.component';
 import { NewRoleComponent } from './components/new-role/new-role.component';
 import { ModifyRoleComponent } from './components/modify-role/modify-role.component';
 import { ModifyUserComponent } from './components/modify-user/modify-user.component';
+import { HomePageComponent } from './components/home-page/home-page.component';
 
 export const routes: Routes = [
   {
     path: '',
     component: HomeComponent,
+    canActivate: [AuthGuard],
     children: [
       {
         path: '',
-        redirectTo: 'accueil',
+        redirectTo: 'home',
         pathMatch: 'full',
       },
       {
         path: 'home',
-        component: ZoomButtonComponent, //TODO
+        component: HomePageComponent, //TODO
       },
       {
         path: 'roles',
