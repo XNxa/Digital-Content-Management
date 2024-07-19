@@ -1,7 +1,7 @@
 package com.dcm.backend.repositories.custom;
 
 import com.dcm.backend.dto.FileFilterDTO;
-import com.dcm.backend.entities.elastic.FileHeaderElastic;
+import com.dcm.backend.entities.FileHeaderElastic;
 import com.dcm.backend.enumeration.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;

@@ -2,7 +2,7 @@ package com.dcm.backend.utils.mappers;
 
 import com.dcm.backend.dto.FileHeaderDTO;
 import com.dcm.backend.entities.FileHeader;
-import com.dcm.backend.entities.elastic.FileHeaderElastic;
+import com.dcm.backend.entities.FileHeaderElastic;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

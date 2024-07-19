@@ -1,4 +1,4 @@
-package com.dcm.backend.entities.elastic;
+package com.dcm.backend.entities;
 
 import com.dcm.backend.enumeration.Status;
 import jakarta.persistence.*;

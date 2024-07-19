@@ -8,7 +8,7 @@ import com.dcm.backend.dto.FileHeaderDTO;
 import com.dcm.backend.dto.FilenameDTO;
 import com.dcm.backend.entities.FileHeader;
 import com.dcm.backend.entities.Keyword;
-import com.dcm.backend.entities.elastic.FileHeaderElastic;
+import com.dcm.backend.entities.FileHeaderElastic;
 import com.dcm.backend.exceptions.FileNotFoundException;
 import com.dcm.backend.exceptions.NoThumbnailException;
 import com.dcm.backend.repositories.FileElasticRepository;

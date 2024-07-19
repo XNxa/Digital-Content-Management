@@ -45,7 +45,10 @@ services:
           memory: 2048M
 
   elasticsearch:
-    image: elasticsearch:8.13.4
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: elasticsearch_with_phoenetic_search
     ports:
       - 9200:9200
       - 9300:9300
