@@ -4,8 +4,6 @@ import com.dcm.backend.config.TestSecurityConfig;
 import com.dcm.backend.dto.FileFilterDTO;
 import com.dcm.backend.dto.FileHeaderDTO;
 import com.dcm.backend.dto.FilenameDTO;
-import com.dcm.backend.entities.FileHeader;
-import com.dcm.backend.entities.Keyword;
 import com.dcm.backend.enumeration.Status;
 import com.dcm.backend.exceptions.FileNotFoundException;
 import com.dcm.backend.exceptions.NoThumbnailException;
@@ -20,8 +18,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithUserDetails;
@@ -118,7 +114,7 @@ public class FileApiTest {
                 .build();
         String jsonFilter = objectMapper.writeValueAsString(filter);
 
-        FileHeader fileHeader = FileHeader.builder()
+        FileHeaderDTO fileHeader = FileHeaderDTO.builder()
                 .folder("web/docs")
                 .filename("test")
                 .description("test description")
@@ -126,12 +122,12 @@ public class FileApiTest {
                 .status(Status.valueOf("PLANIFIE"))
                 .type("text/plain")
                 .size(10L)
-                .keywords(List.of(new Keyword("keyword1"), new Keyword("keyword2")))
+                .keywords(List.of("keyword1", "keyword2"))
                 .build();
 
-        Page<FileHeader> page = new PageImpl<>(List.of(fileHeader));
+        List<FileHeaderDTO> page = List.of(fileHeader);
 
-        when(fileService.getPage(any(FileFilterDTO.class))).thenReturn(page);
+        when(fileService.getFiles(any(FileFilterDTO.class))).thenReturn(page);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/file/files")
                         .contentType(MediaType.APPLICATION_JSON)

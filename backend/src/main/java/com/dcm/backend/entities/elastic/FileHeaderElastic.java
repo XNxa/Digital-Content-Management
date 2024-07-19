@@ -1,18 +1,21 @@
-package com.dcm.backend.entities;
+package com.dcm.backend.entities.elastic;
 
 import com.dcm.backend.enumeration.Status;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.time.LocalDate;
 import java.util.Collection;
 
-@Entity
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FileHeader {
+@Document(indexName = "fileheader-index")
+public class FileHeaderElastic {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,13 +33,13 @@ public class FileHeader {
 
     private Status status;
 
+    @Field(type = FieldType.Date, pattern = "yyyy-MM-dd")
     private LocalDate date;
 
     private String type;
 
     private Long size;
 
-    @ManyToMany
-    private Collection<Keyword> keywords;
-    
+    private Collection<String> keywords;
+
 }

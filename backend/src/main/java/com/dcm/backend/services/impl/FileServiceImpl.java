@@ -8,6 +8,7 @@ import com.dcm.backend.dto.FileHeaderDTO;
 import com.dcm.backend.dto.FilenameDTO;
 import com.dcm.backend.entities.FileHeader;
 import com.dcm.backend.entities.Keyword;
+import com.dcm.backend.entities.elastic.FileHeaderElastic;
 import com.dcm.backend.exceptions.FileNotFoundException;
 import com.dcm.backend.exceptions.NoThumbnailException;
 import com.dcm.backend.repositories.FileElasticRepository;
@@ -24,9 +25,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
@@ -92,26 +94,42 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public long count(FileFilterDTO filter) {
-        FileFilterSpecification spec =
-                new FileFilterSpecification(filter.getFolder(), filter.getFilename(),
-                        filter.getKeywords().stream().map(Keyword::new).toList(),
-                        filter.getStatus(), filter.getVersion(), filter.getType(),
-                        filter.getDateFrom(), filter.getDateTo());
+        if (ap.isUseElasticsearch()) {
+            return fileElasticRepository.count();
+        } else {
+            FileFilterSpecification spec =
+                    new FileFilterSpecification(filter.getFolder(), filter.getFilename(),
+                            filter.getKeywords().stream().map(Keyword::new).toList(),
+                            filter.getStatus(), filter.getVersion(), filter.getType(),
+                            filter.getDateFrom(), filter.getDateTo());
 
-        return fileRepository.count(spec);
+            return fileRepository.count(spec);
+        }
+
     }
 
     @Override
-    public Page<FileHeader> getPage(FileFilterDTO filter) {
+    public List<FileHeaderDTO> getFiles(FileFilterDTO filter) {
         Pageable pageRequest = PageRequest.of(filter.getPage(), filter.getSize());
+        if (ap.isUseElasticsearch()) {
 
-        FileFilterSpecification spec =
-                new FileFilterSpecification(filter.getFolder(), filter.getFilename(),
-                        filter.getKeywords().stream().map(Keyword::new).toList(),
-                        filter.getStatus(), filter.getVersion(), filter.getType(),
-                        filter.getDateFrom(), filter.getDateTo());
+            SearchHits<FileHeaderElastic> list =
+                    fileElasticRepository.findByFilter(filter, pageRequest);
 
-        return fileRepository.findAll(spec, pageRequest);
+            System.out.println(list.getMaxScore());
+
+            return list.stream().map(SearchHit::getContent).map(fileHeaderMapper::toDto).toList();
+        } else {
+            FileFilterSpecification spec =
+                    new FileFilterSpecification(filter.getFolder(), filter.getFilename(),
+                            filter.getKeywords().stream().map(Keyword::new).toList(),
+                            filter.getStatus(), filter.getVersion(), filter.getType(),
+                            filter.getDateFrom(), filter.getDateTo());
+            return fileRepository.findAll(spec, pageRequest)
+                    .stream()
+                    .map(fileHeaderMapper::toDto)
+                    .toList();
+        }
     }
 
     @Override
@@ -254,7 +272,7 @@ public class FileServiceImpl implements FileService {
 
         newFileHeader = fileRepository.save(newFileHeader);
         if (ap.isUseElasticsearch()) {
-            fileElasticRepository.save(newFileHeader);
+            fileElasticRepository.save(fileHeaderMapper.toElastic(newFileHeader));
         }
     }
 
@@ -286,7 +304,7 @@ public class FileServiceImpl implements FileService {
 
         fileHeader = fileRepository.save(fileHeader);
         if (ap.isUseElasticsearch()) {
-            fileElasticRepository.save(fileHeader);
+            fileElasticRepository.save(fileHeaderMapper.toElastic(fileHeader));
         }
         keywordService.deleteUnusedKeywords();
     }
@@ -422,7 +440,7 @@ public class FileServiceImpl implements FileService {
         f = fileRepository.save(f);
 
         if (ap.isUseElasticsearch()) {
-            fileElasticRepository.save(f);
+            fileElasticRepository.save(fileHeaderMapper.toElastic(f));
         }
     }
 

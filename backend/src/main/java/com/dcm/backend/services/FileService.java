@@ -3,12 +3,10 @@ package com.dcm.backend.services;
 import com.dcm.backend.dto.FileFilterDTO;
 import com.dcm.backend.dto.FileHeaderDTO;
 import com.dcm.backend.dto.FilenameDTO;
-import com.dcm.backend.entities.FileHeader;
 import com.dcm.backend.exceptions.FileNotFoundException;
 import com.dcm.backend.exceptions.NoThumbnailException;
 import io.minio.errors.*;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 
 import java.io.IOException;
@@ -45,7 +43,7 @@ public interface FileService {
      * @param filter Filter to apply
      * @return Page of files
      */
-    Page<FileHeader> getPage(FileFilterDTO filter);
+    List<FileHeaderDTO> getFiles(FileFilterDTO filter);
 
     /**
      * Deletes a file from the Minio server

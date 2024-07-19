@@ -157,7 +157,7 @@ public class FileServiceTest {
     }
 
     @Test
-    void testGetPage() {
+    void testGetFiles() {
         FileFilterDTO filter = FileFilterDTO.builder()
                 .page(0)
                 .size(10)
@@ -185,10 +185,10 @@ public class FileServiceTest {
         when(fileRepository.findAll(any(Specification.class),
                 any(Pageable.class))).thenReturn(page);
 
-        Page<FileHeader> result = fileService.getPage(filter);
+        List<FileHeaderDTO> result = fileService.getFiles(filter);
 
         assertNotNull(result);
-        assertEquals(10, result.getContent().size());
+        assertEquals(10, result.size());
     }
 
     @Test

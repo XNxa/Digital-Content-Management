@@ -3,7 +3,6 @@ package com.dcm.backend.api;
 import com.dcm.backend.dto.FileFilterDTO;
 import com.dcm.backend.dto.FileHeaderDTO;
 import com.dcm.backend.dto.FilenameDTO;
-import com.dcm.backend.entities.FileHeader;
 import com.dcm.backend.services.FileService;
 import com.dcm.backend.services.KeywordService;
 import com.dcm.backend.utils.mappers.FileHeaderMapper;
@@ -12,7 +11,6 @@ import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/file")
@@ -50,9 +47,7 @@ public class FileController {
 
     @PostMapping("/files")
     public List<FileHeaderDTO> getFiles(@RequestBody @Valid FileFilterDTO filter) {
-        Page<FileHeader> p = fs.getPage(filter);
-
-        return p.stream().map(fileHeaderMapper::toDto).collect(Collectors.toList());
+        return fs.getFiles(filter);
     }
 
     @SneakyThrows

@@ -4,9 +4,7 @@ import jakarta.ws.rs.ProcessingException;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
-import org.keycloak.representations.idm.ClientRepresentation;
-import org.keycloak.representations.idm.RealmRepresentation;
-import org.keycloak.representations.idm.RoleRepresentation;
+import org.keycloak.representations.idm.*;
 import org.keycloak.representations.userprofile.config.UPAttribute;
 import org.keycloak.representations.userprofile.config.UPAttributePermissions;
 import org.keycloak.representations.userprofile.config.UPConfig;
@@ -26,6 +24,11 @@ public class InitKeycloak {
     public static final String URL = "http://localhost:4200";
     public static final String URLstar = URL + "/*";
     private static final String REALMNAME = "dcm";
+
+    private static final String ADMIN_GROUP = "Admin";
+    private static final String ADMIN_USER = "admin@admin";
+    private static final String ADMIN_PASSWORD = "admin";
+
     private static final String[] PERMISSIONS =
             {"consult", "import", "modify", "duplicate", "download", "copy_link", "share",
                     "delete"};
@@ -83,6 +86,12 @@ public class InitKeycloak {
 
             createRoles(keycloak);
             System.out.println("Roles created successfully");
+
+            createAdminGroup(keycloak);
+            System.out.println("Admin group created successfully");
+
+            createAdminUser(keycloak);
+            System.out.println("Admin user created successfully");
 
             System.out.println("Keycloak initialization completed successfully");
 
@@ -214,6 +223,42 @@ public class InitKeycloak {
                             String.valueOf(position++))));
             keycloak.realm(REALMNAME).roles().create(r);
         }
+    }
+
+    private static void createAdminGroup(Keycloak keycloak) {
+        GroupRepresentation adminGroup = new GroupRepresentation();
+        adminGroup.setName(ADMIN_GROUP);
+        adminGroup.setAttributes(Map.of("description", List.of("Role d'administrateur"),
+                "state", List.of("true")));
+        keycloak.realm(REALMNAME).groups().add(adminGroup);
+        adminGroup = keycloak.realm(REALMNAME).groups().groups(ADMIN_GROUP, 0, 1,
+                false).get(0);
+
+        List<RoleRepresentation> roles = keycloak.realm(REALMNAME).roles().list();
+
+        keycloak.realm(REALMNAME)
+                .groups()
+                .group(adminGroup.getId())
+                .roles()
+                .realmLevel()
+                .add(roles);
+    }
+
+    private static void createAdminUser(Keycloak keycloak) {
+        UserRepresentation adminUser = new UserRepresentation();
+        adminUser.setUsername(ADMIN_USER);
+        adminUser.setEmail(ADMIN_USER);
+        adminUser.setFirstName("Admin");
+        adminUser.setLastName("Admin");
+        adminUser.setEnabled(true);
+        adminUser.setAttributes(Map.of("role", List.of(ADMIN_GROUP), "function",
+                List.of("admin"), "statut", List.of("active")));
+        adminUser.setGroups(List.of(ADMIN_GROUP));
+        CredentialRepresentation credential = new CredentialRepresentation();
+        credential.setType(CredentialRepresentation.PASSWORD);
+        credential.setValue(ADMIN_PASSWORD);
+        adminUser.setCredentials(List.of(credential));
+        keycloak.realm(REALMNAME).users().create(adminUser);
     }
 }
 
