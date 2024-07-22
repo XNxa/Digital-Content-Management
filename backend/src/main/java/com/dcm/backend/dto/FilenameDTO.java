@@ -2,7 +2,6 @@ package com.dcm.backend.dto;
 
 import com.dcm.backend.utils.ErrorMessages;
 import com.dcm.backend.validation.constraints.Folder;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;

@@ -16,6 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
@@ -100,6 +101,16 @@ public class FileController {
     @GetMapping("/types")
     public Collection<String> getTypes(@ModelAttribute @Valid FilenameDTO file) {
         return fs.getTypes(file.getFolder());
+    }
+
+    @GetMapping("/new-stats")
+    public Collection<Long> getNewStats() {
+        return fs.getNewStats(LocalDate.now().minusDays(7));
+    }
+
+    @GetMapping("/status-stats")
+    public Collection<Long> getStatusStats() {
+        return fs.getStatusStats();
     }
 }
 

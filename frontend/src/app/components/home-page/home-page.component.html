@@ -4,18 +4,13 @@
 </div>
 
 
-
-
-<div class="newcard">
-  <app-small-card [valueFunction]="a" description="Nouvelles images" icon="image"></app-small-card>
-  <app-small-card [valueFunction]="a" description="Nouvelles vidéos" icon="video"></app-small-card>
-  <app-small-card [valueFunction]="a" description="Nouveaux pictos" icon="picto"></app-small-card>
-  <app-small-card [valueFunction]="a" description="Nouveaux documents" icon="doc"></app-small-card>
-</div>
-
-<div class="second-row">
-  <app-files-state style="flex: 1;"></app-files-state>
-  <div class="placeholder">
+<div class="grid">
+  <app-small-card class="elem1" [value]="images" description="Nouvelles images" icon="image"></app-small-card>
+  <app-small-card class="elem2" [value]="videos" description="Nouvelles vidéos" icon="video"></app-small-card>
+  <app-small-card class="elem3" [value]="pictos" description="Nouveaux pictos" icon="picto"></app-small-card>
+  <app-small-card class="elem4" [value]="docs" description="Nouveaux documents" icon="doc"></app-small-card>
+  <app-files-state class="elem5"></app-files-state>
+  <div class="elem6">
     <img src="/icons/home/placeholder.svg" alt="">
   </div>
 </div>

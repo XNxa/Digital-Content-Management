@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Observable, ObservedValueOf, map } from 'rxjs';
 import { FileHeader, convertSizeToPrintable } from '../models/FileHeader';
 import { environment } from '../../environments/environment.development';
 import { Status } from '../enums/status';
@@ -146,9 +146,17 @@ export class FileApiService {
     });
   }
 
-  getTypes(folder: string) {
+  public getTypes(folder: string): Observable<string[]> {
     const params = new HttpParams().set('folder', folder).set('filename', '');
     return this.httpClient.get<string[]>(`${this.API}/types`, { params });
+  }
+
+  public getNewFiles(): Observable<number[]> {
+    return this.httpClient.get<number[]>(`${this.API}/new-stats`);
+  }
+
+  public getStatuses(): Observable<number[]> {
+    return this.httpClient.get<number[]>(`${this.API}/status-stats`);
   }
 }
 

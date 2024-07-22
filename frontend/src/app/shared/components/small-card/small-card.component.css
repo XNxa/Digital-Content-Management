@@ -13,13 +13,13 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-
+    
     h1 {
         font-size: 30px;
         margin: 0px;
     }
 
-    p {
+    span {
         font-size: 15px;
         font-weight: 500;
         margin: 0px;

@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
@@ -130,4 +131,19 @@ public interface FileService {
      * @return List of types
      */
     Collection<String> getTypes(String folder);
+
+    /**
+     * Get the number of new files since a certain date
+     *
+     * @return Number of new files for each subfolders (see com.dcm.backend.enumeration
+     * .Subfolders)
+     */
+    Collection<Long> getNewStats(LocalDate dateFrom);
+
+    /**
+     * Get the number of files with each status
+     *
+     * @return Number of files for each status (see com.dcm.backend.enumeration.Status)
+     */
+    Collection<Long> getStatusStats();
 }

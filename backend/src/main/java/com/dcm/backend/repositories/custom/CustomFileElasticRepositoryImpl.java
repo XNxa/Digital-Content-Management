@@ -28,7 +28,6 @@ public class CustomFileElasticRepositoryImpl implements CustomFileElasticReposit
     @Override
     public SearchHits<FileHeaderElastic> findByFilter(FileFilterDTO filter, Pageable pageable) {
         Query query = buildFilterQuery(filter).setPageable(pageable);
-        System.out.println(query.getFields());
         return elasticsearch.search(query, FileHeaderElastic.class);
     }
 

@@ -7,8 +7,11 @@ import com.dcm.backend.dto.FileFilterDTO;
 import com.dcm.backend.dto.FileHeaderDTO;
 import com.dcm.backend.dto.FilenameDTO;
 import com.dcm.backend.entities.FileHeader;
-import com.dcm.backend.entities.Keyword;
 import com.dcm.backend.entities.FileHeaderElastic;
+import com.dcm.backend.entities.Keyword;
+import com.dcm.backend.enumeration.Folders;
+import com.dcm.backend.enumeration.Status;
+import com.dcm.backend.enumeration.Subfolders;
 import com.dcm.backend.exceptions.FileNotFoundException;
 import com.dcm.backend.exceptions.NoThumbnailException;
 import com.dcm.backend.repositories.FileElasticRepository;
@@ -109,6 +112,33 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
+    public Collection<Long> getStatusStats() {
+        Collection<Long> result = new ArrayList<>();
+        for (Status status :Status.values()) {
+            result.add(fileRepository.countByStatus(status));
+        }
+        return result;
+    }
+
+    @Override
+    public Collection<Long> getNewStats(LocalDate dateFrom) {
+        Collection<Long> result = new ArrayList<>();
+        for (String subfolder : Arrays.stream(Subfolders.values())
+                .map(Enum::name)
+                .toList()) {
+            long i = 0;
+            for (String folder : Arrays.stream(Folders.values())
+                    .map(Enum::name)
+                    .toList()) {
+                i += fileRepository.countByDateAfterAndFolder(dateFrom,
+                        folder + "/" + subfolder);
+            }
+            result.add(i);
+        }
+        return result;
+    }
+
+    @Override
     public List<FileHeaderDTO> getFiles(FileFilterDTO filter) {
         Pageable pageRequest = PageRequest.of(filter.getPage(), filter.getSize());
         if (ap.isUseElasticsearch()) {
@@ -116,9 +146,10 @@ public class FileServiceImpl implements FileService {
             SearchHits<FileHeaderElastic> list =
                     fileElasticRepository.findByFilter(filter, pageRequest);
 
-            System.out.println(list.getMaxScore());
-
-            return list.stream().map(SearchHit::getContent).map(fileHeaderMapper::toDto).toList();
+            return list.stream()
+                    .map(SearchHit::getContent)
+                    .map(fileHeaderMapper::toDto)
+                    .toList();
         } else {
             FileFilterSpecification spec =
                     new FileFilterSpecification(filter.getFolder(), filter.getFilename(),
