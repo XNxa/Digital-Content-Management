@@ -25,7 +25,7 @@
 
 .second-row {
     display: flex;
+    flex-wrap: wrap;
     gap: 18px;
     margin-top: 16px;
-    
 }

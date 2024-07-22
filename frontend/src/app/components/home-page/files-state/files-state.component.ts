@@ -9,12 +9,12 @@ import { Component } from '@angular/core';
 })
 export class FilesStateComponent {
   statuses = [
-    { name: 'Planifié', value: 40, color: 'color-planned' },
+    { name: 'Planifié', value: 10, color: 'color-planned' },
     { name: 'Publié', value: 20, color: 'color-published' },
     { name: 'En attente', value: 20, color: 'color-pending' },
     { name: 'Non publié', value: 40, color: 'color-unpublished' },
     { name: 'Archivé', value: 40, color: 'color-archived' },
-    { name: 'Erreur de publication', value: 60, color: 'color-error' },
+    { name: 'Erreur de publication', value: 12, color: 'color-error' },
   ];
 
   total = this.statuses.reduce((sum, status) => sum + status.value, 0);
@@ -29,7 +29,7 @@ export class FilesStateComponent {
   }
 
   getStrokeDashoffset(index: number): number {
-    let offset = 0; // Start offset
+    let offset = 29; // Arbitrary value to make the first status start at the top
     for (let i = 0; i < index; i++) {
       offset -= (this.statuses[i].value / this.total) * 100;
     }

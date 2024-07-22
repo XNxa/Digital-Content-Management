@@ -8,11 +8,14 @@
 
 h2 {
     font-size: 25px;
-    margin-bottom: 0;
+    margin: 0px;
+    margin-left: 10px;
 }
 
 p {
     font-size: 14px;
+    margin-top: 5px;
+    margin-left: 10px;
     color: #8D9CAD;
 }
 
@@ -61,10 +64,55 @@ p {
 }
 
 .status-list {
-    width: 500px;
     display: grid;
+    gap: 10px;
+    column-gap: 30px;
     grid-template-columns: 2fr 3fr;
     list-style-type: disc;
     list-style-position: inside;
+    padding: 0px;
+    color: var(--text-color);
+}
 
+.item {
+    display: flex;
+    align-items: center;
+}
+
+.itemdot {
+    width: 10px;
+    height: 10px;
+    margin-right: 5px;
+}
+
+.item-text {
+    display: flex;
+    width: 100%;
+    .spacer {
+        flex-grow: 1;
+    }
+}
+
+.color-planned-dot {
+    fill: #CBC0FE;
+}
+
+.color-published-dot {
+    fill: #BAE5C8;
+}
+
+.color-pending-dot {
+    fill: #FFDB9E;
+}
+
+.color-unpublished-dot {
+    fill: #FDBA8C;
+}
+
+.color-archived-dot {
+    fill: #CBCBCB;
+}
+
+.color-error-dot {
+    fill: #F1ABAB;
 }

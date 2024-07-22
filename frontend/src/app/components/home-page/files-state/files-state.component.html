@@ -21,11 +21,15 @@
   </div>
   <ul class="status-list">
     @for (status of statuses; track $index) {
-        <li>
-            {{ status.name }} {{ status.value }}
-          <!-- <span [class]="status.color">
-            
-          </span> -->
+        <li class="item">
+          <svg class="itemdot" viewBox="0 0 11 10">
+            <circle cx="5" cy="5" r="5" [class]="status.color+'-dot'"></circle>
+          </svg>
+          <span class="item-text">
+            <span>{{ status.name }}</span>
+            <span class="spacer"></span>
+            <span>{{ status.value }}</span>
+          </span>
         </li>
     }
   </ul>
