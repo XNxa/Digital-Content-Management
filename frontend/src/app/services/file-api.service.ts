@@ -158,6 +158,11 @@ export class FileApiService {
   public getStatuses(): Observable<number[]> {
     return this.httpClient.get<number[]>(`${this.API}/status-stats`);
   }
+
+  public search(query: string): Observable<FileHeader[]> {
+    const params = new HttpParams().set('query', query);
+    return this.httpClient.get<FileHeader[]>(`${this.API}/search`, { params });
+  }
 }
 
 function dateToString(date: Date | undefined): string | undefined {

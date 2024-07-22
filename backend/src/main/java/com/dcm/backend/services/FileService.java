@@ -146,4 +146,12 @@ public interface FileService {
      * @return Number of files for each status (see com.dcm.backend.enumeration.Status)
      */
     Collection<Long> getStatusStats();
+
+    /**
+     * Searches for files
+     *
+     * @param query Query to search
+     * @return List of files
+     */
+    List<FileHeaderDTO> search(String query);
 }

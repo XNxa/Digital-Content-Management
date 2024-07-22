@@ -112,5 +112,10 @@ public class FileController {
     public Collection<Long> getStatusStats() {
         return fs.getStatusStats();
     }
+
+    @GetMapping("/search")
+    public List<FileHeaderDTO> search(@RequestParam String query) {
+        return fs.search(query);
+    }
 }
 

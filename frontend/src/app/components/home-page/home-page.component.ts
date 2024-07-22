@@ -15,6 +15,8 @@ import { SearchBarComponent } from "../../shared/components/search-bar/search-ba
 export class HomePageComponent {
   constructor(private api: FileApiService) {}
   
+  search = (value: string) => this.api.search(value);
+
   images!: number;
   videos!: number;
   pictos!: number;

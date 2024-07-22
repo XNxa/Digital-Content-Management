@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { FileApiService } from '../../../services/file-api.service';
 
 @Component({
   selector: 'app-search-bar',
@@ -8,14 +10,21 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './search-bar.component.html',
   styleUrl: './search-bar.component.css',
 })
-export class SearchBarComponent {
+export class SearchBarComponent<T> {
+  @Input() searchMethod!: (value: string) => Observable<T>;
+
   open = false;
   hover = false;
 
   value: string = '';
 
   updateSearch() {
-    console.log('searching for', this.value);
+    if (this.value) {
+      console.log('Searching for:', this.value);
+      this.searchMethod(this.value).subscribe((r: T) =>
+        console.log('Search result:', r),
+      );
+    }
   }
 
   setHover(value: boolean) {

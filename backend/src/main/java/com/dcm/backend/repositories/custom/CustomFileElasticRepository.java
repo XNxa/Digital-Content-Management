@@ -11,4 +11,6 @@ public interface CustomFileElasticRepository {
 
     SearchHits<FileHeaderElastic> findByFilter(FileFilterDTO filter, Pageable pageable);
 
+    SearchHits<FileHeaderElastic> searchByQuery(String query, Pageable pageable);
+
 }

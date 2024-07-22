@@ -112,9 +112,24 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
+    public List<FileHeaderDTO> search(String query) {
+        Pageable pageRequest = PageRequest.of(0, 10);
+        if (ap.isUseElasticsearch()) {
+            SearchHits<FileHeaderElastic> list =
+                    fileElasticRepository.searchByQuery(query, pageRequest);
+            return list.stream()
+                    .map(SearchHit::getContent)
+                    .map(fileHeaderMapper::toDto)
+                    .toList();
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
     public Collection<Long> getStatusStats() {
         Collection<Long> result = new ArrayList<>();
-        for (Status status :Status.values()) {
+        for (Status status : Status.values()) {
             result.add(fileRepository.countByStatus(status));
         }
         return result;
