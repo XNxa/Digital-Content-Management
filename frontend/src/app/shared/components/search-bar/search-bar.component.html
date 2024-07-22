@@ -1,0 +1,6 @@
+<div class="searchBox" [class]="hover ? 'searchBox-open' : ''" (mouseenter)="setHover(true)" (mouseleave)="setHover(false)">
+    <input [(ngModel)]="value" class="searchInput" type="text" (ngModelChange)="updateSearch()" (focus)="enterFocus()" (blur)="exitFocus()"/>
+    <button class="searchButton" (click)="toggleFocus()">
+        <img src="icons/blue/search.svg" alt="">
+    </button>
+  </div>

@@ -3,17 +3,18 @@ import { IconButtonComponent } from '../../shared/components/buttons/icon-button
 import { SmallCardComponent } from '../../shared/components/small-card/small-card.component';
 import { FilesStateComponent } from './files-state/files-state.component';
 import { FileApiService } from '../../services/file-api.service';
+import { SearchBarComponent } from "../../shared/components/search-bar/search-bar.component";
 
 @Component({
   selector: 'app-home-page',
   standalone: true,
-  imports: [IconButtonComponent, SmallCardComponent, FilesStateComponent],
+  imports: [IconButtonComponent, SmallCardComponent, FilesStateComponent, SearchBarComponent],
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.css',
 })
 export class HomePageComponent {
   constructor(private api: FileApiService) {}
-
+  
   images!: number;
   videos!: number;
   pictos!: number;

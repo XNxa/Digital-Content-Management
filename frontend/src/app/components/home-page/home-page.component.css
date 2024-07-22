@@ -67,4 +67,5 @@
     align-items: center;
     min-width: 269px;
     min-height: 221px;
+    user-select: none;
 }
