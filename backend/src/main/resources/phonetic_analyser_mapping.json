@@ -1,0 +1,24 @@
+{
+  "properties": {
+    "filename": {
+      "type": "text",
+      "analyzer": "phonetic_analyzer"
+    },
+    "keywords": {
+      "type": "text",
+      "analyzer": "phonetic_analyzer"
+    },
+    "description": {
+      "type": "text",
+      "analyzer": "phonetic_analyzer"
+    },
+    "folder": {
+      "type": "text",
+      "analyzer": "phonetic_analyzer"
+    },
+    "status": {
+      "type": "text",
+      "analyzer": "phonetic_analyzer"
+    }
+  }
+}

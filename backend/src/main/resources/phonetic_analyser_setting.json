@@ -1,0 +1,26 @@
+{
+  "analysis": {
+    "filter": {
+      "phonetic_filter": {
+        "type": "phonetic",
+        "encoder": "beider_morse",
+        "languageset": [
+          "french",
+          "english"
+        ],
+        "name_type": "generic",
+        "rule_type": "exact"
+      }
+    },
+    "analyzer": {
+      "phonetic_analyzer": {
+        "type": "custom",
+        "tokenizer": "standard",
+        "filter": [
+          "lowercase",
+          "phonetic_filter"
+        ]
+      }
+    }
+  }
+}

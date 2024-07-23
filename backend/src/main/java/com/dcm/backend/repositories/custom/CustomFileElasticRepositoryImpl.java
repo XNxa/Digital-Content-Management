@@ -36,19 +36,23 @@ public class CustomFileElasticRepositoryImpl implements CustomFileElasticReposit
     @Override
     public SearchHits<FileHeaderElastic> searchByQuery(String query, Pageable pageable) {
         NativeQuery nativeQuery = NativeQuery.builder()
-                .withQuery(q -> q.bool(b -> b
-                        .should(sh -> sh.multiMatch(m -> m.fields("filename^2",
-                                        "keywords", "folder",
-                                        "type", "version", "description", "status")
-                                .query(query)
-                                .type(TextQueryType.PhrasePrefix)))
-                        .should(sh -> sh.multiMatch(m -> m.fields("filename^2",
-                                        "keywords", "folder",
-                                        "type", "version", "description", "status")
-                                .query(query)
-                                .fuzziness("AUTO")
-                                .type(TextQueryType.BestFields)))
-                ))
+                .withQuery(q -> q.bool(b -> b.should(sh -> sh.multiMatch(
+                                m -> m.fields("filename^2", "keywords", "folder", "type",
+                                                "version", "description", "status")
+                                        .query(query)
+                                        .type(TextQueryType.PhrasePrefix)))
+                        .should(sh -> sh.multiMatch(
+                                m -> m.fields("filename^2", "keywords", "folder", "type",
+                                                "version", "description", "status")
+                                        .query(query)
+                                        .fuzziness("AUTO")
+                                        .type(TextQueryType.BestFields)))
+                        .should(sh -> sh.multiMatch(
+                                m -> m.fields("filename.phonetic", "keywords.phonetic",
+                                                "folder.phonetic", "description.phonetic",
+                                                "status.phonetic")
+                                        .query(query)
+                                        .type(TextQueryType.BestFields)))))
                 .build();
 
         return elasticsearch.search(nativeQuery, FileHeaderElastic.class);

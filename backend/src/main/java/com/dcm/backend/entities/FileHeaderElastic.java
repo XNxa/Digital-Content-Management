@@ -3,9 +3,7 @@ package com.dcm.backend.entities;
 import com.dcm.backend.enumeration.Status;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.*;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -15,6 +13,8 @@ import java.util.Collection;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(indexName = "fileheader-index")
+@Mapping(mappingPath = "phonetic_analyser_mapping.json")
+@Setting(settingPath = "phonetic_analyser_setting.json")
 public class FileHeaderElastic {
 
     @Id
