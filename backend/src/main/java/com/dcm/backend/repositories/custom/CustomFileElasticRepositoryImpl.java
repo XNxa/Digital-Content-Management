@@ -52,6 +52,12 @@ public class CustomFileElasticRepositoryImpl implements CustomFileElasticReposit
                                                 "folder.phonetic", "description.phonetic",
                                                 "status.phonetic")
                                         .query(query)
+                                        .type(TextQueryType.PhrasePrefix)))
+                        .should(sh -> sh.multiMatch(
+                                m -> m.fields("filename.phonetic", "keywords.phonetic",
+                                                "folder.phonetic", "description.phonetic",
+                                                "status.phonetic")
+                                        .query(query)
                                         .type(TextQueryType.BestFields)))))
                 .build();
 

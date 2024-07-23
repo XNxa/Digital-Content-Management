@@ -4,22 +4,21 @@
       "phonetic_filter": {
         "type": "phonetic",
         "encoder": "beider_morse",
-        "languageset": [
-          "french",
-          "english"
-        ],
+        "languageset": ["french", "english"],
         "name_type": "generic",
-        "rule_type": "exact"
+        "rule_type": "approx"
       }
     },
     "analyzer": {
       "phonetic_analyzer": {
         "type": "custom",
         "tokenizer": "standard",
-        "filter": [
-          "lowercase",
-          "phonetic_filter"
-        ]
+        "filter": ["lowercase", "phonetic_filter"]
+      },
+      "standard_analyzer": {
+        "type": "custom",
+        "tokenizer": "standard",
+        "filter": ["lowercase"]
       }
     }
   }
