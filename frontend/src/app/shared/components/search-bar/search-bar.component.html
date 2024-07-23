@@ -1,6 +1,40 @@
-<div class="searchBox" [class]="hover ? 'searchBox-open' : ''" (mouseenter)="setHover(true)" (mouseleave)="setHover(false)">
-    <input [(ngModel)]="value" class="searchInput" type="text" (ngModelChange)="updateSearch()" (focus)="enterFocus()" (blur)="exitFocus()"/>
-    <button class="searchButton" (click)="toggleFocus()">
-        <img src="icons/blue/search.svg" alt="">
-    </button>
+<div
+  class="searchBox"
+  [class]="hover ? 'searchBox-open' : ''"
+  (mouseenter)="setHover(true)"
+  (mouseleave)="setHover(false)"
+>
+  <input
+    [(ngModel)]="value"
+    class="searchInput"
+    type="text"
+    (ngModelChange)="updateSearch()"
+    (focus)="enterFocus()"
+    (blur)="exitFocus()"
+  />
+  <button class="searchButton" (click)="toggleFocus()">
+    <img src="icons/blue/search.svg" />
+  </button>
+</div>
+
+@if (value.length > 0) {
+  <div class="positionSearchResult">
+    <div class="searchResults">
+      @for (item of this.results; track $index) {
+        <div class="resultItem">
+          @if (item.thumbnail) {
+            <img [src]="item.thumbnail" />
+          } @else {
+            <img [src]="getIcon(item.type)" />
+          }
+          <div class="resultText">
+            <span class="filename">{{ item.filename }}</span>
+            <span class="filedata"
+              >{{ toExtentsion(item.type) }} - {{ item.printableSize }}</span
+            >
+          </div>
+        </div>
+      }
+    </div>
   </div>
+}

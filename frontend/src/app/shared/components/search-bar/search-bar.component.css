@@ -28,6 +28,7 @@
     background: white;
     border: none;
     cursor: pointer;
+    outline: none;
 }
 
 .searchInput {
@@ -39,4 +40,40 @@
     transition: width 0.4s, padding 0.4s;
     width: 0;
     padding: 0;
+}
+
+.positionSearchResult {
+    position: relative;
+    top: 8px;
+}
+
+.searchResults {
+    position: absolute;
+    background-color: #FFF;
+    border-radius: 4px;
+    box-shadow: 0px 24px 48px -8px #18181C1C;
+    box-shadow: 0px 48px 64px -36px #18181C21;
+    width: 100%;
+}
+
+.resultItem {
+    display: flex;
+    padding: 10px;
+    gap: 10px;
+}
+
+.resultText {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1px;
+}
+
+.filename {
+    color: var(--text-color);
+}
+
+.filedata {
+    font-size: small;
+    color: #8D9CAD;
 }

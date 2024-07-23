@@ -161,7 +161,14 @@ export class FileApiService {
 
   public search(query: string): Observable<FileHeader[]> {
     const params = new HttpParams().set('query', query);
-    return this.httpClient.get<FileHeader[]>(`${this.API}/search`, { params });
+    return this.httpClient.get<FileHeader[]>(`${this.API}/search`, { params }).pipe(
+      map((files: FileHeader[]) => {
+        return files.map((file: FileHeader) => {
+          file.printableSize = convertSizeToPrintable(file.size);
+          return file;
+        });
+      }),
+    );
   }
 }
 

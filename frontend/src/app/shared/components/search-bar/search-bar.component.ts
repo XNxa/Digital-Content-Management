@@ -1,7 +1,15 @@
 import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { FileApiService } from '../../../services/file-api.service';
+import { MimeTypes } from '../../../utils/mime-types';
+import { getIconFor } from '../../../utils/file-icons';
+
+interface RequiredFields {
+  filename: string,
+  type: string,
+  printableSize: string,
+  thumbnail: string | undefined,
+}
 
 @Component({
   selector: 'app-search-bar',
@@ -10,19 +18,23 @@ import { FileApiService } from '../../../services/file-api.service';
   templateUrl: './search-bar.component.html',
   styleUrl: './search-bar.component.css',
 })
-export class SearchBarComponent<T> {
-  @Input() searchMethod!: (value: string) => Observable<T>;
+export class SearchBarComponent<T extends RequiredFields> {
+  @Input() searchMethod!: (value: string) => Observable<T[]>;
 
   open = false;
   hover = false;
 
   value: string = '';
 
+  results: T[] = [];
+
+  toExtentsion = (type: string) => (MimeTypes.extension(type) || '').toUpperCase();
+  getIcon = getIconFor
+
   updateSearch() {
     if (this.value) {
-      console.log('Searching for:', this.value);
-      this.searchMethod(this.value).subscribe((r: T) =>
-        console.log('Search result:', r),
+      this.searchMethod(this.value).subscribe((r: T[]) =>
+        this.results = r
       );
     }
   }
