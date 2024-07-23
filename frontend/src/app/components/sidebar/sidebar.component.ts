@@ -3,6 +3,9 @@ import { CdkTreeModule, FlatTreeControl } from '@angular/cdk/tree';
 import { UserCardFooterComponent } from '../../shared/components/user-card-footer/user-card-footer.component';
 import { TREE, Node, getRouteForNode } from '../../models/Tabs';
 import { Router } from '@angular/router';
+import { KeycloakService } from 'keycloak-angular';
+import { UserApiService } from '../../services/user-api.service';
+import { User, UserFilter } from '../../models/User';
 
 @Component({
   selector: 'app-sidebar',
@@ -25,7 +28,26 @@ export class SidebarComponent {
     return node;
   });
 
-  constructor(private router: Router) {}
+  currentUser!: User;
+
+  constructor(private router: Router, private auth: KeycloakService, private userapi: UserApiService) {}
+
+  ngOnInit() {
+    const filter : UserFilter = {
+      email: this.auth.getUsername(),
+      firstname: undefined,
+      lastname: undefined,
+      function: undefined,
+      role: undefined,
+      statut: undefined,
+      password: undefined
+    };
+    this.userapi.getUsers(0, 1, filter).subscribe((user) => {
+      if (user.length === 1) {
+        this.currentUser = user[0];
+      }
+    });
+  }
 
   hasChild = (_: number, node: Node) => node.expandable;
 
@@ -94,5 +116,14 @@ export class SidebarComponent {
     } else {
       if (!node.expandable) this.router.navigate([getRouteForNode(node)]);
     }
+  }
+
+  openProfile() {
+    this.router.navigate(['profile', this.currentUser.id]);
+    this.dataSource.forEach((n) => (n.isSelected = false));
+  }
+
+  signout() {
+    this.auth.logout();
   }
 }

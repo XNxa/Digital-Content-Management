@@ -9,6 +9,10 @@
     padding: 25px 15px;
 }
 
+img {
+    user-select: none;
+}
+
 .text {
     display: flex;
     flex-direction: column;

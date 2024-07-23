@@ -1,4 +1,10 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  HostListener,
+  Input,
+  Output,
+} from '@angular/core';
 
 @Component({
   selector: 'app-user-card-footer',
@@ -12,6 +18,20 @@ export class UserCardFooterComponent {
   @Input() name = 'Hassania Mouachi';
   @Input() pp = '';
   @Output() openProfile = new EventEmitter<boolean>();
+  @Output() signout = new EventEmitter<boolean>();
 
-  profileOpen = false;
+  menuOpen = false;
+
+  open() {
+    this.menuOpen = !this.menuOpen;
+  }
+
+  signoutClick() {
+    this.menuOpen = false;
+    this.signout.emit(true);
+  }
+  profileClick() {
+    this.menuOpen = false;
+    this.openProfile.emit(true);
+  }
 }

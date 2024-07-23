@@ -4,6 +4,9 @@ import { SmallCardComponent } from '../../shared/components/small-card/small-car
 import { FilesStateComponent } from './files-state/files-state.component';
 import { FileApiService } from '../../services/file-api.service';
 import { SearchBarComponent } from "../../shared/components/search-bar/search-bar.component";
+import { User, UserFilter } from '../../models/User';
+import { KeycloakService } from 'keycloak-angular';
+import { UserApiService } from '../../services/user-api.service';
 
 @Component({
   selector: 'app-home-page',
@@ -13,7 +16,8 @@ import { SearchBarComponent } from "../../shared/components/search-bar/search-ba
   styleUrl: './home-page.component.css',
 })
 export class HomePageComponent {
-  constructor(private api: FileApiService) {}
+  currentUser!: User;
+  constructor(private api: FileApiService, private auth: KeycloakService, private userapi: UserApiService) {}
   
   search = (value: string) => this.api.search(value);
 
@@ -28,6 +32,20 @@ export class HomePageComponent {
       this.videos = values[1];
       this.pictos = values[2];
       this.docs = values[3];
+    });
+    const filter : UserFilter = {
+      email: this.auth.getUsername(),
+      firstname: undefined,
+      lastname: undefined,
+      function: undefined,
+      role: undefined,
+      statut: undefined,
+      password: undefined
+    };
+    this.userapi.getUsers(0, 1, filter).subscribe((user) => {
+      if (user.length === 1) {
+        this.currentUser = user[0];
+      }
     });
   }
 }

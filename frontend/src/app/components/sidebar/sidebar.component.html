@@ -40,6 +40,6 @@
   </div>
 
   <div class="usercard">
-    <app-user-card-footer></app-user-card-footer>
+    <app-user-card-footer [name]="currentUser.firstname + ' ' + currentUser.lastname" (openProfile)="openProfile()" (signout)="signout()"></app-user-card-footer>
   </div>
 </div>

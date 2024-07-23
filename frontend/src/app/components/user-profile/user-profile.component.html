@@ -1,0 +1,112 @@
+<div class="header">
+  @if (mode === "consult") {
+    <h1>Profil de l'utilisateur</h1>
+  } @else {
+    <h1>Modifier le profil de l'utilisateur</h1>
+  }
+
+  <div class="actions">
+    @if (mode === "consult") {
+      <app-icon-text-button
+        [permission]="['user_modify']"
+        title="Modifier le profil"
+        icon="modify"
+        (click)="modify()"
+      ></app-icon-text-button>
+    } @else {
+      <app-icon-text-button
+        color="white"
+        title="Annuler"
+        icon="close"
+        (click)="cancel()"
+      ></app-icon-text-button>
+      <app-icon-text-button
+        title="Enregistrer"
+        icon="check"
+        (click)="save()"
+      ></app-icon-text-button>
+    }
+  </div>
+</div>
+
+<div class="forms">
+  <div class="informations">
+    <h3>Profil</h3>
+    <div class="form">
+      <div class="form-col">
+        <app-input
+          label="Nom"
+          placeholder="Saisissez le nom du profil"
+          [(value)]="lastname"
+          [disabled]="mode === 'consult'"
+        ></app-input>
+        <app-input
+          label="Fonction"
+          placeholder="Saisissez la fonction du profil"
+          [(value)]="function"
+          [disabled]="mode === 'consult'"
+        ></app-input>
+      </div>
+      <div class="form-col">
+        <app-input
+          label="Prénom"
+          placeholder="Saisissez le prénom du profil"
+          [(value)]="firstname"
+          [disabled]="mode === 'consult'"
+        ></app-input>
+        <app-input
+          label="Email"
+          placeholder="Saisissez l'email du profil"
+          [(value)]="email"
+          [disabled]="true"
+        ></app-input>
+      </div>
+    </div>
+  </div>
+
+  <div class="informations">
+    <h3>Rôle</h3>
+    <div class="form">
+      <div class="form-col">
+        <app-select
+          label="Nom du rôle"
+          [options]="roleOptions"
+          placeholder="Saisissez le nom du rôle"
+          [(value)]="role"
+          [disabled]="true"
+        ></app-select>
+      </div>
+      <div class="form-col">
+        <app-toggle-button
+          label="État"
+          [(checked)]="state"
+          [disabled]="mode === 'consult'"
+        ></app-toggle-button>
+      </div>
+    </div>
+  </div>
+
+  @if (mode === "modify") {
+    <div class="informations">
+      <h3>Nouveau mot de passe</h3>
+      <div class="form">
+        <div class="form-col">
+          <app-input
+            label="Mot de passe"
+            type="password"
+            placeholder="Saisissez le mot de passe"
+            [(value)]="password"
+          ></app-input>
+        </div>
+        <div class="form-col">
+          <app-input
+            label="Confirmation du mot de passe"
+            type="password"
+            placeholder="Confirmez le mot de passe"
+            [(value)]="passwordConfirmation"
+          ></app-input>
+        </div>
+      </div>
+    </div>
+  }
+</div>

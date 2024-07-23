@@ -1,11 +1,7 @@
 <div class="card">
   <img class="icon" [src]="'icons/home/' + icon + '.svg'" />
   <div class="text">
-    @defer (on idle) {
-      <h1>{{ value }}</h1>
-    } @placeholder {
-      <h1>0</h1>
-    }
+    <h1>{{ value }}</h1>
     <span>{{ description }}</span>
   </div>
 </div>

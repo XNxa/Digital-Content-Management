@@ -1,7 +1,7 @@
 .card {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-self: center;
   gap: 10px;
   height: 56px;
 }
@@ -25,4 +25,47 @@
 
 .name {
   color: var(--text-color);
+}
+
+.wrapper-user-card-footer {
+  position: relative;
+}
+
+.menu-user-card-footer {
+  position: absolute;
+  bottom: 0;
+  /* Adjusted to appear below the card */
+  right: 0;
+  border-radius: 5px;
+  background-color: rgb(255, 255, 255);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  padding-right: 10px;
+  overflow: hidden;
+}
+
+.user-card-footer {
+  display: grid;
+  padding: 10px;
+  user-select: none;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  width: 100%;
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.item:hover {
+  background-color: #D7E3FC;
+}
+
+
+.dropdown-arrow {
+  margin-left: auto;
 }

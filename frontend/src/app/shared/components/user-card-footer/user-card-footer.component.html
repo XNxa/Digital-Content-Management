@@ -1,13 +1,31 @@
-<div class="card">
-  @if (pp === "") {
-    <span class="default-pp">{{ name.at(0)?.toUpperCase() }}</span>
-  } @else {
-    <img class="pp" src="{{ pp }}" />
+<div class="user-card-footer">
+  @if (menuOpen) {
+    <div class="wrapper-user-card-footer">
+      <div class="menu-user-card-footer">
+        <div class="item" (click)="profileClick()">
+          <img src="icons/home/user.svg" />
+          Profil
+        </div>
+        <div class="item" (click)="signoutClick()">
+          <img src="icons/home/sign_out.svg" />
+          Se déconnecter
+        </div>
+      </div>
+    </div>
   }
-  <span class="name">
-    {{ name }}
-  </span>
-  <img
-    [src]="'icons/' + (profileOpen ? 'chevron_up.svg' : 'chevron_right.svg')"
-  />
+
+  <div class="card" (click)="open()">
+    @if (pp === "") {
+      <span class="default-pp">{{ name.at(0)?.toUpperCase() }}</span>
+    } @else {
+      <img class="pp" src="{{ pp }}" />
+    }
+    <span class="name">
+      {{ name }}
+    </span>
+    <img
+      [src]="'icons/' + (menuOpen ? 'chevron_up.svg' : 'chevron_down.svg')"
+      class="dropdown-arrow"
+    />
+  </div>
 </div>
