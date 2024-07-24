@@ -6,4 +6,5 @@ export const environment = {
     realm: 'dcm',
     clientId: 'frontend-dcm',
   },
+  elasticsearch_enabled: true,
 };

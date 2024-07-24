@@ -7,6 +7,7 @@ import { SearchBarComponent } from "../../shared/components/search-bar/search-ba
 import { User, UserFilter } from '../../models/User';
 import { KeycloakService } from 'keycloak-angular';
 import { UserApiService } from '../../services/user-api.service';
+import { environment } from '../../../environments/environment.development';
 
 @Component({
   selector: 'app-home-page',
@@ -19,6 +20,9 @@ export class HomePageComponent {
   currentUser!: User;
   constructor(private api: FileApiService, private auth: KeycloakService, private userapi: UserApiService) {}
   
+  enable_search = environment.elasticsearch_enabled;
+
+
   search = (value: string) => this.api.search(value);
 
   images!: number;
