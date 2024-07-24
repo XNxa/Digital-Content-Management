@@ -318,7 +318,13 @@ public class FileServiceImpl implements FileService {
 
         newFileHeader = fileRepository.save(newFileHeader);
         if (ap.isUseElasticsearch()) {
-            fileElasticRepository.save(fileHeaderMapper.toElastic(newFileHeader));
+            FileHeaderElastic fileHeaderElastic = fileHeaderMapper.toElastic(newFileHeader);
+            if (fileHeader.getThumbnailName() != null) {
+                FileHeaderElastic f =
+                        fileElasticRepository.findById(fileHeader.getId()).get();
+                fileHeaderElastic.setThumbnail(f.getThumbnail());
+            }
+            fileElasticRepository.save(fileHeaderElastic);
         }
     }
 
@@ -350,7 +356,13 @@ public class FileServiceImpl implements FileService {
 
         fileHeader = fileRepository.save(fileHeader);
         if (ap.isUseElasticsearch()) {
-            fileElasticRepository.save(fileHeaderMapper.toElastic(fileHeader));
+            FileHeaderElastic fileHeaderElastic = fileHeaderMapper.toElastic(fileHeader);
+            if (fileHeader.getThumbnailName() != null) {
+                FileHeaderElastic f =
+                        fileElasticRepository.findById(fileHeader.getId()).get();
+                fileHeaderElastic.setThumbnail(f.getThumbnail());
+            }
+            fileElasticRepository.save(fileHeaderElastic);
         }
         keywordService.deleteUnusedKeywords();
     }
@@ -474,7 +486,8 @@ public class FileServiceImpl implements FileService {
      * @param thumbnail         BufferedImage thumbnail of the file
      * @param keywordCollection Collection of keywords of the file
      */
-    private void saveFileMetadata(FileHeaderDTO metadata, @Nullable BufferedImage thumbnail, Collection<Keyword> keywordCollection) {
+    private void saveFileMetadata(FileHeaderDTO metadata, @Nullable BufferedImage thumbnail, Collection<Keyword> keywordCollection) throws
+            IOException {
         FileHeader f = fileHeaderMapper.toMinimalEntity(metadata);
         f.setKeywords(keywordCollection);
         f.setDate(LocalDate.now());
@@ -486,7 +499,12 @@ public class FileServiceImpl implements FileService {
         f = fileRepository.save(f);
 
         if (ap.isUseElasticsearch()) {
-            fileElasticRepository.save(fileHeaderMapper.toElastic(f));
+            FileHeaderElastic fileHeaderElastic = fileHeaderMapper.toElastic(f);
+            if (thumbnail != null) {
+                fileHeaderElastic.setThumbnail(
+                        thumbnailService.getByteArrayFromBufferedImage(thumbnail, "png"));
+            }
+            fileElasticRepository.save(fileHeaderElastic);
         }
     }
 

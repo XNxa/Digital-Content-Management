@@ -23,9 +23,9 @@
       @for (item of this.results; track $index) {
         <div class="resultItem">
           @if (item.thumbnail) {
-            <img [src]="item.thumbnail" />
+            <img class="icon" [src]="item.thumbnail" />
           } @else {
-            <img [src]="getIcon(item.type)" />
+            <img class="icon" [src]="getIcon(item.type)" />
           }
           <div class="resultText">
             <span class="filename">{{ item.filename }}</span>

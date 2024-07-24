@@ -138,6 +138,7 @@ export class FileApiService {
     filename: string,
     metadata: FileHeader,
   ): Observable<void> {
+    metadata.thumbnail = undefined;
     const params = new HttpParams()
       .set('folder', folder)
       .set('filename', filename);
@@ -161,14 +162,17 @@ export class FileApiService {
 
   public search(query: string): Observable<FileHeader[]> {
     const params = new HttpParams().set('query', query);
-    return this.httpClient.get<FileHeader[]>(`${this.API}/search`, { params }).pipe(
-      map((files: FileHeader[]) => {
-        return files.map((file: FileHeader) => {
-          file.printableSize = convertSizeToPrintable(file.size);
-          return file;
-        });
-      }),
-    );
+    return this.httpClient
+      .get<FileHeader[]>(`${this.API}/search`, { params })
+      .pipe(
+        map((files: FileHeader[]) => {
+          return files.map((file: FileHeader) => {
+            file.printableSize = convertSizeToPrintable(file.size);
+            if (file.thumbnail) file.thumbnail = thumbnailToUrl(file.thumbnail);
+            return file;
+          });
+        }),
+      );
   }
 }
 
@@ -182,4 +186,14 @@ function dateToString(date: Date | undefined): string | undefined {
   const day = String(date.getDate()).padStart(2, '0');
 
   return `${year}-${month}-${day}`;
+}
+
+function thumbnailToUrl(base64Str: string): string {
+  const byteCharacters = atob(base64Str);
+  const byteNumbers = new Array(byteCharacters.length);
+  for (let i = 0; i < byteCharacters.length; i++) {
+    byteNumbers[i] = byteCharacters.charCodeAt(i);
+  }
+  const byteArray = new Uint8Array(byteNumbers);
+  return URL.createObjectURL(new Blob([byteArray], { type: 'image/png' }));
 }

@@ -58,4 +58,14 @@ public interface ThumbnailService {
      */
     InputStream getInputStreamFromBufferedImage(BufferedImage image,
                                                 String format) throws IOException;
+
+    /**
+     * Get a byte array from a BufferedImage.
+     *
+     * @param image The BufferedImage to get a byte array from.
+     * @param format The format of the image.
+     * @return The byte array of the BufferedImage.
+     * @throws IOException If the image cannot be read.
+     */
+    byte[] getByteArrayFromBufferedImage(BufferedImage image, String format) throws IOException;
 }

@@ -26,6 +26,7 @@ public interface FileHeaderMapper {
     @Mapping(target = "folder", source = "folder")
     @Mapping(target = "filename", source = "filename")
     @Mapping(target = "thumbnailName", source = "thumbnailName")
+    @Mapping(target = "thumbnail", source = "thumbnail")
     @Mapping(target = "description", source = "description")
     @Mapping(target = "version", source = "version")
     @Mapping(target = "status", source = "status")

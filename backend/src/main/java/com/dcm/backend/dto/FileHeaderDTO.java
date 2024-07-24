@@ -30,6 +30,8 @@ public class FileHeaderDTO {
 
     private String thumbnailName;
 
+    private byte[] thumbnail;
+
     @Size(max = 255, message = ErrorMessages.EXCEED_MAX_SIZE_CODE)
     @NotNull(message =ErrorMessages.REQUIERED_FIELD_MISSING_CODE)
     private String description;

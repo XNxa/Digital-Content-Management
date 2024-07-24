@@ -27,6 +27,9 @@ public class FileHeaderElastic {
 
     private String thumbnailName;
 
+    @Field(type = FieldType.Binary)
+    private byte[] thumbnail;
+
     private String description;
 
     private String version;

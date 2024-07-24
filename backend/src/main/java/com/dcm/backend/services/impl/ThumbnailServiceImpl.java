@@ -68,6 +68,14 @@ public class ThumbnailServiceImpl implements ThumbnailService {
         return new ByteArrayInputStream(os.toByteArray());
     }
 
+    @Override
+    public byte[] getByteArrayFromBufferedImage(BufferedImage image, String format) throws
+            IOException {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        ImageIO.write(image, format, os);
+        return os.toByteArray();
+    }
+
     private BufferedImage generateImageThumbnail(BufferedImage image, int width,
                                                  int height) {
 
