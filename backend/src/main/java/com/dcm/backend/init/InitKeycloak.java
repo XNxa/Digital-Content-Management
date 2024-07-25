@@ -132,6 +132,7 @@ public class InitKeycloak {
         realm.setRealm(REALMNAME);
         realm.setEnabled(true);
         realm.setRegistrationEmailAsUsername(true);
+        realm.setLoginTheme("dcm");
         keycloak.realms().create(realm);
     }
 

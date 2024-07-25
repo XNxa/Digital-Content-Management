@@ -39,9 +39,11 @@ services:
     ports:
       - 8080:8080
     command: start-dev
+    volumes:
+      - ./themes/dcm:/opt/keycloak/themes/dcm
     deploy:
       resources: # During dev only
-        limits:
+        limits: 
           memory: 2048M
 
   elasticsearch:
