@@ -31,7 +31,7 @@ export class FilecardComponent implements OnChanges {
   icon!: string;
 
   ngOnChanges(): void {
-    const maxFilenameLength = 20;
+    const maxFilenameLength = 16;
     if (this.file && this.file?.filename.length > maxFilenameLength) {
       this.printableFilename = this.file.filename.substring(0, maxFilenameLength) + '...';
     } else {
