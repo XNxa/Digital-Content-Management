@@ -1,10 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  HostListener,
-  Input,
-  Output,
-} from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-user-card-footer',
@@ -14,8 +8,7 @@ import {
   styleUrl: './user-card-footer.component.css',
 })
 export class UserCardFooterComponent {
-  // TODO : Change that
-  @Input() name = 'Hassania Mouachi';
+  @Input() name!: string;
   @Input() pp = '';
   @Output() openProfile = new EventEmitter<boolean>();
   @Output() signout = new EventEmitter<boolean>();

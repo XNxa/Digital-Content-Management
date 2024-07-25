@@ -40,6 +40,10 @@
   </div>
 
   <div class="usercard">
-    <app-user-card-footer [name]="currentUser.firstname + ' ' + currentUser.lastname" (openProfile)="openProfile()" (signout)="signout()"></app-user-card-footer>
+    @defer (when currentUser) {
+      <app-user-card-footer [name]="currentUser.firstname + ' ' + currentUser.lastname" (openProfile)="openProfile()" (signout)="signout()"></app-user-card-footer>
+    } @placeholder {
+      <div style="height: 56px;"></div>
+    }
   </div>
 </div>

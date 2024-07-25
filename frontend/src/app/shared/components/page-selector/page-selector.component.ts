@@ -23,7 +23,7 @@ export class PageSelectorComponent implements OnChanges {
   pages!: number[];
 
   ngOnChanges(): void {
-    this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
+    this.totalPages = Math.ceil((this.totalItems ?? 0) / this.itemsPerPage);
     this.updatePages();
   }
 
