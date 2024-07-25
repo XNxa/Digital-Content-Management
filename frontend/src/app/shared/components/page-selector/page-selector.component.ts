@@ -16,9 +16,9 @@ import {
 export class PageSelectorComponent implements OnChanges {
   @Input() totalItems = 0;
   @Input() itemsPerPage = 10;
+  @Input() page = 1;
   @Output() pageChange = new EventEmitter<number>();
 
-  currentPage = 1;
   totalPages = 1;
   pages!: number[];
 
@@ -37,42 +37,42 @@ export class PageSelectorComponent implements OnChanges {
 
   generatePagesArray(): number[] {
     const pages = [];
-    if (this.currentPage <= 4) {
+    if (this.page <= 4) {
       for (let i = 1; i <= 5; i++) {
         pages.push(i);
       }
-    } else if (this.currentPage > this.totalPages - 4) {
+    } else if (this.page > this.totalPages - 4) {
       for (let i = this.totalPages - 4; i <= this.totalPages; i++) {
         pages.push(i);
       }
     } else {
-      pages.push(this.currentPage - 1);
-      pages.push(this.currentPage);
-      pages.push(this.currentPage + 1);
-      pages.push(this.currentPage + 2);
+      pages.push(this.page - 1);
+      pages.push(this.page);
+      pages.push(this.page + 1);
+      pages.push(this.page + 2);
     }
     return pages;
   }
 
   goToPage(page: number): void {
-    this.currentPage = page;
+    this.page = page;
     this.updatePages();
-    this.pageChange.emit(this.currentPage);
+    this.pageChange.emit(this.page);
   }
 
   previousPage(): void {
-    if (this.currentPage > 1) {
-      this.currentPage--;
+    if (this.page > 1) {
+      this.page--;
       this.updatePages();
-      this.pageChange.emit(this.currentPage);
+      this.pageChange.emit(this.page);
     }
   }
 
   nextPage(): void {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
+    if (this.page < this.totalPages) {
+      this.page++;
       this.updatePages();
-      this.pageChange.emit(this.currentPage);
+      this.pageChange.emit(this.page);
     }
   }
 }

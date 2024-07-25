@@ -1,24 +1,24 @@
 <div class="pagination">
-  <button class="white" [disabled]="currentPage === 1" (click)="previousPage()">
+  <button class="white" [disabled]="page === 1" (click)="previousPage()">
     &#8249;
   </button>
 
-  @if (currentPage > 4 && totalPages > 7) {
+  @if (page > 4 && totalPages > 7) {
     <button class="white" (click)="goToPage(1)">1</button>
     <span>...</span>
   }
 
-  @for (page of pages; track $index) {
+  @for (p of pages; track $index) {
     <button
       class="white"
-      [class.active]="page === currentPage"
-      (click)="goToPage(page)"
+      [class.active]="p === page"
+      (click)="goToPage(p)"
     >
-      {{ page }}
+      {{ p }}
     </button>
   }
 
-  @if (totalPages > 7 && currentPage < totalPages - 3) {
+  @if (totalPages > 7 && page < totalPages - 3) {
     <span>...</span>
     <button class="white" (click)="goToPage(totalPages)">
       {{ totalPages }}
@@ -27,7 +27,7 @@
 
   <button
     class="white"
-    [disabled]="currentPage === totalPages"
+    [disabled]="page === totalPages"
     (click)="nextPage()"
   >
     &#8250;

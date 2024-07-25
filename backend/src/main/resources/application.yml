@@ -1,6 +1,10 @@
 server:
   port: 8081
 
+logging:
+  level:
+    tracer: TRACE
+
 spring:
   application:
     name: backend

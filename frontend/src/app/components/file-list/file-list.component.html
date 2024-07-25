@@ -181,6 +181,7 @@
     <app-page-selector
       [totalItems]="numberOfElements"
       [itemsPerPage]="itemsPerPage"
+      [page]="currentPage"
       (pageChange)="onPageChange($event)"
     ></app-page-selector>
   </div>

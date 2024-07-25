@@ -6,11 +6,12 @@ import { Router } from '@angular/router';
 import { KeycloakService } from 'keycloak-angular';
 import { UserApiService } from '../../services/user-api.service';
 import { User, UserFilter } from '../../models/User';
+import { PermissionDirective } from '../../shared/directives/permission.directive';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CdkTreeModule, UserCardFooterComponent],
+  imports: [CdkTreeModule, UserCardFooterComponent, PermissionDirective],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.css',
 })
@@ -26,21 +27,50 @@ export class SidebarComponent {
       this.router.navigate([getRouteForNode(node)]);
     }
     return node;
-  });
+  }, this).filter((node, _, list) => {
+    if (node.name == 'Accueil' || node.title) {
+      return true;
+    }
+
+    let permissions = [];
+    if (node.expandable) {
+      const childs = this.getChildNodes(list, node);
+
+      for (let index = 0; index < childs.length; index++) {
+        permissions.push(
+          node.path + '_' + childs[index].path + '_' + 'consult',
+        );
+      }
+    } else {
+      const parent = this.getParentNode(list, node);
+
+      if (parent) {
+        permissions.push(parent.path + '_' + node.path + '_' + 'consult');
+      } else {
+        permissions.push(node.path + '_' + 'consult');
+      }
+    }
+
+    return permissions.some((p) => this.auth.isUserInRole(p));
+  }, this);
 
   currentUser!: User;
 
-  constructor(private router: Router, private auth: KeycloakService, private userapi: UserApiService) {}
+  constructor(
+    private router: Router,
+    private auth: KeycloakService,
+    private userapi: UserApiService,
+  ) {}
 
   ngOnInit() {
-    const filter : UserFilter = {
+    const filter: UserFilter = {
       email: this.auth.getUsername(),
       firstname: undefined,
       lastname: undefined,
       function: undefined,
       role: undefined,
       statut: undefined,
-      password: undefined
+      password: undefined,
     };
     this.userapi.getUsers(0, 1, filter).subscribe((user) => {
       if (user.length === 1) {
@@ -51,23 +81,23 @@ export class SidebarComponent {
 
   hasChild = (_: number, node: Node) => node.expandable;
 
-  getParentNode(node: Node): Node | null {
-    const nodeIndex = this.dataSource.indexOf(node);
+  getParentNode(list: Node[], node: Node): Node | null {
+    const nodeIndex = list.indexOf(node);
     for (let i = nodeIndex - 1; i >= 0; i--) {
-      if (this.dataSource[i].level === node.level - 1) {
-        return this.dataSource[i];
+      if (list[i].level === node.level - 1) {
+        return list[i];
       }
     }
     return null;
   }
 
   shouldRender(node: Node): boolean {
-    let parent = this.getParentNode(node);
+    let parent = this.getParentNode(this.dataSource, node);
     while (parent) {
       if (!parent.isExpanded) {
         return false;
       }
-      parent = this.getParentNode(parent);
+      parent = this.getParentNode(this.dataSource, parent);
     }
     return true;
   }
@@ -98,7 +128,7 @@ export class SidebarComponent {
       return 'title';
     } else {
       let type = node.expandable ? 'expandable' : 'leaf';
-      if (type == 'leaf' && !this.getParentNode(node)) {
+      if (type == 'leaf' && !this.getParentNode(this.dataSource, node)) {
         type += ' no-parent';
       }
       return type + (node.isSelected ? ' selected' : '');
@@ -110,7 +140,7 @@ export class SidebarComponent {
   }
 
   navigateTo(node: Node): void {
-    const parent = this.getParentNode(node);
+    const parent = this.getParentNode(this.dataSource, node);
     if (parent) {
       this.router.navigate([getRouteForNode(parent), getRouteForNode(node)]);
     } else {
@@ -125,5 +155,19 @@ export class SidebarComponent {
 
   signout() {
     this.auth.logout();
+  }
+
+  getChildNodes(list: Node[], node: Node): Node[] {
+    const index = list.indexOf(node);
+    const level = node.level + 1;
+    const result = [];
+    for (let i = index + 1; i < list.length; i++) {
+      if (list[i].level === level) {
+        result.push(list[i]);
+      } else if (list[i].level < level) {
+        break;
+      }
+    }
+    return result;
   }
 }

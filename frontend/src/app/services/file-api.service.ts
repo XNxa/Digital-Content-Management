@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, ObservedValueOf, map } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { FileHeader, convertSizeToPrintable } from '../models/FileHeader';
 import { environment } from '../../environments/environment.development';
 import { Status } from '../enums/status';
@@ -46,6 +46,9 @@ export class FileApiService {
       dateFrom: dateToString(dateFrom),
       dateTo: dateToString(dateTo),
     };
+    filter.filename = filter.filename.replaceAll(' ', '');
+    if (filter.version !== undefined)
+      filter.version = filter.version.replaceAll(' ', '');
     return this.httpClient.post<number>(`${this.API}/count`, filter);
   }
 
@@ -73,6 +76,11 @@ export class FileApiService {
       dateFrom: dateToString(dateFrom),
       dateTo: dateToString(dateTo),
     };
+    
+    filter.filename = filter.filename.replaceAll(' ', '');
+    if (filter.version !== undefined)
+      filter.version = filter.version.replaceAll(' ', '');
+    
     return this.httpClient.post<FileHeader[]>(`${this.API}/files`, filter).pipe(
       map((files: FileHeader[]) => {
         return files.map((file: FileHeader) => {

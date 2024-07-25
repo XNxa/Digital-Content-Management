@@ -98,7 +98,7 @@ public class FileServiceImpl implements FileService {
     @Override
     public long count(FileFilterDTO filter) {
         if (ap.isUseElasticsearch()) {
-            return fileElasticRepository.count();
+            return fileElasticRepository.countByFilter(filter);
         } else {
             FileFilterSpecification spec =
                     new FileFilterSpecification(filter.getFolder(), filter.getFilename(),
@@ -164,6 +164,7 @@ public class FileServiceImpl implements FileService {
             return list.stream()
                     .map(SearchHit::getContent)
                     .map(fileHeaderMapper::toDto)
+                    .peek(f -> f.setThumbnail(null))
                     .toList();
         } else {
             FileFilterSpecification spec =

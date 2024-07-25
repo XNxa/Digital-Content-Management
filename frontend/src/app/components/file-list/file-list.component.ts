@@ -47,7 +47,7 @@ export class FileListComponent implements OnInit {
   readonly viewtitle: string = 'Fichiers';
 
   /** The number of items to display per page. */
-  readonly itemsPerPage: number = 15;
+  readonly itemsPerPage: number = 16;
 
   /** Array of status strings. */
   readonly status: string[] = Status.getStringList();
@@ -154,7 +154,7 @@ export class FileListComponent implements OnInit {
    */
   onPageChange(pageNumber: number): void {
     this.currentPage = pageNumber;
-    this.selectedFiles.clear();
+    this.unselect();
     this.refreshFileList();
   }
 
@@ -196,7 +196,7 @@ export class FileListComponent implements OnInit {
               });
           }
         }
-        this.selectedFiles.clear();
+        this.unselect();
       });
 
     // Refresh the list of keywords
@@ -249,7 +249,7 @@ export class FileListComponent implements OnInit {
       this.files = this.files.filter(
         (_, index) => !this.selectedFiles.has(index),
       );
-      this.selectedFiles.clear();
+      this.unselect();
       this.api
         .getNumberOfElement(
           this.folder + '/' + this.typeFolder,
@@ -346,6 +346,11 @@ export class FileListComponent implements OnInit {
     } else {
       this.buttonMultiSelect = 'Empty';
     }
+  }
+
+  unselect(): void {
+    this.selectedFiles.clear();
+    this.buttonMultiSelect = 'Empty';
   }
 
   nextFile() {

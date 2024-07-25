@@ -26,7 +26,7 @@ export const routes: Routes = [
         component: HomePageComponent, //TODO
       },
       {
-        path: 'roles',
+        path: 'role',
         component: RoleListComponent,
         canActivate: [AuthGuard],
         data: { roles: ['role_consult'] },
@@ -38,13 +38,13 @@ export const routes: Routes = [
         data: { roles: ['role_consult'] },
       },
       {
-        path: 'roles/add',
+        path: 'role/add',
         component: NewRoleComponent,
         canActivate: [AuthGuard],
         data: { roles: ['role_consult'] },
       },
       {
-        path: 'users',
+        path: 'user',
         component: UserListComponent,
         canActivate: [AuthGuard],
         data: { roles: ['user_consult'] },

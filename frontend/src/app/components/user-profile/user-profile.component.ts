@@ -100,7 +100,7 @@ export class UserProfileComponent {
 
   deleteUser() {
     this.userapi.deleteUser(this.user.id!).subscribe(() => {
-      this.router.navigate(['/users']);
+      this.router.navigate(['/user']);
     });
   }
 

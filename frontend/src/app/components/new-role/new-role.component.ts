@@ -57,7 +57,7 @@ export class NewRoleComponent {
           permissions: Array.from(this.rolePermissions),
         })
         .subscribe(() => {
-          this.router.navigate(['/roles']);
+          this.router.navigate(['/role']);
         });
     }
   }
@@ -67,7 +67,7 @@ export class NewRoleComponent {
   }
 
   cancel() {
-    this.router.navigate(['/roles']);
+    this.router.navigate(['/role']);
   }
 
   roleNameValidator(): AsyncValidatorFn {

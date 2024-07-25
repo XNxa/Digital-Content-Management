@@ -111,14 +111,14 @@ export const TREE: Node[] = [
   {
     expandable: false,
     name: 'Utilisateurs',
-    path: 'users',
+    path: 'user',
     logo: 'users',
     level: 0,
   },
   {
     expandable: false,
     name: 'Rôles',
-    path: 'roles',
+    path: 'role',
     logo: 'roles',
     level: 0,
   },
