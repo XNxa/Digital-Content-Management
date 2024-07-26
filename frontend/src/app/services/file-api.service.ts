@@ -1,9 +1,10 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Observable, map, of, tap } from 'rxjs';
 import { FileHeader, convertSizeToPrintable } from '../models/FileHeader';
 import { environment } from '../../environments/environment.development';
 import { Status } from '../enums/status';
+import { ThumbnailCacheService } from './thumbnail-cache.service';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +12,7 @@ import { Status } from '../enums/status';
 export class FileApiService {
   private API = environment.api + '/file';
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient, private thumbnailCache: ThumbnailCacheService) {}
 
   public uploadFile(file: File, metadata: FileHeader): Observable<void> {
     const formData: FormData = new FormData();
@@ -101,14 +102,22 @@ export class FileApiService {
     });
   }
 
-  public getThumbnail(folder: string, filename: string): Observable<Blob> {
-    const params = new HttpParams()
-      .set('folder', folder)
-      .set('filename', filename);
-    return this.httpClient.get<Blob>(`${this.API}/thumbnail`, {
-      params,
-      responseType: 'blob' as 'json',
-    });
+  public getThumbnail(folder: string, filename: string): Observable<string> {
+    const url = this.thumbnailCache.get(folder, filename);
+    if (url) {
+      return of(url);
+    } else {
+      const params = new HttpParams()
+        .set('folder', folder)
+        .set('filename', filename);
+      return this.httpClient.get<Blob>(`${this.API}/thumbnail`, {
+        params,
+        responseType: 'blob' as 'json',
+      }).pipe(map((image)=>{
+        return this.thumbnailCache.set(folder, filename, image);
+      }));
+    }
+
   }
 
   public getKeywords(): Observable<string[]> {
@@ -119,7 +128,9 @@ export class FileApiService {
     const params = new HttpParams()
       .set('folder', folder)
       .set('filename', filename);
-    return this.httpClient.delete<void>(`${this.API}/delete`, { params });
+    return this.httpClient.delete<void>(`${this.API}/delete`, { params }).pipe(tap((value) => {
+      this.thumbnailCache.remove(folder, filename);
+    }));
   }
 
   public getLink(folder: string, filename: string): Observable<string> {

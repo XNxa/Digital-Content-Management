@@ -191,8 +191,8 @@ export class FileListComponent implements OnInit {
             // Get the thumbnail for each file
             this.api
               .getThumbnail(file.folder, file.filename)
-              .subscribe((blob) => {
-                file.thumbnail = URL.createObjectURL(blob);
+              .subscribe((url: string) => {
+                file.thumbnail = url;
               });
           }
         }
