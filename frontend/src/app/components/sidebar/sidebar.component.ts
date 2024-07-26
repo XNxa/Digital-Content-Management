@@ -21,13 +21,7 @@ export class SidebarComponent {
     (node) => node.expandable,
   );
 
-  dataSource = TREE.map((node) => {
-    if (node.name == 'Accueil') {
-      node.isSelected = true;
-      this.router.navigate([getRouteForNode(node)]);
-    }
-    return node;
-  }, this).filter((node, _, list) => {
+  dataSource = TREE.filter((node, _, list) => {
     if (node.name == 'Accueil' || node.title) {
       return true;
     }
@@ -77,6 +71,25 @@ export class SidebarComponent {
         this.currentUser = user[0];
       }
     });
+    
+    this.router.events.subscribe(() => {
+      this.dataSource.forEach((n) => (n.isSelected = false));
+      this.findNodeForUrl(this.router.url).isSelected = true;
+    });
+
+    this.navigateTo(this.findNodeForUrl(this.router.url));
+  }
+
+  findNodeForUrl(url: string): Node {
+    const parts = url.split('/').filter((e) => e.length != 0);
+    const node = this.dataSource.find((node) => node.path == parts[1])!;
+    if (!node?.expandable) {
+      return node;
+    } else {
+      return this.getChildNodes(this.dataSource, node).find(
+        (node) => node.path == parts[2],
+      )!;
+    }
   }
 
   hasChild = (_: number, node: Node) => node.expandable;
@@ -119,8 +132,8 @@ export class SidebarComponent {
     } else {
       this.dataSource.forEach((n) => (n.isSelected = false));
       node.isSelected = true;
+      this.navigateTo(node);
     }
-    this.navigateTo(node);
   }
 
   getClass(node: Node): string {
@@ -142,14 +155,19 @@ export class SidebarComponent {
   navigateTo(node: Node): void {
     const parent = this.getParentNode(this.dataSource, node);
     if (parent) {
-      this.router.navigate([getRouteForNode(parent), getRouteForNode(node)]);
+      this.router.navigate([
+        'app',
+        getRouteForNode(parent),
+        getRouteForNode(node),
+      ]);
     } else {
-      if (!node.expandable) this.router.navigate([getRouteForNode(node)]);
+      if (!node.expandable)
+        this.router.navigate(['app', getRouteForNode(node)]);
     }
   }
 
   openProfile() {
-    this.router.navigate(['profile', this.currentUser.id]);
+    this.router.navigate(['app', 'profile', this.currentUser.id]);
     this.dataSource.forEach((n) => (n.isSelected = false));
   }
 

@@ -51,8 +51,8 @@
     position: absolute;
     background-color: #FFF;
     border-radius: 4px;
-    box-shadow: 0px 24px 48px -8px #18181C1C;
-    box-shadow: 0px 48px 64px -36px #18181C21;
+    box-shadow: 0px 24px 48px 1px #18181C1C;
+    box-shadow: 0px 48px 64px 1px #18181C21;
     width: 100%;
 }
 
@@ -62,11 +62,16 @@
     gap: 10px;
 }
 
+.resultItem:hover {
+    background-color: #EBF1FD;
+}
+
 .resultText {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     padding: 1px;
+    overflow: hidden;
 }
 
 .filename {

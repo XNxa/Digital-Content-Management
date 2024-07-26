@@ -128,7 +128,7 @@ export class ModifyRoleComponent implements OnInit {
     this.api.isDeactivatable(this.role.id!).subscribe((isDeactivatable) => {
       if (isDeactivatable) {
         this.api.deleteRole(this.role.id!).subscribe(() => {
-          this.router.navigate(['/role']);
+          this.router.navigate(['app','role']);
         });
       } else {
         this.snackbar.show(

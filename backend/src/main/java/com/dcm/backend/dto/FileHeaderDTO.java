@@ -21,6 +21,8 @@ import java.util.Collection;
 @Builder
 public class FileHeaderDTO {
 
+    private int id;
+
     @NotNull(message = ErrorMessages.REQUIERED_FIELD_MISSING_CODE)
     @Folder(message = ErrorMessages.INVALID_FOLDER_CODE)
     private String folder;

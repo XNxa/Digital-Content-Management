@@ -123,7 +123,7 @@ export class UserListComponent implements OnInit {
   }
 
   clickedRow($event: number) {
-    this.router.navigate(['user', this.users[$event].id]);
+    this.router.navigate(['app', 'user', this.users[$event].id]);
   }
 
   private valueIfPresent(value: string | null): string | undefined {

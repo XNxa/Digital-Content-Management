@@ -110,7 +110,7 @@ export class ModifyUserComponent implements OnInit {
 
   deleteUser() {
     this.userapi.deleteUser(this.user.id!).subscribe(() => {
-      this.router.navigate(['/user']);
+      this.router.navigate(['app','user']);
     });
   }
 

@@ -10,7 +10,6 @@ import { InputComponent } from '../../shared/components/form/input/input.compone
 import { FileApiService } from '../../services/file-api.service';
 import { FileHeader } from '../../models/FileHeader';
 import { SelectComponent } from '../../shared/components/form/select/select.component';
-import { SnackbarService } from '../../shared/components/snackbar/snackbar.service';
 import { DropdownCheckboxComponent } from '../../shared/components/form/dropdown-checkbox/dropdown-checkbox.component';
 import { Status } from '../../enums/status';
 import { lastValueFrom } from 'rxjs';
@@ -20,6 +19,7 @@ import { getNameFromPath } from '../../models/Tabs';
 import { FormControl } from '@angular/forms';
 import { PermissionDirective } from '../../shared/directives/permission.directive';
 import { DateInputComponent } from '../../shared/components/form/date-input/date-input.component';
+import { FileListService } from '../../services/file-list.service';
 
 @Component({
   selector: 'app-file-list',
@@ -101,12 +101,6 @@ export class FileListComponent implements OnInit {
   /** Files currently selected */
   selectedFiles: Set<number> = new Set<number>();
 
-  /** Flag indicating whether the file detail view is open or not. */
-  fileDetailOpen = false;
-
-  /** Index of the file to open in the file detail view. */
-  indexToOpen = 0;
-
   /** Button state for the multi-select button. */
   buttonMultiSelect: 'Empty' | 'Full' = 'Empty';
 
@@ -123,7 +117,7 @@ export class FileListComponent implements OnInit {
 
   constructor(
     private api: FileApiService,
-    private snackbar: SnackbarService,
+    private fileService: FileListService,
     private route: ActivatedRoute,
     private router: Router,
   ) {}
@@ -132,11 +126,27 @@ export class FileListComponent implements OnInit {
     this.route.params.subscribe((params) => {
       const currentUrl = this.router.url;
       const urlSegments = currentUrl.split('/');
-      this.folder = urlSegments.slice(0, urlSegments.length - 1).join('');
+      this.folder = urlSegments[urlSegments.length - 2];
       this.typeFolder = params['type'];
       this.displayableFolder = getNameFromPath(this.folder);
       this.displayableTypeFolder = getNameFromPath(this.typeFolder);
       this.refreshFileList();
+    });
+
+    this.fileService.files$.subscribe((files) => {
+      this.files = files
+    });
+
+    this.fileService.numberOfElements$.subscribe((n) => {
+      this.numberOfElements = n;
+    });
+
+    this.fileService.keywords$.subscribe((keywords) => {
+      this.keywords = keywords;
+    });
+
+    this.fileService.types$.subscribe((types) => {
+      this.types = types;
     });
   }
 
@@ -170,60 +180,21 @@ export class FileListComponent implements OnInit {
 
   /** Fetch file list from the server. Get files of current page only. */
   refreshFileList(): void {
-    // Get the files for the current page and search criteria
-    this.api
-      .getPages(
-        this.currentPage - 1,
-        this.itemsPerPage,
-        this.folder + '/' + this.typeFolder,
-        this.filenameSearched.value ?? '',
-        this.keywordsSearched.value || undefined,
-        (this.statusSearched.value || []).map((s) => Status.fromString(s)),
-        this.versionSearched.value ?? undefined,
-        this.typeSearched.value || undefined,
-        this.dateSearched.value?.[0],
-        this.dateSearched.value?.[1],
-      )
-      .subscribe((files) => {
-        this.files = files;
-        for (const file of this.files) {
-          if (file.thumbnailName != null) {
-            // Get the thumbnail for each file
-            this.api
-              .getThumbnail(file.folder, file.filename)
-              .subscribe((url: string) => {
-                file.thumbnail = url;
-              });
-          }
-        }
-        this.unselect();
-      });
+    this.fileService.fetchFiles(
+      this.currentPage,
+      this.itemsPerPage,
+      this.folder,
+      this.typeFolder,
+      this.filenameSearched.value ?? '',
+      this.keywordsSearched.value || undefined,
+      (this.statusSearched.value || []).map((s) => Status.fromString(s)),
+      this.versionSearched.value ?? undefined,
+      this.typeSearched.value || undefined,
+      this.dateSearched.value?.[0],
+      this.dateSearched.value?.[1],
+    )
 
-    // Refresh the list of keywords
-    this.api.getKeywords().subscribe((keywords) => {
-      this.keywords = keywords;
-    });
-
-    this.api
-      .getTypes(this.folder + '/' + this.typeFolder)
-      .subscribe((types) => {
-        this.types = types;
-      });
-
-    this.api
-      .getNumberOfElement(
-        this.folder + '/' + this.typeFolder,
-        this.filenameSearched.value ?? '',
-        this.keywordsSearched.value || undefined,
-        (this.statusSearched.value || []).map((s) => Status.fromString(s)),
-        this.versionSearched.value ?? undefined,
-        this.typeSearched.value || undefined,
-        this.dateSearched.value?.[0],
-        this.dateSearched.value?.[1],
-      )
-      .subscribe((n) => {
-        this.numberOfElements = n;
-      });
+    this.unselect();
   }
 
   fileSelected(index: number) {
@@ -321,12 +292,7 @@ export class FileListComponent implements OnInit {
   }
 
   fileClicked(index: number): void {
-    this.indexToOpen = index;
-    this.fileDetailOpen = true;
-  }
-
-  closeFileDetail(): void {
-    this.fileDetailOpen = false;
+    this.router.navigate(['app', 'file', this.files[index].id])
   }
 
   onSelectClick(): void {
@@ -353,13 +319,4 @@ export class FileListComponent implements OnInit {
     this.buttonMultiSelect = 'Empty';
   }
 
-  nextFile() {
-    this.indexToOpen = (this.indexToOpen + 1) % this.files.length;
-    this.refreshFileList();
-  }
-
-  previousFile() {
-    this.indexToOpen =
-      (this.indexToOpen - 1 + this.files.length) % this.files.length;
-  }
 }

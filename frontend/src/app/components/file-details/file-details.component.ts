@@ -1,10 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  Output,
-} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FileHeader } from '../../models/FileHeader';
 import { MimeTypes } from '../../utils/mime-types';
 import { FileApiService } from '../../services/file-api.service';
@@ -18,6 +12,8 @@ import { ZipListComponent } from '../../shared/components/zip-list/zip-list.comp
 import { IconTextButtonComponent } from '../../shared/components/buttons/icon-text-button/icon-text-button.component';
 import { getNameFromPath } from '../../models/Tabs';
 import { PermissionDirective } from '../../shared/directives/permission.directive';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FileListService } from '../../services/file-list.service';
 
 @Component({
   selector: 'app-file-details',
@@ -34,18 +30,14 @@ import { PermissionDirective } from '../../shared/directives/permission.directiv
   templateUrl: './file-details.component.html',
   styleUrl: './file-details.component.css',
 })
-export class FileDetailsComponent implements OnChanges {
-  @Input() file!: FileHeader;
+export class FileDetailsComponent implements OnInit, OnDestroy {
+  file!: FileHeader;
 
-  @Input() folder!: string;
-  @Input() typeFolder!: string;
+  folder!: string;
+  typeFolder!: string;
+
   displayFolder!: string;
   displayTypeFolder!: string;
-
-  @Output() closeView: EventEmitter<void> = new EventEmitter<void>();
-
-  @Output() previous: EventEmitter<void> = new EventEmitter<void>();
-  @Output() next: EventEmitter<void> = new EventEmitter<void>();
 
   type!: string;
   displaytype!: 'image' | 'video' | 'zip' | undefined;
@@ -62,35 +54,48 @@ export class FileDetailsComponent implements OnChanges {
 
   constructor(
     private api: FileApiService,
+    private fileList: FileListService,
     private snackbar: SnackbarService,
+    private route: ActivatedRoute,
+    private router: Router,
   ) {}
 
-  ngOnChanges(): void {
-    if (this.file.type.startsWith('image')) {
-      this.displaytype = 'image';
-    } else if (this.file.type.startsWith('video')) {
-      this.displaytype = 'video';
-    } else if (this.file.type.includes('zip')) {
-      this.displaytype = 'zip';
-    } else {
-      this.displaytype = undefined;
-    }
+  ngOnInit(): void {
+    this.route.params.subscribe((params) => {
+      this.api.getFile(params['id']).subscribe((file) => {
+        this.file = file;
+        [this.folder, this.typeFolder] = file.folder.split('/');
 
-    this.api.getFileData(this.file.folder, this.file.filename).subscribe({
-      next: (blob) => {
-        const fr = new FileReader();
-        fr.readAsDataURL(blob);
-        fr.onload = () => {
-          this.data = fr.result as string;
-        };
-      },
+        if (this.file.type.startsWith('image')) {
+          this.displaytype = 'image';
+        } else if (this.file.type.startsWith('video')) {
+          this.displaytype = 'video';
+        } else if (this.file.type.includes('zip')) {
+          this.displaytype = 'zip';
+        } else {
+          this.displaytype = undefined;
+        }
+        this.api.getFileData(this.file.folder, this.file.filename).subscribe({
+          next: (blob) => {
+            const fr = new FileReader();
+            fr.readAsDataURL(blob);
+            fr.onload = () => {
+              this.data = fr.result as string;
+            };
+          },
+        });
+
+        this.type = (
+          MimeTypes.extension(this.file?.type) || 'unknown'
+        ).toUpperCase();
+        this.displayFolder = getNameFromPath(this.folder);
+        this.displayTypeFolder = getNameFromPath(this.typeFolder);
+      });
     });
+  }
 
-    this.type = (
-      MimeTypes.extension(this.file?.type) || 'unknown'
-    ).toUpperCase();
-    this.displayFolder = getNameFromPath(this.folder);
-    this.displayTypeFolder = getNameFromPath(this.typeFolder);
+  ngOnDestroy(): void {
+    URL.revokeObjectURL(this.data)
   }
 
   openDialog(): void {
@@ -117,16 +122,10 @@ export class FileDetailsComponent implements OnChanges {
   }
 
   onDownload(): void {
-    this.api.getFileData(this.file.folder, this.file.filename).subscribe({
-      next: (blob) => {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = this.file.filename;
-        a.click();
-        URL.revokeObjectURL(url);
-      },
-    });
+    const a = document.createElement('a');
+    a.href = this.data;
+    a.download = this.file.filename;
+    a.click();
   }
 
   onDuplicate(): void {
@@ -135,18 +134,18 @@ export class FileDetailsComponent implements OnChanges {
 
   onDelete(): void {
     this.api.delete(this.file.folder, this.file.filename).subscribe();
-    this.next.emit();
+    this.onPrevious()
   }
 
   onClose(): void {
-    this.closeView.emit();
+    this.router.navigateByUrl('app/' + this.file.folder);
   }
 
   onPrevious() {
-    this.previous.emit();
+    this.router.navigateByUrl('app/file/' + this.fileList.previous(this.file.id));
   }
 
   onNext() {
-    this.next.emit();
+    this.router.navigateByUrl('app/file/' + this.fileList.previous(this.file.id));
   }
 }

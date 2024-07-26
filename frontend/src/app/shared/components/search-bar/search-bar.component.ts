@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { MimeTypes } from '../../../utils/mime-types';
@@ -20,6 +20,7 @@ interface RequiredFields {
 })
 export class SearchBarComponent<T extends RequiredFields> {
   @Input() searchMethod!: (value: string) => Observable<T[]>;
+  @Output() itemSelected = new EventEmitter<T>();
 
   open = false;
   hover = false;
@@ -50,7 +51,13 @@ export class SearchBarComponent<T extends RequiredFields> {
     this.open = true;
   }
 
-  exitFocus() {
+  @HostListener('document:click', ['$event'])
+  exitFocus($event: MouseEvent) {
+    const target = $event.target as HTMLElement;
+    if (target.closest('.searchBox')) {
+      return;
+    }
+
     this.open = false;
     this.hover = false;
     this.value = '';
@@ -58,10 +65,16 @@ export class SearchBarComponent<T extends RequiredFields> {
 
   toggleFocus() {
     if (this.open) {
-      this.exitFocus();
+      this.open = false;
+      this.hover = false;
+      this.value = '';
     } else {
       this.enterFocus();
       this.hover = true;
     }
+  }
+
+  itemClicked(item: T) {
+    this.itemSelected.emit(item);
   }
 }

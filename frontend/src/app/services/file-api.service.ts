@@ -92,6 +92,10 @@ export class FileApiService {
     );
   }
 
+  public getFile(id: number) {
+    return this.httpClient.get<FileHeader>(`${this.API}/file/${id}`);
+  }
+
   public getFileData(folder: string, filename: string): Observable<Blob> {
     const params = new HttpParams()
       .set('folder', folder)

@@ -112,6 +112,13 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
+    public FileHeaderDTO getFileHeader(int id) {
+        return fileHeaderMapper.toDto(fileRepository.findById(id).orElseThrow(
+                () -> new NoSuchElementException("getFileHeader : " + id + " not found")
+        ));
+    }
+
+    @Override
     public List<FileHeaderDTO> search(String query) {
         Pageable pageRequest = PageRequest.of(0, 10);
         if (ap.isUseElasticsearch()) {

@@ -154,4 +154,13 @@ public interface FileService {
      * @return List of files
      */
     List<FileHeaderDTO> search(String query);
+
+    /**
+     * Retrieves the metadata of a file
+     *
+     * @param id Id of the file
+     * @return Metadata of the file
+     */
+    FileHeaderDTO getFileHeader(int id);
 }
+

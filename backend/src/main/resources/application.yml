@@ -1,9 +1,9 @@
 server:
   port: 8081
 
-logging:
-  level:
-    tracer: TRACE
+# logging:
+# level:
+#   tracer: TRACE
 
 spring:
   application:

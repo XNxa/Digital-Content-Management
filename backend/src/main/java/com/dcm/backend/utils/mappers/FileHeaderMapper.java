@@ -10,6 +10,7 @@ import org.mapstruct.Mapping;
         com.dcm.backend.entities.Keyword.class})
 public interface FileHeaderMapper {
 
+    @Mapping(target = "id", source = "id")
     @Mapping(target = "folder", source = "folder")
     @Mapping(target = "filename", source = "filename")
     @Mapping(target = "thumbnailName", source = "thumbnailName")
@@ -23,6 +24,7 @@ public interface FileHeaderMapper {
             ".map(Keyword::getName).toList())")
     FileHeaderDTO toDto(FileHeader fileHeader);
 
+    @Mapping(target = "id", source = "id")
     @Mapping(target = "folder", source = "folder")
     @Mapping(target = "filename", source = "filename")
     @Mapping(target = "thumbnailName", source = "thumbnailName")

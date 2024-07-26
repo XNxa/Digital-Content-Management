@@ -66,7 +66,7 @@ export class RoleListComponent implements OnInit {
   }
 
   addNewRole() {
-    this.router.navigate(['roles/add']);
+    this.router.navigate(['app', 'roles', 'add']);
   }
 
   onPageChange($event: number) {
@@ -75,7 +75,7 @@ export class RoleListComponent implements OnInit {
   }
 
   modifyRole($event: number) {
-    this.router.navigate(['role', this.roles[$event].id]);
+    this.router.navigate(['app', 'role', this.roles[$event].id]);
   }
 
   private toState(value: string | null): boolean | undefined {

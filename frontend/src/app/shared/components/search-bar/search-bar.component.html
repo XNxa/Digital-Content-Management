@@ -10,7 +10,6 @@
     type="text"
     (ngModelChange)="updateSearch()"
     (focus)="enterFocus()"
-    (blur)="exitFocus()"
   />
   <button class="searchButton" (click)="toggleFocus()">
     <img src="icons/blue/search.svg" />
@@ -21,7 +20,7 @@
   <div class="positionSearchResult">
     <div class="searchResults">
       @for (item of this.results; track $index) {
-        <div class="resultItem">
+        <div class="resultItem" (click)="itemClicked(item)">
           @if (item.thumbnail) {
             <img class="icon" [src]="item.thumbnail" />
           } @else {

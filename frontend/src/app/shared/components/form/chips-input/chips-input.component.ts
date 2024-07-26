@@ -20,8 +20,6 @@ export class ChipsInputComponent {
   inputValue = '';
   filteredSuggestions: string[] = [];
 
-  console = console;
-
   add(keyword: string): void {
     if (keyword && !(this.keywords.value || []).includes(keyword)) {
       (this.keywords.value || []).push(keyword.trim());

@@ -9,17 +9,23 @@ import { ModifyRoleComponent } from './components/modify-role/modify-role.compon
 import { ModifyUserComponent } from './components/modify-user/modify-user.component';
 import { HomePageComponent } from './components/home-page/home-page.component';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
+import { FileDetailsComponent } from './components/file-details/file-details.component';
 
 export const routes: Routes = [
   {
-    path: '',
+    path:'',
+    pathMatch: 'full',
+    redirectTo: 'app',
+  },
+  {
+    path: 'app',
     component: HomeComponent,
     canActivate: [AuthGuard],
     children: [
       {
         path: '',
-        redirectTo: 'home',
         pathMatch: 'full',
+        redirectTo: '/app/home',
       },
       {
         path: 'home',
@@ -62,5 +68,10 @@ export const routes: Routes = [
       },
       ...getRoutesForTabs(),
     ],
+  },
+  {
+    path: 'app/file/:id',
+    component: FileDetailsComponent,
+    canActivate: [AuthGuard],
   },
 ];

@@ -1,7 +1,7 @@
 <div class="top">
   <H1>Bonjour, @if(currentUser) {{{currentUser.firstname}} !}</H1>
   @if (enable_search) {
-    <app-search-bar [searchMethod]="search"></app-search-bar>
+    <app-search-bar [searchMethod]="search" (itemSelected)="goToFile($event)"></app-search-bar>
   }
 </div>
 

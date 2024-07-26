@@ -51,6 +51,11 @@ public class FileController {
         return fs.getFiles(filter);
     }
 
+    @GetMapping("file/{id}")
+    public FileHeaderDTO getFile(@PathVariable int id) {
+        return fs.getFileHeader(id);
+    }
+
     @SneakyThrows
     @GetMapping("/filedata")
     public ResponseEntity<Resource> getFileData(@ModelAttribute @Valid FilenameDTO file) {
