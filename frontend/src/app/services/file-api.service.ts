@@ -12,7 +12,10 @@ import { ThumbnailCacheService } from './thumbnail-cache.service';
 export class FileApiService {
   private API = environment.api + '/file';
 
-  constructor(private httpClient: HttpClient, private thumbnailCache: ThumbnailCacheService) {}
+  constructor(
+    private httpClient: HttpClient,
+    private thumbnailCache: ThumbnailCacheService,
+  ) {}
 
   public uploadFile(file: File, metadata: FileHeader): Observable<void> {
     const formData: FormData = new FormData();
@@ -77,11 +80,11 @@ export class FileApiService {
       dateFrom: dateToString(dateFrom),
       dateTo: dateToString(dateTo),
     };
-    
+
     filter.filename = filter.filename.replaceAll(' ', '');
     if (filter.version !== undefined)
       filter.version = filter.version.replaceAll(' ', '');
-    
+
     return this.httpClient.post<FileHeader[]>(`${this.API}/files`, filter).pipe(
       map((files: FileHeader[]) => {
         return files.map((file: FileHeader) => {
@@ -92,8 +95,12 @@ export class FileApiService {
     );
   }
 
-  public getFile(id: number) {
-    return this.httpClient.get<FileHeader>(`${this.API}/file/${id}`);
+  public getFile(id: number) : Observable<FileHeader> {
+    return this.httpClient
+      .get<FileHeader>(`${this.API}/file/${id}`)
+      .pipe(
+        tap((file) => (file.printableSize = convertSizeToPrintable(file.size))),
+      );
   }
 
   public getFileData(folder: string, filename: string): Observable<Blob> {
@@ -114,14 +121,17 @@ export class FileApiService {
       const params = new HttpParams()
         .set('folder', folder)
         .set('filename', filename);
-      return this.httpClient.get<Blob>(`${this.API}/thumbnail`, {
-        params,
-        responseType: 'blob' as 'json',
-      }).pipe(map((image)=>{
-        return this.thumbnailCache.set(folder, filename, image);
-      }));
+      return this.httpClient
+        .get<Blob>(`${this.API}/thumbnail`, {
+          params,
+          responseType: 'blob' as 'json',
+        })
+        .pipe(
+          map((image) => {
+            return this.thumbnailCache.set(folder, filename, image);
+          }),
+        );
     }
-
   }
 
   public getKeywords(): Observable<string[]> {
@@ -132,9 +142,11 @@ export class FileApiService {
     const params = new HttpParams()
       .set('folder', folder)
       .set('filename', filename);
-    return this.httpClient.delete<void>(`${this.API}/delete`, { params }).pipe(tap((value) => {
-      this.thumbnailCache.remove(folder, filename);
-    }));
+    return this.httpClient.delete<void>(`${this.API}/delete`, { params }).pipe(
+      tap((value) => {
+        this.thumbnailCache.remove(folder, filename);
+      }),
+    );
   }
 
   public getLink(folder: string, filename: string): Observable<string> {

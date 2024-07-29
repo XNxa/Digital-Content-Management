@@ -7,9 +7,11 @@
       </button>
     </div>
     <div class="dialog-body">
-      <div class="left">
-        <img [src]="thumbnail" />
-      </div>
+      @if (thumbnail) {
+        <div class="left">
+          <img [src]="thumbnail" />
+        </div>
+      }
       <div class="right dialog-body-form">
         <div>
           <app-long-input

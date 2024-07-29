@@ -32,8 +32,10 @@ export class ZipListComponent implements OnChanges {
     const zip = new JSZip();
     const content = await zip.loadAsync(file);
     this.files = [];
+    const filePromises: Promise<void>[] = [];
+  
     content.forEach((_relativePath, zipEntry) => {
-      zipEntry.async('uint8array').then((data) => {
+      const filePromise = zipEntry.async('uint8array').then((data) => {
         this.files.push({
           icon: getIconFor(MimeTypes.contentType(zipEntry.name) || ''),
           name: zipEntry.name,
@@ -41,7 +43,10 @@ export class ZipListComponent implements OnChanges {
           size: convertSizeToPrintable(data.length),
         });
       });
+      filePromises.push(filePromise);
     });
+  
+    await Promise.all(filePromises);
     this.loaded = true;
   }
 }

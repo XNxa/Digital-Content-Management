@@ -39,7 +39,6 @@ export class ModifyDialogComponent implements OnInit {
 
   constructor(
     private api: FileApiService,
-    private snackbar: SnackbarService,
   ) {}
 
   ngOnInit(): void {
@@ -51,8 +50,10 @@ export class ModifyDialogComponent implements OnInit {
     );
     this.fileType = this.file.type;
 
-    if (this.fileType.includes('image')) {
-      this.thumbnail = this.file.thumbnail;
+    if (this.file.thumbnailName) {
+      this.api.getThumbnail(this.file.folder, this.file.filename).subscribe((thumbnail) => {
+        this.thumbnail = thumbnail;
+      });
     }
 
     this.api.getKeywords().subscribe({
