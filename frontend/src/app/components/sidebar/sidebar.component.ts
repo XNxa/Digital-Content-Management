@@ -71,10 +71,17 @@ export class SidebarComponent {
         this.currentUser = user[0];
       }
     });
-    
+
     this.router.events.subscribe(() => {
-      this.dataSource.forEach((n) => (n.isSelected = false));
-      this.findNodeForUrl(this.router.url).isSelected = true;
+      if (!this.router.url.startsWith('/app/file')) {
+        this.dataSource.forEach((n) => (n.isSelected = false));
+        const node = this.findNodeForUrl(this.router.url);
+        if (node) {
+          node.isSelected = true;
+        } else {
+          console.error('No node found for url :', this.router.url);
+        }
+      }
     });
 
     this.navigateTo(this.findNodeForUrl(this.router.url));
