@@ -13,7 +13,6 @@ import { SelectComponent } from '../../shared/components/form/select/select.comp
 import { DropdownCheckboxComponent } from '../../shared/components/form/dropdown-checkbox/dropdown-checkbox.component';
 import { Status } from '../../enums/status';
 import { lastValueFrom } from 'rxjs';
-import { FileDetailsComponent } from '../file-details/file-details.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { getNameFromPath } from '../../models/Tabs';
 import { FormControl } from '@angular/forms';
@@ -35,7 +34,6 @@ import { FileListService } from '../../services/file-list.service';
     InputComponent,
     SelectComponent,
     DropdownCheckboxComponent,
-    FileDetailsComponent,
     PermissionDirective,
     DateInputComponent,
   ],
@@ -134,7 +132,7 @@ export class FileListComponent implements OnInit {
     });
 
     this.fileService.files$.subscribe((files) => {
-      this.files = files
+      this.files = files;
     });
 
     this.fileService.numberOfElements$.subscribe((n) => {
@@ -152,7 +150,6 @@ export class FileListComponent implements OnInit {
 
   onCloseDialog() {
     this.isDialogOpen = false;
-
     setTimeout(() => {
       this.refreshFileList();
     }, 1000);
@@ -192,7 +189,7 @@ export class FileListComponent implements OnInit {
       this.typeSearched.value || undefined,
       this.dateSearched.value?.[0],
       this.dateSearched.value?.[1],
-    )
+    );
 
     this.unselect();
   }
@@ -292,7 +289,7 @@ export class FileListComponent implements OnInit {
   }
 
   fileClicked(index: number): void {
-    this.router.navigate(['app', 'file', this.files[index].id])
+    this.router.navigate(['app', 'file', this.files[index].id]);
   }
 
   onSelectClick(): void {
@@ -318,5 +315,4 @@ export class FileListComponent implements OnInit {
     this.selectedFiles.clear();
     this.buttonMultiSelect = 'Empty';
   }
-
 }

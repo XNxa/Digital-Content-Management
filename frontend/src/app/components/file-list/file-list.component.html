@@ -161,6 +161,7 @@
       [data]="files"
       [selected]="selectedFiles"
       (selectedChange)="fileSelectedList($event)"
+      (rowClicked)="fileClicked($event)"
     >
     </app-table>
   }
