@@ -1,6 +1,5 @@
 import { CdkTreeModule, FlatTreeControl } from '@angular/cdk/tree';
 import {
-  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -53,7 +52,6 @@ export class PermissionsTreeComponent implements OnInit, OnChanges {
 
   constructor(
     private api: RoleApiService,
-    private cd: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {

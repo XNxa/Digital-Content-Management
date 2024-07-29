@@ -14,7 +14,6 @@ import { Router } from '@angular/router';
 import { PermissionDirective } from '../../shared/directives/permission.directive';
 import { SelectComponent } from '../../shared/components/form/select/select.component';
 import { RoleApiService } from '../../services/role-api.service';
-import { Role } from '../../models/Role';
 import { lastValueFrom } from 'rxjs';
 
 @Component({

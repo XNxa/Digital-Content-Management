@@ -143,7 +143,7 @@ export class FileApiService {
       .set('folder', folder)
       .set('filename', filename);
     return this.httpClient.delete<void>(`${this.API}/delete`, { params }).pipe(
-      tap((value) => {
+      tap((_) => {
         this.thumbnailCache.remove(folder, filename);
       }),
     );

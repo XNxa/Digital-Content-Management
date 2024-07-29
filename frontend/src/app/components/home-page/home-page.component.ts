@@ -19,7 +19,7 @@ import { Router } from '@angular/router';
     IconButtonComponent,
     SmallCardComponent,
     FilesStateComponent,
-    SearchBarComponent,
+    SearchBarComponent
   ],
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.css',

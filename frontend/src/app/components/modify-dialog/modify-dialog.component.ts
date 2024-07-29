@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import { Status } from '../../enums/status';
 import { FileApiService } from '../../services/file-api.service';
-import { SnackbarService } from '../../shared/components/snackbar/snackbar.service';
 import { FileHeader } from '../../models/FileHeader';
 import { IconTextButtonComponent } from '../../shared/components/buttons/icon-text-button/icon-text-button.component';
 import { LongInputComponent } from '../../shared/components/form/long-input/long-input.component';

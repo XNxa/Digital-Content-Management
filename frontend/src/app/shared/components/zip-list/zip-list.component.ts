@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnChanges } from '@angular/core';
-import JSZip from 'jszip';
+import { unzip } from 'unzipit';
 import { convertSizeToPrintable } from '../../../models/FileHeader';
 import { getIconFor } from '../../../utils/file-icons';
 import { MimeTypes } from '../../../utils/mime-types';
@@ -29,24 +29,22 @@ export class ZipListComponent implements OnChanges {
   }
 
   async readZipFile(file: File) {
-    const zip = new JSZip();
-    const content = await zip.loadAsync(file);
-    this.files = [];
-    const filePromises: Promise<void>[] = [];
-  
-    content.forEach((_relativePath, zipEntry) => {
-      const filePromise = zipEntry.async('uint8array').then((data) => {
-        this.files.push({
-          icon: getIconFor(MimeTypes.contentType(zipEntry.name) || ''),
-          name: zipEntry.name,
-          date: zipEntry.date.toLocaleDateString(),
-          size: convertSizeToPrintable(data.length),
-        });
-      });
-      filePromises.push(filePromise);
-    });
-  
-    await Promise.all(filePromises);
+    const entries = await unzip(file);
+    const names = Object.keys(entries.entries);
+    this.files = await Promise.all(
+      names.map((name) => {
+        {
+          const entry = entries.entries[name]; // Add 'as any' to bypass the type checking
+          return {
+            icon: getIconFor(MimeTypes.contentType(name) || ''),
+            name,
+            date: entry.lastModDate.toLocaleDateString(),
+            size: convertSizeToPrintable(entry.size),
+          };
+        }
+      }),
+    );
+    this.files.sort((a, b) => a.name.localeCompare(b.name));
     this.loaded = true;
   }
 }

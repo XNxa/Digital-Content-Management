@@ -85,8 +85,6 @@ export class FileDetailsComponent implements OnInit, OnDestroy {
           },
         });
 
-        console.log(file)
-
         this.type = (
           MimeTypes.extension(this.file?.type) || 'unknown'
         ).toUpperCase();

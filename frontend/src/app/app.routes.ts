@@ -1,15 +1,9 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './components/home/home.component';
 import { getRoutesForTabs } from './models/Tabs';
-import { UserListComponent } from './components/user-list/user-list.component';
 import { AuthGuard } from './auth.guard';
-import { RoleListComponent } from './components/role-list/role-list.component';
-import { NewRoleComponent } from './components/new-role/new-role.component';
-import { ModifyRoleComponent } from './components/modify-role/modify-role.component';
-import { ModifyUserComponent } from './components/modify-user/modify-user.component';
 import { HomePageComponent } from './components/home-page/home-page.component';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
-import { FileDetailsComponent } from './components/file-details/file-details.component';
 
 export const routes: Routes = [
   {
@@ -29,40 +23,46 @@ export const routes: Routes = [
       },
       {
         path: 'home',
-        component: HomePageComponent, //TODO
+        component: HomePageComponent,
       },
       {
         path: 'role',
-        component: RoleListComponent,
+        //component: RoleListComponent,
+        loadComponent: () => import('./components/role-list/role-list.component').then(m => m.RoleListComponent),
         canActivate: [AuthGuard],
         data: { roles: ['role_consult'] },
       },
       {
         path: 'role/:id',
-        component: ModifyRoleComponent,
+        //component: ModifyRoleComponent,
+        loadComponent: () => import('./components/modify-role/modify-role.component').then(m => m.ModifyRoleComponent),
         canActivate: [AuthGuard],
         data: { roles: ['role_consult'] },
       },
       {
         path: 'role/add',
-        component: NewRoleComponent,
+        //component: NewRoleComponent,
+        loadComponent: () => import('./components/new-role/new-role.component').then(m => m.NewRoleComponent),
         canActivate: [AuthGuard],
         data: { roles: ['role_consult'] },
       },
       {
         path: 'user',
-        component: UserListComponent,
+        //component: UserListComponent,
+        loadComponent: () => import('./components/user-list/user-list.component').then(m => m.UserListComponent),
         canActivate: [AuthGuard],
         data: { roles: ['user_consult'] },
       },
       {
         path: 'user/:id',
-        component: ModifyUserComponent,
+        //component: ModifyUserComponent,
+        loadComponent: () => import('./components/modify-user/modify-user.component').then(m => m.ModifyUserComponent),
         canActivate: [AuthGuard],
         data: { roles: ['user_consult'] },
       },
       {
         path: 'profile/:id',
+        //loadComponent: () => import('./components/user-profile/user-profile.component').then(m => m.UserProfileComponent),
         component: UserProfileComponent,
         canActivate: [AuthGuard],
       },
@@ -71,7 +71,8 @@ export const routes: Routes = [
   },
   {
     path: 'app/file/:id',
-    component: FileDetailsComponent,
+    //component: FileDetailsComponent,
+    loadComponent: () => import('./components/file-details/file-details.component').then(m => m.FileDetailsComponent),
     canActivate: [AuthGuard],
   },
 ];
