@@ -128,6 +128,7 @@ export class FileListComponent implements OnInit {
       this.typeFolder = params['type'];
       this.displayableFolder = getNameFromPath(this.folder);
       this.displayableTypeFolder = getNameFromPath(this.typeFolder);
+      this.currentPage = 1;
       this.refreshFileList();
     });
 
