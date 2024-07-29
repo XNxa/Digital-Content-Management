@@ -1,5 +1,6 @@
 package com.dcm.backend.api.handler;
 
+import com.dcm.backend.exceptions.FileAlreadyPresentException;
 import com.dcm.backend.exceptions.FileNotFoundException;
 import com.dcm.backend.exceptions.NoThumbnailException;
 import com.dcm.backend.utils.ErrorMessages;
@@ -63,6 +64,14 @@ public class ExceptionHandlers {
                 .toList();
         return new ResponseError(ErrorMessages.CONSTRAINT_VIOLATION_CODE,
                 String.join(", ", errors));
+    }
+
+    @ExceptionHandler(FileAlreadyPresentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ResponseError handleFileAlreadyExistsException(FileAlreadyPresentException ex) {
+        return new ResponseError(ErrorMessages.FILE_ALREADY_EXISTS_CODE,
+                ex.getMessage());
     }
 
     @Data

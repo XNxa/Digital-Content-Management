@@ -12,6 +12,7 @@ import com.dcm.backend.entities.Keyword;
 import com.dcm.backend.enumeration.Folders;
 import com.dcm.backend.enumeration.Status;
 import com.dcm.backend.enumeration.Subfolders;
+import com.dcm.backend.exceptions.FileAlreadyPresentException;
 import com.dcm.backend.exceptions.FileNotFoundException;
 import com.dcm.backend.exceptions.NoThumbnailException;
 import com.dcm.backend.repositories.FileElasticRepository;
@@ -77,7 +78,13 @@ public class FileServiceImpl implements FileService {
     public void upload(InputStream is, FileHeaderDTO metadata) throws IOException,
             ServerException, InsufficientDataException, ErrorResponseException,
             NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
-            XmlParserException, InternalException {
+            XmlParserException, InternalException, FileAlreadyPresentException {
+
+        if (fileRepository.findByFolderAndFilename(metadata.getFolder(),
+                metadata.getFilename()).isPresent()) {
+            throw new FileAlreadyPresentException("upload : " + metadata.getFilename() +
+                    " already exists in " + metadata.getFolder());
+        }
 
         // Clone the InputStream to be able to read it twice
         byte[] bytes = is.readAllBytes();

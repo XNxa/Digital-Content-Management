@@ -13,6 +13,7 @@ public final class ErrorMessages {
     public static final String INVALID_MIME_TYPE_CODE = "INVALID.MIME.TYPE";
     public static final String INVALID_EMAIL_CODE = "INVALID.EMAIL";
     public static final String INVALID_FOLDER_CODE = "INVALID.FOLDER";
+    public static final String FILE_ALREADY_EXISTS_CODE = "FILE.ALREADY.EXISTS";
 
     private ErrorMessages() {
         // Not called

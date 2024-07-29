@@ -57,6 +57,8 @@ export class ErrorHandlerInterceptor implements HttpInterceptor {
         return 'The provided email address is invalid.';
       case 'INVALID.FOLDER':
         return 'The provided folder name or format is invalid.';
+      case 'FILE.ALREADY.EXISTS':
+        return 'A file with the same name is already present in this folder';
       default:
         return 'An unknown error occurred.';
     }

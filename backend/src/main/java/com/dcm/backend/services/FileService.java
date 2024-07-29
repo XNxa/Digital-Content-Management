@@ -3,6 +3,7 @@ package com.dcm.backend.services;
 import com.dcm.backend.dto.FileFilterDTO;
 import com.dcm.backend.dto.FileHeaderDTO;
 import com.dcm.backend.dto.FilenameDTO;
+import com.dcm.backend.exceptions.FileAlreadyPresentException;
 import com.dcm.backend.exceptions.FileNotFoundException;
 import com.dcm.backend.exceptions.NoThumbnailException;
 import io.minio.errors.*;
@@ -28,7 +29,7 @@ public interface FileService {
     void upload(InputStream is, FileHeaderDTO metadata) throws IOException,
             ServerException, InsufficientDataException, ErrorResponseException,
             NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
-            XmlParserException, InternalException;
+            XmlParserException, InternalException, FileAlreadyPresentException;
 
     /**
      * Returns the number of files in the database that match the filter
