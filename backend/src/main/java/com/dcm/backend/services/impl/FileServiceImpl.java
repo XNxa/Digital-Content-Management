@@ -14,6 +14,7 @@ import com.dcm.backend.enumeration.Status;
 import com.dcm.backend.enumeration.Subfolders;
 import com.dcm.backend.exceptions.FileAlreadyPresentException;
 import com.dcm.backend.exceptions.FileNotFoundException;
+import com.dcm.backend.exceptions.IncoherentStateException;
 import com.dcm.backend.exceptions.NoThumbnailException;
 import com.dcm.backend.repositories.FileElasticRepository;
 import com.dcm.backend.repositories.FileRepository;
@@ -32,9 +33,9 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.SearchHit;
-import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -105,7 +106,7 @@ public class FileServiceImpl implements FileService {
     @Override
     public long count(FileFilterDTO filter) {
         if (ap.isUseElasticsearch()) {
-            return fileElasticRepository.countByFilter(filter);
+            return fileElasticRepository.countByFilter(filter).block();
         } else {
             FileFilterSpecification spec =
                     new FileFilterSpecification(filter.getFolder(), filter.getFilename(),
@@ -129,9 +130,11 @@ public class FileServiceImpl implements FileService {
     public List<FileHeaderDTO> search(String query) {
         Pageable pageRequest = PageRequest.of(0, 10);
         if (ap.isUseElasticsearch()) {
-            SearchHits<FileHeaderElastic> list =
+            Flux<SearchHit<FileHeaderElastic>> flux =
                     fileElasticRepository.searchByQuery(query, pageRequest);
-            return list.stream()
+            return flux.collectList()
+                    .block()
+                    .stream()
                     .map(SearchHit::getContent)
                     .map(fileHeaderMapper::toDto)
                     .toList();
@@ -172,9 +175,9 @@ public class FileServiceImpl implements FileService {
         Pageable pageRequest = PageRequest.of(filter.getPage(), filter.getSize());
         if (ap.isUseElasticsearch()) {
 
-            SearchHits<FileHeaderElastic> list =
+            Flux<SearchHit<FileHeaderElastic>> flux =
                     fileElasticRepository.findByFilter(filter, pageRequest);
-
+            List<SearchHit<FileHeaderElastic>> list = flux.collectList().block();
             return list.stream()
                     .map(SearchHit::getContent)
                     .map(fileHeaderMapper::toDto)
@@ -219,7 +222,7 @@ public class FileServiceImpl implements FileService {
         }
 
         if (ap.isUseElasticsearch()) {
-            fileElasticRepository.deleteById(fileHeader.getId());
+            fileElasticRepository.deleteById(fileHeader.getId()).subscribe();
         }
 
         fileRepository.delete(fileHeader);
@@ -336,10 +339,13 @@ public class FileServiceImpl implements FileService {
             FileHeaderElastic fileHeaderElastic = fileHeaderMapper.toElastic(newFileHeader);
             if (fileHeader.getThumbnailName() != null) {
                 FileHeaderElastic f =
-                        fileElasticRepository.findById(fileHeader.getId()).get();
+                        fileElasticRepository.findById(fileHeader.getId()).block();
+                if (f == null)
+                    throw new IncoherentStateException("duplicate : " + file.getFilename() +
+                            " not found in Elasticsearch");
                 fileHeaderElastic.setThumbnail(f.getThumbnail());
             }
-            fileElasticRepository.save(fileHeaderElastic);
+            fileElasticRepository.save(fileHeaderElastic).subscribe();
         }
     }
 
@@ -374,10 +380,13 @@ public class FileServiceImpl implements FileService {
             FileHeaderElastic fileHeaderElastic = fileHeaderMapper.toElastic(fileHeader);
             if (fileHeader.getThumbnailName() != null) {
                 FileHeaderElastic f =
-                        fileElasticRepository.findById(fileHeader.getId()).get();
+                        fileElasticRepository.findById(fileHeader.getId()).block();
+                if (f == null)
+                    throw new IncoherentStateException("update : " + file.getFilename() +
+                            " not found in Elasticsearch");
                 fileHeaderElastic.setThumbnail(f.getThumbnail());
             }
-            fileElasticRepository.save(fileHeaderElastic);
+            fileElasticRepository.save(fileHeaderElastic).subscribe();
         }
         keywordService.deleteUnusedKeywords();
     }
@@ -519,7 +528,7 @@ public class FileServiceImpl implements FileService {
                 fileHeaderElastic.setThumbnail(
                         thumbnailService.getByteArrayFromBufferedImage(thumbnail, "png"));
             }
-            fileElasticRepository.save(fileHeaderElastic);
+            fileElasticRepository.save(fileHeaderElastic).subscribe();
         }
     }
 
@@ -538,6 +547,5 @@ public class FileServiceImpl implements FileService {
         }
         return keywordCollection;
     }
-
 
 }

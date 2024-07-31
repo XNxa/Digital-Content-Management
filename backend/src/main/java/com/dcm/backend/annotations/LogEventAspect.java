@@ -1,6 +1,5 @@
 package com.dcm.backend.annotations;
 
-import com.dcm.backend.api.FileController;
 import com.dcm.backend.entities.Log;
 import com.dcm.backend.repositories.LogRepository;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -36,8 +35,8 @@ public class LogEventAspect {
             System.out.println("ClassCastException: " + e.getMessage());
         }
 
-        logRepository.save(log);
-        
+        logRepository.save(log).subscribe();
+
         return joinPoint.proceed();
     }
 

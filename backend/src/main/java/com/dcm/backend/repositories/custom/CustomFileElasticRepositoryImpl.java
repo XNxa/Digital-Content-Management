@@ -7,34 +7,37 @@ import com.dcm.backend.enumeration.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.query.Criteria;
 import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 
 @Repository
 public class CustomFileElasticRepositoryImpl implements CustomFileElasticRepository {
 
     @Autowired
-    private ElasticsearchOperations elasticsearch;
+    private ReactiveElasticsearchOperations elasticsearch;
 
     @Override
-    public long countByFilter(FileFilterDTO filter) {
+    public Mono<Long> countByFilter(FileFilterDTO filter) {
         Query query = buildFilterQuery(filter);
         return elasticsearch.count(query, FileHeaderElastic.class);
     }
 
     @Override
-    public SearchHits<FileHeaderElastic> findByFilter(FileFilterDTO filter, Pageable pageable) {
+    public Flux<SearchHit<FileHeaderElastic>> findByFilter(FileFilterDTO filter, Pageable pageable) {
         Query query = buildFilterQuery(filter).setPageable(pageable);
         return elasticsearch.search(query, FileHeaderElastic.class);
     }
 
     @Override
-    public SearchHits<FileHeaderElastic> searchByQuery(String query, Pageable pageable) {
+    public Flux<SearchHit<FileHeaderElastic>> searchByQuery(String query,
+                                                            Pageable pageable) {
         NativeQuery nativeQuery = NativeQuery.builder()
                 .withQuery(q -> q.bool(b -> b.should(sh -> sh.multiMatch(
                                 m -> m.fields("filename^2", "keywords", "folder", "type",

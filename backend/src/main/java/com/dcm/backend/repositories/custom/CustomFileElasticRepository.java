@@ -3,14 +3,16 @@ package com.dcm.backend.repositories.custom;
 import com.dcm.backend.dto.FileFilterDTO;
 import com.dcm.backend.entities.FileHeaderElastic;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.SearchHit;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface CustomFileElasticRepository {
 
-    long countByFilter(FileFilterDTO filter);
+    Mono<Long> countByFilter(FileFilterDTO filter);
 
-    SearchHits<FileHeaderElastic> findByFilter(FileFilterDTO filter, Pageable pageable);
+    Flux<SearchHit<FileHeaderElastic>> findByFilter(FileFilterDTO filter, Pageable pageable);
 
-    SearchHits<FileHeaderElastic> searchByQuery(String query, Pageable pageable);
+    Flux<SearchHit<FileHeaderElastic>> searchByQuery(String query, Pageable pageable);
 
 }
