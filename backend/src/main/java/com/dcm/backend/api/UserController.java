@@ -1,5 +1,7 @@
 package com.dcm.backend.api;
 
+import com.dcm.backend.annotations.LogEvent;
+import com.dcm.backend.annotations.Loggable;
 import com.dcm.backend.dto.UserDTO;
 import com.dcm.backend.exceptions.UserNotFoundException;
 import com.dcm.backend.services.UserService;
@@ -14,16 +16,18 @@ import java.util.Collection;
 @RestController
 @RequestMapping("/api/user")
 @CrossOrigin
-public class UserController {
+public class UserController extends Loggable {
 
     @Autowired
     UserService userService;
 
+    @LogEvent
     @GetMapping("/count")
     public int countUsers() {
         return userService.count();
     }
 
+    @LogEvent
     @PostMapping("/list")
     public Collection<UserDTO> listUsers(
             @RequestParam(value = "firstResult", defaultValue = "0", required = false) int firstResult,
@@ -32,23 +36,27 @@ public class UserController {
         return userService.list(firstResult, maxResults, filter);
     }
 
+    @LogEvent
     @GetMapping("/user")
     public UserDTO getUser(@RequestParam("id") String id) {
         return userService.getUser(id);
     }
 
+    @LogEvent
     @PreAuthorize("hasRole('" + Permissions.USER_ADD + "')")
     @PostMapping("/create")
     public void createUser(@RequestBody @Valid UserDTO user) {
         userService.create(user);
     }
 
+    @LogEvent
     @PreAuthorize("hasRole('" + Permissions.USER_DELETE + "')")
     @DeleteMapping("/delete")
     public void deleteUser(@RequestParam("id") String id) {
         userService.delete(id);
     }
 
+    @LogEvent
     @PreAuthorize("hasRole('" + Permissions.USER_MODIFY + "')")
     @PutMapping("/update")
     public void updateUser(@RequestBody @Valid UserDTO user) throws
@@ -56,11 +64,13 @@ public class UserController {
         userService.update(user);
     }
 
+    @LogEvent
     @GetMapping("/functions")
     public Collection<String> getFunctions() {
         return userService.getFunctions();
     }
 
+    @LogEvent
     @GetMapping("/validate")
     public boolean validateEmail(@RequestParam("email") String email) {
         return userService.validateEmail(email);

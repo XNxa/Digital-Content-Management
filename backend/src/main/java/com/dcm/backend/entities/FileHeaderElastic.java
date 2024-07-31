@@ -36,7 +36,7 @@ public class FileHeaderElastic {
 
     private Status status;
 
-    @Field(type = FieldType.Date, pattern = "yyyy-MM-dd")
+    @Field(type = FieldType.Date, format = DateFormat.year_month_day)
     private LocalDate date;
 
     private String type;
