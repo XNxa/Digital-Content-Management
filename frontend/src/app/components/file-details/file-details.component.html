@@ -112,9 +112,18 @@
     <div class="section">
       <h2>@defer(when file) {{{ file.filename }}}</h2>
       <div class="metadata">
-        <p>Ajouté le: @defer(when file) {{{ file.date }}}</p>
-        <p>{{ type }}: @defer(when file) {{{ file.printableSize }}}</p>
-        <p>{{ displayFolder }} > {{ displayTypeFolder }}</p>
+        <span>
+          <img src="icons/details/calendar.svg"  />
+          <p>Ajouté le : @defer(when file) {{{ file.date }}}</p>
+        </span>
+        <span>
+          <img src="icons/details/file.svg"  />
+          <p>{{ type }} - @defer(when file) {{{ file.printableSize }}}</p>
+        </span>
+        <span>
+          <img src="icons/details/pin.svg"  />
+          <p>{{ displayFolder }} > {{ displayTypeFolder }}</p>
+        </span>
       </div>
     </div>
     <div class="section">

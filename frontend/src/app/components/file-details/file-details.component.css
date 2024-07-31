@@ -111,8 +111,12 @@
 
 .metadata {
   color: var(--grey-text);
-  font-size: 12px;
-  line-height: 0.7;
+  line-height: 0px;
+  span {
+    display: flex;
+    gap : 8px;
+    margin: 0px;;
+  }
 }
 
 .section {
