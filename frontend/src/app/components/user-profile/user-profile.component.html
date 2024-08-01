@@ -92,10 +92,18 @@
       <div class="form">
         <div class="form-col">
           <app-input
-            label="Mot de passe"
+            label="Ancien mot de passe"
             type="password"
             placeholder="Saisissez le mot de passe"
-            [(value)]="password"
+            [(value)]="oldPassword"
+          ></app-input>
+        </div>
+        <div class="form-col">
+          <app-input
+            label="Nouveau mot de passe"
+            type="password"
+            placeholder="Saisissez le mot de passe"
+            [(value)]="newPassword"
           ></app-input>
         </div>
         <div class="form-col">

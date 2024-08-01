@@ -1,12 +1,16 @@
 package com.dcm.backend.services.impl;
 
+import com.dcm.backend.dto.CredentialsDTO;
 import com.dcm.backend.dto.UserDTO;
 import com.dcm.backend.exceptions.UserNotFoundException;
 import com.dcm.backend.services.UserService;
 import com.dcm.backend.utils.mappers.UserMapper;
+import lombok.Cleanup;
 import ma.gov.mes.framework.keycloak.KeycloakProperties;
 import org.jetbrains.annotations.Nullable;
+import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -102,6 +106,25 @@ public class UserServiceImpl implements UserService {
                 .stream()
                 .map(user -> user.getAttributes().get("function").get(0))
                 .collect(Collectors.toSet());
+    }
+
+    @Override
+    public boolean validateUser(CredentialsDTO user) {
+        @Cleanup Keycloak ku = KeycloakBuilder.builder()
+                .realm(keycloakProperties.getRealm())
+                .serverUrl(keycloakProperties.getAuthServerUrl())
+                .clientId("account")
+                .grantType(OAuth2Constants.PASSWORD)
+                .username(user.getUsername())
+                .password(user.getPassword())
+                .build();
+
+        try {
+            ku.tokenManager().getAccessToken();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override

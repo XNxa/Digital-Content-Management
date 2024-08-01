@@ -4,11 +4,20 @@ import { InputComponent } from '../../shared/components/form/input/input.compone
 import { SelectComponent } from '../../shared/components/form/select/select.component';
 import { ToggleButtonComponent } from '../../shared/components/buttons/toggle-button/toggle-button.component';
 import { User } from '../../models/User';
-import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  AsyncValidatorFn,
+  FormControl,
+  FormGroup,
+  ValidationErrors,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { UserApiService } from '../../services/user-api.service';
 import { RoleApiService } from '../../services/role-api.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PermissionDirective } from '../../shared/directives/permission.directive';
+import { Observable, catchError, map, of } from 'rxjs';
 
 @Component({
   selector: 'app-user-profile',
@@ -36,7 +45,12 @@ export class UserProfileComponent {
   role = new FormControl('', [Validators.required]);
   state = false;
 
-  password = new FormControl('', [Validators.required]);
+  oldPassword = new FormControl('', {
+    validators: Validators.required,
+    asyncValidators: this.crendentialsValidator(),
+    updateOn: 'blur',
+  });
+  newPassword = new FormControl('', [Validators.required]);
   passwordConfirmation = new FormControl('', [Validators.required]);
 
   group1 = new FormGroup({
@@ -48,7 +62,7 @@ export class UserProfileComponent {
   group2 = new FormGroup({ role: this.role });
   group3 = new FormGroup(
     {
-      password: this.password,
+      password: this.newPassword,
       passwordConfirmation: this.passwordConfirmation,
     },
     {
@@ -98,6 +112,21 @@ export class UserProfileComponent {
     };
   }
 
+  crendentialsValidator(): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      if (!control.value) {
+        return of(null);
+      }
+
+      return this.userapi
+        .validateCredentials(this.user.email, control.value)
+        .pipe(
+          map((isValid) => (isValid ? null : { wrongPassword: true })),
+          catchError(() => of({ wrongPassword: true })), // Treat as invalid if there's an issue with the request
+        );
+    };
+  }
+
   deleteUser() {
     this.userapi.deleteUser(this.user.id!).subscribe(() => {
       this.router.navigate(['app', '/user']);
@@ -128,7 +157,7 @@ export class UserProfileComponent {
         email: this.email.value!,
         role: this.role.value!,
         statut: this.state ? 'active' : 'inactive',
-        password: this.password.value!,
+        password: this.newPassword.value!,
       };
 
       this.userapi.updateUser(user).subscribe(() => {

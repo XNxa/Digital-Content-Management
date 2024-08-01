@@ -32,6 +32,8 @@ export class ErrorMessageComponent {
       return 'La valeur est invalide';
     } else if (form.hasError('unique')) {
       return 'La valeur est déjà utilisée';
+    } else if (form.hasError('wrongPassword')) {
+      return 'Mot de passe incorrect';
     }
     return '';
   }

@@ -2,6 +2,7 @@ package com.dcm.backend.api;
 
 import com.dcm.backend.annotations.LogEvent;
 import com.dcm.backend.annotations.Loggable;
+import com.dcm.backend.dto.CredentialsDTO;
 import com.dcm.backend.dto.UserDTO;
 import com.dcm.backend.exceptions.UserNotFoundException;
 import com.dcm.backend.services.UserService;
@@ -74,5 +75,10 @@ public class UserController extends Loggable {
     @GetMapping("/validate")
     public boolean validateEmail(@RequestParam("email") String email) {
         return userService.validateEmail(email);
+    }
+
+    @PostMapping("/checkpassword")
+    public boolean validatePassword(@RequestBody @Valid CredentialsDTO user) {
+        return userService.validateUser(user);
     }
 }

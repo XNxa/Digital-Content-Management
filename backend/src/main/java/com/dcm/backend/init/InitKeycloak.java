@@ -93,6 +93,9 @@ public class InitKeycloak {
             createAdminUser(keycloak);
             System.out.println("Admin user created successfully");
 
+            addDirectAccessGrantToAccountClient(keycloak);
+            System.out.println("Direct access grant added to 'account' client");
+
             System.out.println("Keycloak initialization completed successfully");
 
         } catch (ProcessingException e) {
@@ -260,6 +263,13 @@ public class InitKeycloak {
         credential.setValue(ADMIN_PASSWORD);
         adminUser.setCredentials(List.of(credential));
         keycloak.realm(REALMNAME).users().create(adminUser);
+    }
+
+    private static void addDirectAccessGrantToAccountClient(Keycloak keycloak) {
+        ClientRepresentation accountClient =
+                keycloak.realm(REALMNAME).clients().findByClientId("account").get(0);
+        accountClient.setDirectAccessGrantsEnabled(true);
+        keycloak.realm(REALMNAME).clients().get(accountClient.getId()).update(accountClient);
     }
 }
 

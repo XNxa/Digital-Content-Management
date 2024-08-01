@@ -58,4 +58,12 @@ export class UserApiService {
       params: { email: email },
     });
   }
+
+  public validateCredentials(username: string, password: string) {
+    const body = {
+      username,
+      password
+    }
+    return this.http.post<boolean>(`${this.API}/checkpassword`, body);
+  }
 }

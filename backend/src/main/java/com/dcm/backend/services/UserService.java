@@ -1,5 +1,6 @@
 package com.dcm.backend.services;
 
+import com.dcm.backend.dto.CredentialsDTO;
 import com.dcm.backend.dto.UserDTO;
 import com.dcm.backend.exceptions.UserNotFoundException;
 
@@ -67,4 +68,12 @@ public interface UserService {
      * @return true if the email is valid, false otherwise
      */
     boolean validateEmail(String email);
+
+    /**
+     * Validate a user credentials
+     *
+     * @param user
+     * @return true if the user is valid, false otherwise
+     */
+    boolean validateUser(CredentialsDTO user);
 }
