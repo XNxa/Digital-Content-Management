@@ -1,5 +1,6 @@
 package com.dcm.backend.services.impl;
 
+import com.dcm.backend.annotations.LogEvent;
 import com.dcm.backend.dto.PermissionDTO;
 import com.dcm.backend.dto.RoleDTO;
 import com.dcm.backend.services.RoleService;
@@ -53,11 +54,13 @@ public class RoleServiceImpl implements RoleService {
                 .toList();
     }
 
+    @LogEvent
     @Override
     public void deleteRole(String id) {
         keycloak.realm(keycloakProperties.getRealm()).groups().group(id).remove();
     }
 
+    @LogEvent
     @Override
     public void updateRole(RoleDTO roleDTO) {
         GroupRepresentation groupRepresentation = getGroupRepresentation(roleDTO.getId());
@@ -66,6 +69,7 @@ public class RoleServiceImpl implements RoleService {
         updateUserRoles(groupRepresentation, roleDTO.getName());
     }
 
+    @LogEvent
     @Override
     public void createRole(RoleDTO roleDTO) {
         GroupRepresentation groupRepresentation =
@@ -95,6 +99,7 @@ public class RoleServiceImpl implements RoleService {
                 .toList();
     }
 
+    @LogEvent
     @Override
     public RoleDTO getRole(String id) {
         GroupRepresentation group = keycloak.realm(keycloakProperties.getRealm())

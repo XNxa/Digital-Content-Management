@@ -1,5 +1,6 @@
 package com.dcm.backend.services.impl;
 
+import com.dcm.backend.annotations.LogEvent;
 import com.dcm.backend.config.ApplicationProperties;
 import com.dcm.backend.config.MinioConfig;
 import com.dcm.backend.config.MinioProperties;
@@ -75,6 +76,7 @@ public class FileServiceImpl implements FileService {
     @Autowired
     private FileHeaderMapper fileHeaderMapper;
 
+    @LogEvent
     @Override
     public void upload(InputStream is, FileHeaderDTO metadata) throws IOException,
             ServerException, InsufficientDataException, ErrorResponseException,
@@ -170,6 +172,7 @@ public class FileServiceImpl implements FileService {
         return result;
     }
 
+    @LogEvent
     @Override
     public List<FileHeaderDTO> getFiles(FileFilterDTO filter) {
         Pageable pageRequest = PageRequest.of(filter.getPage(), filter.getSize());
@@ -196,6 +199,7 @@ public class FileServiceImpl implements FileService {
         }
     }
 
+    @LogEvent
     @Override
     public void delete(FilenameDTO file) throws FileNotFoundException, ServerException,
             InsufficientDataException, ErrorResponseException, IOException,
@@ -229,6 +233,7 @@ public class FileServiceImpl implements FileService {
         keywordService.deleteUnusedKeywords();
     }
 
+    @LogEvent
     @Override
     public InputStreamResource getFile(FilenameDTO file) throws ServerException,
             InsufficientDataException, ErrorResponseException, IOException,
@@ -279,6 +284,7 @@ public class FileServiceImpl implements FileService {
         return MediaType.parseMediaType(fileHeader.getType());
     }
 
+    @LogEvent
     @Override
     public String getLink(FilenameDTO file) throws ServerException,
             InsufficientDataException, ErrorResponseException, IOException,
@@ -298,6 +304,7 @@ public class FileServiceImpl implements FileService {
                         .build());
     }
 
+    @LogEvent
     @Override
     public void duplicate(FilenameDTO file) throws FileNotFoundException, ServerException,
             InsufficientDataException, ErrorResponseException, IOException,
@@ -349,6 +356,7 @@ public class FileServiceImpl implements FileService {
         }
     }
 
+    @LogEvent
     @Override
     public void update(FilenameDTO file, FileHeaderDTO metadata) throws
             FileNotFoundException, ServerException, InsufficientDataException,

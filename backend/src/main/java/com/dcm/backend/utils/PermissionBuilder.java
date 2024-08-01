@@ -1,5 +1,6 @@
 package com.dcm.backend.utils;
 
+import com.dcm.backend.dto.FileFilterDTO;
 import com.dcm.backend.dto.FileHeaderDTO;
 import com.dcm.backend.dto.FilenameDTO;
 import com.dcm.backend.repositories.FileRepository;
@@ -12,6 +13,10 @@ public class PermissionBuilder {
 
     @Autowired
     private FileRepository fr;
+
+    public String buildPermission(FileFilterDTO metadata, String basePermission) {
+        return buildPermission(metadata.getFolder(), basePermission);
+    }
 
     public String buildPermission(FileHeaderDTO metadata, String basePermission) {
         return buildPermission(metadata.getFolder(), basePermission);
