@@ -73,7 +73,7 @@ export class SidebarComponent {
     });
 
     this.router.events.subscribe(() => {
-      if (!this.router.url.startsWith('/app/file')) {
+      if (!this.router.url.startsWith('/app/file') && !this.router.url.startsWith('/app/profile')) {
         this.dataSource.forEach((n) => (n.isSelected = false));
         const node = this.findNodeForUrl(this.router.url);
         if (node) {
