@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
                 .toList();
     }
 
-    @LogEvent
+    // @LogEvent
     @Override
     public void create(UserDTO user) {
         UserRepresentation userRepresentation = userMapper.toUserRepresentation(user);
@@ -62,13 +62,13 @@ public class UserServiceImpl implements UserService {
         keycloak.realm(keycloakProperties.getRealm()).users().create(userRepresentation);
     }
 
-    @LogEvent
+    // @LogEvent
     @Override
     public void delete(String id) {
         keycloak.realm(keycloakProperties.getRealm()).users().delete(id);
     }
 
-    @LogEvent
+    // @LogEvent
     @Override
     public void update(UserDTO user) throws UserNotFoundException {
         UserRepresentation userRepresentation = findUserByEmail(user.getEmail());
@@ -91,7 +91,7 @@ public class UserServiceImpl implements UserService {
                 .update(userRepresentation);
     }
 
-    @LogEvent
+    // @LogEvent
     @Override
     public UserDTO getUser(String id) {
         UserRepresentation userRepresentation =

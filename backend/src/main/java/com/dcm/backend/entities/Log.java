@@ -20,7 +20,6 @@ import java.time.LocalDateTime;
 @Document(indexName = "log-index")
 @TypeAlias("Event")
 public class Log {
-
     @Id
     private Long id;
 
@@ -33,7 +32,9 @@ public class Log {
     @Field(type = FieldType.Keyword)
     private String action;
 
-    @Field(type = FieldType.Text)
-    private String message;
+    @Field(type = FieldType.Match_Only_Text)
+    private String before;
 
+    @Field(type = FieldType.Match_Only_Text)
+    private String after;
 }

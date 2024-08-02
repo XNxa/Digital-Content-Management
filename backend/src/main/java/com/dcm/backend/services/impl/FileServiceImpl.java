@@ -26,6 +26,7 @@ import com.dcm.backend.utils.mappers.FileHeaderMapper;
 import io.minio.*;
 import io.minio.errors.*;
 import io.minio.http.Method;
+import jakarta.persistence.EntityManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +63,9 @@ public class FileServiceImpl implements FileService {
 
     @Autowired
     private FileRepository fileRepository;
+
+    @Autowired
+    private EntityManager entityManager;
 
     @Autowired
     private FileElasticRepository fileElasticRepository;
@@ -350,11 +354,22 @@ public class FileServiceImpl implements FileService {
                         file.getFilename())
                 .orElseThrow(() -> new FileNotFoundException(
                         "update : " + file.getFilename() + " not found in " + file.getFolder()));
+        entityManager.detach(fileHeader);
 
         fileHeader.setDescription(metadata.getDescription());
         fileHeader.setVersion(metadata.getVersion());
         fileHeader.setStatus(metadata.getStatus());
         fileHeader.setKeywords(getKeywords(metadata));
+
+        System.out.println(fileRepository.findById(fileHeader.getId())
+                .orElseThrow(() -> new FileNotFoundException(
+                        "update : " + file.getFilename() + " not found in " + file.getFolder())));
+
+        fileHeader = fileRepository.save(fileHeader);
+
+        System.out.println(fileRepository.findById(fileHeader.getId())
+                .orElseThrow(() -> new FileNotFoundException(
+                        "update : " + file.getFilename() + " not found in " + file.getFolder())));
 
         this.minioClient.setObjectTags(SetObjectTagsArgs.builder()
                 .bucket(mp.getBucketName())
@@ -363,8 +378,6 @@ public class FileServiceImpl implements FileService {
                         .stream()
                         .collect(Collectors.toMap(k -> k, v -> "")))
                 .build());
-
-        fileHeader = fileRepository.save(fileHeader);
         if (ap.isUseElasticsearch()) {
             FileHeaderElastic fileHeaderElastic = fileHeaderMapper.toElastic(fileHeader);
             if (fileHeader.getThumbnailName() != null) {
