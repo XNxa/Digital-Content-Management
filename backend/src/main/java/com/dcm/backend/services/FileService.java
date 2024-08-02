@@ -27,9 +27,8 @@ public interface FileService {
      * @param metadata Metadata of the file
      */
     void upload(InputStream is, FileHeaderDTO metadata) throws IOException,
-            ServerException, InsufficientDataException, ErrorResponseException,
-            NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
-            XmlParserException, InternalException, FileAlreadyPresentException;
+            NoSuchAlgorithmException, InvalidKeyException, FileAlreadyPresentException,
+            MinioException;
 
     /**
      * Returns the number of files in the database that match the filter
@@ -52,10 +51,8 @@ public interface FileService {
      *
      * @param file DTO containing the folder and name of the file
      */
-    void delete(FilenameDTO file) throws FileNotFoundException, ServerException,
-            InsufficientDataException, ErrorResponseException, IOException,
-            NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
-            XmlParserException, InternalException;
+    void delete(FilenameDTO file) throws FileNotFoundException, IOException,
+            NoSuchAlgorithmException, InvalidKeyException, MinioException;
 
     /**
      * Gets a file data from the Minio server
@@ -64,10 +61,9 @@ public interface FileService {
      * @return InputStreamResource of the file
      * @throws FileNotFoundException If the file is not found
      */
-    InputStreamResource getFile(FilenameDTO file) throws ServerException,
-            InsufficientDataException, ErrorResponseException, IOException,
-            NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
-            XmlParserException, InternalException, FileNotFoundException;
+    InputStreamResource getFile(FilenameDTO file) throws IOException,
+            NoSuchAlgorithmException, InvalidKeyException, FileNotFoundException,
+            MinioException;
 
     /**
      * Gets the thumbnail of a file
@@ -77,11 +73,9 @@ public interface FileService {
      * @throws FileNotFoundException If the file is not found
      * @throws NoThumbnailException  If the file has no thumbnail
      */
-    InputStreamResource getThumbnail(FilenameDTO file) throws ServerException,
-            InsufficientDataException, ErrorResponseException, IOException,
-            NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
-            XmlParserException, InternalException, FileNotFoundException,
-            NoThumbnailException;
+    InputStreamResource getThumbnail(FilenameDTO file) throws IOException,
+            NoSuchAlgorithmException, InvalidKeyException, FileNotFoundException,
+            NoThumbnailException, MinioException;
 
     /**
      * Gets the type of file
@@ -97,10 +91,8 @@ public interface FileService {
      *
      * @param file DTO containing the folder and name of the file
      */
-    String getLink(FilenameDTO file) throws ServerException,
-            InsufficientDataException, ErrorResponseException, IOException,
-            NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
-            XmlParserException, InternalException, FileNotFoundException;
+    String getLink(FilenameDTO file) throws IOException, NoSuchAlgorithmException,
+            InvalidKeyException, FileNotFoundException, MinioException;
 
     /**
      * Duplicates a file
@@ -108,10 +100,8 @@ public interface FileService {
      * @param file DTO containing the folder and name of the file
      * @throws FileNotFoundException If the file is not found
      */
-    void duplicate(FilenameDTO file) throws FileNotFoundException, ServerException,
-            InsufficientDataException, ErrorResponseException, IOException,
-            NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
-            XmlParserException, InternalException;
+    void duplicate(FilenameDTO file) throws FileNotFoundException, IOException,
+            NoSuchAlgorithmException, InvalidKeyException, MinioException;
 
     /**
      * Updates the metadata of a file
@@ -119,11 +109,10 @@ public interface FileService {
      * @param file     DTO containing the folder and name of the file
      * @param metadata Metadata of the file
      */
-    void update(FilenameDTO file, FileHeaderDTO metadata) throws
-            FileNotFoundException, ServerException, InsufficientDataException,
-            ErrorResponseException, IOException, NoSuchAlgorithmException,
-            InvalidKeyException, InvalidResponseException, XmlParserException,
-            InternalException;
+    void update(FilenameDTO file, FileHeaderDTO metadata) throws FileNotFoundException,
+            ServerException, InsufficientDataException, ErrorResponseException,
+            IOException, NoSuchAlgorithmException, InvalidKeyException,
+            InvalidResponseException, XmlParserException, InternalException;
 
     /**
      * Gets the types of files in a folder

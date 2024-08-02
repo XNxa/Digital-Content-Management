@@ -2,7 +2,6 @@ package com.dcm.backend.services.impl;
 
 import com.dcm.backend.annotations.LogEvent;
 import com.dcm.backend.config.ApplicationProperties;
-import com.dcm.backend.config.MinioConfig;
 import com.dcm.backend.config.MinioProperties;
 import com.dcm.backend.dto.FileFilterDTO;
 import com.dcm.backend.dto.FileHeaderDTO;
@@ -56,7 +55,7 @@ public class FileServiceImpl implements FileService {
     private ApplicationProperties ap;
 
     @Autowired
-    private MinioConfig mc;
+    private MinioClient minioClient;
 
     @Autowired
     private MinioProperties mp;
@@ -78,15 +77,14 @@ public class FileServiceImpl implements FileService {
 
     @LogEvent
     @Override
-    public void upload(InputStream is, FileHeaderDTO metadata) throws IOException,
-            ServerException, InsufficientDataException, ErrorResponseException,
-            NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
-            XmlParserException, InternalException, FileAlreadyPresentException {
+    public void upload(InputStream is, FileHeaderDTO metadata) throws MinioException,
+            IOException, NoSuchAlgorithmException, InvalidKeyException,
+            FileAlreadyPresentException {
 
         if (fileRepository.findByFolderAndFilename(metadata.getFolder(),
                 metadata.getFilename()).isPresent()) {
-            throw new FileAlreadyPresentException("upload : " + metadata.getFilename() +
-                    " already exists in " + metadata.getFolder());
+            throw new FileAlreadyPresentException(
+                    "upload : " + metadata.getFilename() + " already exists in " + metadata.getFolder());
         }
 
         // Clone the InputStream to be able to read it twice
@@ -99,7 +97,7 @@ public class FileServiceImpl implements FileService {
         BufferedImage thumbnail = generateThumbnail(is1, metadata.getType());
         uploadFileToMinio(is2, metadata, keywordCollection);
         uploadThumbnailToMinio(thumbnail, metadata);
-        saveFileMetadata(metadata, thumbnail, keywordCollection);
+        FileHeader after = saveFileMetadata(metadata, thumbnail, keywordCollection);
 
         is1.close();
         is2.close();
@@ -123,9 +121,9 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public FileHeaderDTO getFileHeader(int id) {
-        return fileHeaderMapper.toDto(fileRepository.findById(id).orElseThrow(
-                () -> new NoSuchElementException("getFileHeader : " + id + " not found")
-        ));
+        return fileHeaderMapper.toDto(fileRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(
+                        "getFileHeader : " + id + " not found")));
     }
 
     @Override
@@ -201,28 +199,24 @@ public class FileServiceImpl implements FileService {
 
     @LogEvent
     @Override
-    public void delete(FilenameDTO file) throws FileNotFoundException, ServerException,
-            InsufficientDataException, ErrorResponseException, IOException,
-            NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
-            XmlParserException, InternalException {
+    public void delete(FilenameDTO file) throws MinioException, FileNotFoundException,
+            IOException, NoSuchAlgorithmException, InvalidKeyException {
 
         FileHeader fileHeader = fileRepository.findByFolderAndFilename(file.getFolder(),
                         file.getFilename())
                 .orElseThrow(() -> new FileNotFoundException(
                         "delete : " + file.getFilename() + " not found in " + file.getFolder()));
 
-        mc.minioClient()
-                .removeObject(RemoveObjectArgs.builder()
-                        .bucket(mp.getBucketName())
-                        .object(fileHeader.getFolder() + "/" + fileHeader.getFilename())
-                        .build());
+        this.minioClient.removeObject(RemoveObjectArgs.builder()
+                .bucket(mp.getBucketName())
+                .object(fileHeader.getFolder() + "/" + fileHeader.getFilename())
+                .build());
 
         if (fileHeader.getThumbnailName() != null) {
-            mc.minioClient()
-                    .removeObject(RemoveObjectArgs.builder()
-                            .bucket(mp.getBucketName())
-                            .object(fileHeader.getThumbnailName())
-                            .build());
+            this.minioClient.removeObject(RemoveObjectArgs.builder()
+                    .bucket(mp.getBucketName())
+                    .object(fileHeader.getThumbnailName())
+                    .build());
         }
 
         if (ap.isUseElasticsearch()) {
@@ -235,28 +229,24 @@ public class FileServiceImpl implements FileService {
 
     @LogEvent
     @Override
-    public InputStreamResource getFile(FilenameDTO file) throws ServerException,
-            InsufficientDataException, ErrorResponseException, IOException,
-            NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
-            XmlParserException, InternalException, FileNotFoundException {
+    public InputStreamResource getFile(FilenameDTO file) throws MinioException,
+            IOException, NoSuchAlgorithmException, InvalidKeyException,
+            FileNotFoundException {
         FileHeader fileHeader = fileRepository.findByFolderAndFilename(file.getFolder(),
                         file.getFilename())
                 .orElseThrow(() -> new FileNotFoundException(
                         "getFile : " + file.getFilename() + " not found in " + file.getFolder()));
 
-        return new InputStreamResource(mc.minioClient()
-                .getObject(GetObjectArgs.builder()
-                        .bucket(mp.getBucketName())
-                        .object(fileHeader.getFolder() + "/" + fileHeader.getFilename())
-                        .build()));
+        return new InputStreamResource(this.minioClient.getObject(GetObjectArgs.builder()
+                .bucket(mp.getBucketName())
+                .object(fileHeader.getFolder() + "/" + fileHeader.getFilename())
+                .build()));
     }
 
     @Override
-    public InputStreamResource getThumbnail(FilenameDTO file) throws ServerException,
-            InsufficientDataException, ErrorResponseException, IOException,
-            NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
-            XmlParserException, InternalException, FileNotFoundException,
-            NoThumbnailException {
+    public InputStreamResource getThumbnail(FilenameDTO file) throws MinioException,
+            IOException, NoSuchAlgorithmException, InvalidKeyException,
+            FileNotFoundException, NoThumbnailException {
         FileHeader fileHeader = fileRepository.findByFolderAndFilename(file.getFolder(),
                         file.getFilename())
                 .orElseThrow(() -> new FileNotFoundException(
@@ -267,11 +257,10 @@ public class FileServiceImpl implements FileService {
                     "getThumbnail : " + file.getFilename() + " has no thumbnail");
         }
 
-        return new InputStreamResource(mc.minioClient()
-                .getObject(GetObjectArgs.builder()
-                        .bucket(mp.getBucketName())
-                        .object(fileHeader.getThumbnailName())
-                        .build()));
+        return new InputStreamResource(this.minioClient.getObject(GetObjectArgs.builder()
+                .bucket(mp.getBucketName())
+                .object(fileHeader.getThumbnailName())
+                .build()));
     }
 
     @Override
@@ -286,30 +275,25 @@ public class FileServiceImpl implements FileService {
 
     @LogEvent
     @Override
-    public String getLink(FilenameDTO file) throws ServerException,
-            InsufficientDataException, ErrorResponseException, IOException,
-            NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
-            XmlParserException, InternalException, FileNotFoundException {
+    public String getLink(FilenameDTO file) throws MinioException, IOException,
+            NoSuchAlgorithmException, InvalidKeyException, FileNotFoundException {
         FileHeader fileHeader = fileRepository.findByFolderAndFilename(file.getFolder(),
                         file.getFilename())
                 .orElseThrow(() -> new FileNotFoundException(
                         "getLink : " + file.getFilename() + " not found in " + file.getFolder()));
 
-        return mc.minioClient()
-                .getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
-                        .method(Method.GET)
-                        .bucket(mp.getBucketName())
-                        .object(fileHeader.getFolder() + "/" + fileHeader.getFilename())
-                        .expiry(1, TimeUnit.DAYS)
-                        .build());
+        return this.minioClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
+                .method(Method.GET)
+                .bucket(mp.getBucketName())
+                .object(fileHeader.getFolder() + "/" + fileHeader.getFilename())
+                .expiry(1, TimeUnit.DAYS)
+                .build());
     }
 
     @LogEvent
     @Override
-    public void duplicate(FilenameDTO file) throws FileNotFoundException, ServerException,
-            InsufficientDataException, ErrorResponseException, IOException,
-            NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
-            XmlParserException, InternalException {
+    public void duplicate(FilenameDTO file) throws MinioException, FileNotFoundException,
+            IOException, NoSuchAlgorithmException, InvalidKeyException {
         FileHeader fileHeader = fileRepository.findByFolderAndFilename(file.getFolder(),
                         file.getFilename())
                 .orElseThrow(() -> new FileNotFoundException(
@@ -319,37 +303,35 @@ public class FileServiceImpl implements FileService {
 
         updateMetadata(fileHeader, newFileHeader);
 
-        mc.minioClient()
-                .copyObject(CopyObjectArgs.builder()
-                        .source(CopySource.builder()
-                                .bucket(mp.getBucketName())
-                                .object(fileHeader.getFolder() + "/" + fileHeader.getFilename())
-                                .build())
+        this.minioClient.copyObject(CopyObjectArgs.builder()
+                .source(CopySource.builder()
                         .bucket(mp.getBucketName())
-                        .object(newFileHeader.getFolder() + "/" + newFileHeader.getFilename())
-                        .build());
+                        .object(fileHeader.getFolder() + "/" + fileHeader.getFilename())
+                        .build())
+                .bucket(mp.getBucketName())
+                .object(newFileHeader.getFolder() + "/" + newFileHeader.getFilename())
+                .build());
 
         if (fileHeader.getThumbnailName() != null) {
-            mc.minioClient()
-                    .copyObject(CopyObjectArgs.builder()
-                            .source(CopySource.builder()
-                                    .bucket(mp.getBucketName())
-                                    .object(fileHeader.getThumbnailName())
-                                    .build())
+            this.minioClient.copyObject(CopyObjectArgs.builder()
+                    .source(CopySource.builder()
                             .bucket(mp.getBucketName())
-                            .object(newFileHeader.getThumbnailName())
-                            .build());
+                            .object(fileHeader.getThumbnailName())
+                            .build())
+                    .bucket(mp.getBucketName())
+                    .object(newFileHeader.getThumbnailName())
+                    .build());
         }
 
         newFileHeader = fileRepository.save(newFileHeader);
         if (ap.isUseElasticsearch()) {
-            FileHeaderElastic fileHeaderElastic = fileHeaderMapper.toElastic(newFileHeader);
+            FileHeaderElastic fileHeaderElastic =
+                    fileHeaderMapper.toElastic(newFileHeader);
             if (fileHeader.getThumbnailName() != null) {
                 FileHeaderElastic f =
                         fileElasticRepository.findById(fileHeader.getId()).block();
-                if (f == null)
-                    throw new IncoherentStateException("duplicate : " + file.getFilename() +
-                            " not found in Elasticsearch");
+                if (f == null) throw new IncoherentStateException(
+                        "duplicate : " + file.getFilename() + " not found in Elasticsearch");
                 fileHeaderElastic.setThumbnail(f.getThumbnail());
             }
             fileElasticRepository.save(fileHeaderElastic).subscribe();
@@ -374,14 +356,13 @@ public class FileServiceImpl implements FileService {
         fileHeader.setStatus(metadata.getStatus());
         fileHeader.setKeywords(getKeywords(metadata));
 
-        mc.minioClient()
-                .setObjectTags(SetObjectTagsArgs.builder()
-                        .bucket(mp.getBucketName())
-                        .object(fileHeader.getFolder() + "/" + fileHeader.getFilename())
-                        .tags(metadata.getKeywords()
-                                .stream()
-                                .collect(Collectors.toMap(k -> k, v -> "")))
-                        .build());
+        this.minioClient.setObjectTags(SetObjectTagsArgs.builder()
+                .bucket(mp.getBucketName())
+                .object(fileHeader.getFolder() + "/" + fileHeader.getFilename())
+                .tags(metadata.getKeywords()
+                        .stream()
+                        .collect(Collectors.toMap(k -> k, v -> "")))
+                .build());
 
         fileHeader = fileRepository.save(fileHeader);
         if (ap.isUseElasticsearch()) {
@@ -389,9 +370,8 @@ public class FileServiceImpl implements FileService {
             if (fileHeader.getThumbnailName() != null) {
                 FileHeaderElastic f =
                         fileElasticRepository.findById(fileHeader.getId()).block();
-                if (f == null)
-                    throw new IncoherentStateException("update : " + file.getFilename() +
-                            " not found in Elasticsearch");
+                if (f == null) throw new IncoherentStateException(
+                        "update : " + file.getFilename() + " not found in Elasticsearch");
                 fileHeaderElastic.setThumbnail(f.getThumbnail());
             }
             fileElasticRepository.save(fileHeaderElastic).subscribe();
@@ -469,23 +449,20 @@ public class FileServiceImpl implements FileService {
      * @param metadata FileHeaderDTO metadata of the file
      */
     private void uploadFileToMinio(InputStream is, FileHeaderDTO metadata, Collection<Keyword> keywords) throws
-            IOException, ServerException, InsufficientDataException,
-            ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException,
-            InvalidResponseException, XmlParserException, InternalException {
+            MinioException, IOException, NoSuchAlgorithmException, InvalidKeyException {
 
         Map<String, String> keywordsTags = new HashMap<>();
         for (Keyword k : keywords) {
             keywordsTags.put(k.getName(), "");
         }
 
-        mc.minioClient()
-                .putObject(PutObjectArgs.builder()
-                        .bucket(mp.getBucketName())
-                        .object(metadata.getFolder() + "/" + metadata.getFilename())
-                        .tags(keywordsTags)
-                        .stream(is, -1, 5_000_000_000L)
-                        .contentType(metadata.getType())
-                        .build());
+        this.minioClient.putObject(PutObjectArgs.builder()
+                .bucket(mp.getBucketName())
+                .object(metadata.getFolder() + "/" + metadata.getFilename())
+                .tags(keywordsTags)
+                .stream(is, -1, 5_000_000_000L)
+                .contentType(metadata.getType())
+                .build());
     }
 
     /**
@@ -495,19 +472,16 @@ public class FileServiceImpl implements FileService {
      * @param metadata  FileHeaderDTO metadata of the file
      */
     private void uploadThumbnailToMinio(@Nullable BufferedImage thumbnail, FileHeaderDTO metadata) throws
-            IOException, ServerException, InsufficientDataException,
-            ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException,
-            InvalidResponseException, XmlParserException, InternalException {
+            MinioException, IOException, NoSuchAlgorithmException, InvalidKeyException {
         if (thumbnail != null) {
             InputStream thumbnailInputStream =
                     thumbnailService.getInputStreamFromBufferedImage(thumbnail, "png");
-            mc.minioClient()
-                    .putObject(PutObjectArgs.builder()
-                            .bucket(mp.getBucketName())
-                            .object("thumbnail/" + metadata.getFolder() + "/" + metadata.getFilename())
-                            .stream(thumbnailInputStream, -1, 5_000_000_000L)
-                            .contentType("image/png")
-                            .build());
+            this.minioClient.putObject(PutObjectArgs.builder()
+                    .bucket(mp.getBucketName())
+                    .object("thumbnail/" + metadata.getFolder() + "/" + metadata.getFilename())
+                    .stream(thumbnailInputStream, -1, 5_000_000_000L)
+                    .contentType("image/png")
+                    .build());
         }
     }
 
@@ -518,7 +492,7 @@ public class FileServiceImpl implements FileService {
      * @param thumbnail         BufferedImage thumbnail of the file
      * @param keywordCollection Collection of keywords of the file
      */
-    private void saveFileMetadata(FileHeaderDTO metadata, @Nullable BufferedImage thumbnail, Collection<Keyword> keywordCollection) throws
+    private FileHeader saveFileMetadata(FileHeaderDTO metadata, @Nullable BufferedImage thumbnail, Collection<Keyword> keywordCollection) throws
             IOException {
         FileHeader f = fileHeaderMapper.toMinimalEntity(metadata);
         f.setKeywords(keywordCollection);
@@ -538,6 +512,8 @@ public class FileServiceImpl implements FileService {
             }
             fileElasticRepository.save(fileHeaderElastic).subscribe();
         }
+
+        return f;
     }
 
     /**
