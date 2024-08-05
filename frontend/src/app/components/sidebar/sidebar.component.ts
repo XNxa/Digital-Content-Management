@@ -46,7 +46,13 @@ export class SidebarComponent {
     }
 
     return permissions.some((p) => this.auth.isUserInRole(p));
-  }, this);
+  }, this).filter((node, _, list) => {
+    if (node.name == 'Gestion') {
+      return list.findIndex(n => n.name == 'Utilisateurs') != -1 || list.findIndex(n => n.name == 'Rôles') != -1
+    } else {
+      return true;
+    }
+  });
 
   currentUser!: User;
 
