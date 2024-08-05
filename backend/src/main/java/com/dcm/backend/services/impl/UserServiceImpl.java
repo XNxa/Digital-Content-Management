@@ -56,6 +56,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void create(UserDTO user) {
         UserRepresentation userRepresentation = userMapper.toUserRepresentation(user);
+        userRepresentation.setGroups(List.of(user.getRole()));
 
         setUserPassword(userRepresentation, user.getPassword(), true);
 
@@ -167,10 +168,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private List<GroupRepresentation> getUserGroups(String userId) {
-        return keycloak.realm(keycloakProperties.getRealm())
-                .users()
-                .get(userId)
-                .groups();
+        return keycloak.realm(keycloakProperties.getRealm()).users().get(userId).groups();
     }
 
     private List<GroupRepresentation> getGroupByName(String roleName) {
@@ -187,11 +185,9 @@ public class UserServiceImpl implements UserService {
         userRepresentation.setFirstName(user.getFirstname());
         userRepresentation.setLastName(user.getLastname());
         userRepresentation.setEnabled(true);
-        userRepresentation.setAttributes(Map.of(
-                "function", List.of(user.getFunction()),
-                "role", List.of(user.getRole()),
-                "statut", List.of(user.getStatut())
-        ));
+        userRepresentation.setAttributes(
+                Map.of("function", List.of(user.getFunction()), "role",
+                        List.of(user.getRole()), "statut", List.of(user.getStatut())));
     }
 
     private void updateUserGroups(UserRepresentation userRepresentation, List<GroupRepresentation> oldGroups, List<GroupRepresentation> newGroups) {
@@ -206,8 +202,7 @@ public class UserServiceImpl implements UserService {
                 .joinGroup(newGroups.get(0).getId());
     }
 
-    private void setUserPassword(UserRepresentation userRepresentation,
-                                 String newPassword, Boolean temporary) {
+    private void setUserPassword(UserRepresentation userRepresentation, String newPassword, Boolean temporary) {
         CredentialRepresentation credentials = new CredentialRepresentation();
         credentials.setType(CredentialRepresentation.PASSWORD);
         credentials.setValue(newPassword);

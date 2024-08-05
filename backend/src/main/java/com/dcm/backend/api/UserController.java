@@ -27,7 +27,6 @@ public class UserController {
     }
 
     @PostMapping("/list")
-    @PreAuthorize("hasRole('" + Permissions.USER_CONSULT + "')")
     public Collection<UserDTO> listUsers(
             @RequestParam(value = "firstResult", defaultValue = "0", required = false) int firstResult,
             @RequestParam(value = "maxResults", defaultValue = "10", required = false) int maxResults,
