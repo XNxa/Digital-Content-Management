@@ -54,13 +54,13 @@ public class RoleServiceImpl implements RoleService {
                 .toList();
     }
 
-    // @LogEvent
+    @LogEvent(targetLogClass = RoleDTO.class)
     @Override
     public void deleteRole(String id) {
         keycloak.realm(keycloakProperties.getRealm()).groups().group(id).remove();
     }
 
-    // @LogEvent
+    @LogEvent(targetLogClass = RoleDTO.class)
     @Override
     public void updateRole(RoleDTO roleDTO) {
         GroupRepresentation groupRepresentation = getGroupRepresentation(roleDTO.getId());
@@ -69,7 +69,7 @@ public class RoleServiceImpl implements RoleService {
         updateUserRoles(groupRepresentation, roleDTO.getName());
     }
 
-    // @LogEvent
+    @LogEvent(targetLogClass = RoleDTO.class)
     @Override
     public void createRole(RoleDTO roleDTO) {
         GroupRepresentation groupRepresentation =
@@ -99,7 +99,7 @@ public class RoleServiceImpl implements RoleService {
                 .toList();
     }
 
-    // @LogEvent
+    @LogEvent(targetLogClass = RoleDTO.class)
     @Override
     public RoleDTO getRole(String id) {
         GroupRepresentation group = keycloak.realm(keycloakProperties.getRealm())

@@ -51,17 +51,36 @@ public class LogEventAspect {
         Object res = joinPoint.proceed();
         spyOnRepositories = false;
 
+        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+        Class<?> targetLogClass = logevent.targetLogClass();
+        boolean isReturnTypeAssignable =
+                targetLogClass.equals(methodSignature.getReturnType());
+        boolean isAnyParameterTypeAssignable =
+                Arrays.asList(methodSignature.getParameterTypes())
+                        .contains(targetLogClass);
+
+        if (isReturnTypeAssignable) {
+            afterSpiedObject = res;
+        }
+
+        if (isAnyParameterTypeAssignable) {
+            beforeSpiedObject = Arrays.stream(joinPoint.getArgs())
+                    .filter(arg -> arg.getClass().equals(targetLogClass))
+                    .findFirst()
+                    .get();
+        }
+
         log.setBefore(beforeSpiedObject == null ? "null" : beforeSpiedObject.toString());
         log.setAfter(afterSpiedObject == null ? "null" : afterSpiedObject.toString());
-
-        logRepository.save(log).subscribe();
         beforeSpiedObject = null;
         afterSpiedObject = null;
+
+        logRepository.save(log).subscribe();
         return res;
     }
 
-    @Around(value = "execution(* com.dcm.backend.repositories.*.*(..)) && " + "args(com" + ".dcm.backend.entities.FileHeader)")
-    public Object logEventToElasticsearchBefore(ProceedingJoinPoint jp) throws Throwable {
+    @Around(value = "(execution(* com.dcm.backend.repositories.*.save(..)) || execution(* com.dcm.backend.repositories.*.delete(..))) && args(com.dcm.backend.entities.FileHeader,..)")
+    public Object aroundRepositoryAction(ProceedingJoinPoint jp) throws Throwable {
         if (spyOnRepositories) {
             FileHeader arg = (FileHeader) Arrays.stream(jp.getArgs())
                     .filter(o -> o instanceof FileHeader)
@@ -72,8 +91,8 @@ public class LogEventAspect {
             MethodSignature m = (MethodSignature) jp.getSignature();
             switch (m.getName()) {
                 case "save":
-                    beforeSpiedObject =
-                            fileHeaderMapper.copy(fileRepository.findById(arg.getId()).orElse(null));
+                    beforeSpiedObject = fileHeaderMapper.copy(
+                            fileRepository.findById(arg.getId()).orElse(null));
                     Object res = jp.proceed();
                     afterSpiedObject = fileHeaderMapper.copy((FileHeader) res);
                     return res;
@@ -82,10 +101,11 @@ public class LogEventAspect {
                     afterSpiedObject = null;
                     break;
                 default:
-                    log.error("Unexpected use of LogEvent");
+                    log.error("Unexpected use of @LogEvent");
             }
         }
         return jp.proceed();
     }
+
 
 }
