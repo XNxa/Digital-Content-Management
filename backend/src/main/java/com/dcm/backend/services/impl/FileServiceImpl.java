@@ -119,9 +119,9 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public FileHeaderDTO getFileHeader(int id) {
+    public FileHeaderDTO getFileHeader(int id) throws FileNotFoundException {
         return fileHeaderMapper.toDto(fileRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(
+                .orElseThrow(() -> new FileNotFoundException(
                         "getFileHeader : " + id + " not found")));
     }
 

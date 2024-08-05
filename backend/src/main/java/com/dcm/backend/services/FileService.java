@@ -151,6 +151,6 @@ public interface FileService {
      * @param id Id of the file
      * @return Metadata of the file
      */
-    FileHeaderDTO getFileHeader(int id);
+    FileHeaderDTO getFileHeader(int id) throws FileNotFoundException;
 }
 

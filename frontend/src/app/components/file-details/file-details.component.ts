@@ -95,7 +95,7 @@ export class FileDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    URL.revokeObjectURL(this.data)
+    URL.revokeObjectURL(this.data);
   }
 
   openDialog(): void {
@@ -133,8 +133,10 @@ export class FileDetailsComponent implements OnInit, OnDestroy {
   }
 
   onDelete(): void {
-    this.api.delete(this.file.folder, this.file.filename).subscribe();
-    this.onPrevious()
+    this.api.delete(this.file.folder, this.file.filename).subscribe(() => {
+      this.fileList.remove(this.file.id);
+      this.onPrevious();
+    });
   }
 
   onClose(): void {
@@ -142,10 +144,12 @@ export class FileDetailsComponent implements OnInit, OnDestroy {
   }
 
   onPrevious() {
-    this.router.navigateByUrl('app/file/' + this.fileList.previous(this.file.id));
+    this.router.navigateByUrl(
+      'app/file/' + this.fileList.previous(this.file.id),
+    );
   }
 
   onNext() {
-    this.router.navigateByUrl('app/file/' + this.fileList.previous(this.file.id));
+    this.router.navigateByUrl('app/file/' + this.fileList.next(this.file.id));
   }
 }
