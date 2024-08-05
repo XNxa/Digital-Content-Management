@@ -2,7 +2,6 @@ package com.dcm.backend.services.impl;
 
 import com.dcm.backend.annotations.LogEvent;
 import com.dcm.backend.config.ApplicationProperties;
-import com.dcm.backend.config.MinioProperties;
 import com.dcm.backend.dto.FileFilterDTO;
 import com.dcm.backend.dto.FileHeaderDTO;
 import com.dcm.backend.dto.FilenameDTO;
@@ -21,11 +20,10 @@ import com.dcm.backend.repositories.FileRepository;
 import com.dcm.backend.repositories.specifications.FileFilterSpecification;
 import com.dcm.backend.services.FileService;
 import com.dcm.backend.services.KeywordService;
+import com.dcm.backend.services.MinioService;
 import com.dcm.backend.services.ThumbnailService;
 import com.dcm.backend.utils.mappers.FileHeaderMapper;
-import io.minio.*;
 import io.minio.errors.*;
-import io.minio.http.Method;
 import jakarta.persistence.EntityManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -56,10 +54,7 @@ public class FileServiceImpl implements FileService {
     private ApplicationProperties ap;
 
     @Autowired
-    private MinioClient minioClient;
-
-    @Autowired
-    private MinioProperties mp;
+    MinioService minioService;
 
     @Autowired
     private FileRepository fileRepository;
@@ -211,16 +206,11 @@ public class FileServiceImpl implements FileService {
                 .orElseThrow(() -> new FileNotFoundException(
                         "delete : " + file.getFilename() + " not found in " + file.getFolder()));
 
-        this.minioClient.removeObject(RemoveObjectArgs.builder()
-                .bucket(mp.getBucketName())
-                .object(fileHeader.getFolder() + "/" + fileHeader.getFilename())
-                .build());
+        minioService.removeObject(
+                fileHeader.getFolder() + "/" + fileHeader.getFilename());
 
         if (fileHeader.getThumbnailName() != null) {
-            this.minioClient.removeObject(RemoveObjectArgs.builder()
-                    .bucket(mp.getBucketName())
-                    .object(fileHeader.getThumbnailName())
-                    .build());
+            minioService.removeObject(fileHeader.getThumbnailName());
         }
 
         if (ap.isUseElasticsearch()) {
@@ -241,10 +231,8 @@ public class FileServiceImpl implements FileService {
                 .orElseThrow(() -> new FileNotFoundException(
                         "getFile : " + file.getFilename() + " not found in " + file.getFolder()));
 
-        return new InputStreamResource(this.minioClient.getObject(GetObjectArgs.builder()
-                .bucket(mp.getBucketName())
-                .object(fileHeader.getFolder() + "/" + fileHeader.getFilename())
-                .build()));
+        return new InputStreamResource(minioService.getObject(
+                fileHeader.getFolder() + "/" + fileHeader.getFilename()));
     }
 
     @Override
@@ -261,10 +249,8 @@ public class FileServiceImpl implements FileService {
                     "getThumbnail : " + file.getFilename() + " has no thumbnail");
         }
 
-        return new InputStreamResource(this.minioClient.getObject(GetObjectArgs.builder()
-                .bucket(mp.getBucketName())
-                .object(fileHeader.getThumbnailName())
-                .build()));
+        return new InputStreamResource(
+                minioService.getObject(fileHeader.getThumbnailName()));
     }
 
     @Override
@@ -286,12 +272,9 @@ public class FileServiceImpl implements FileService {
                 .orElseThrow(() -> new FileNotFoundException(
                         "getLink : " + file.getFilename() + " not found in " + file.getFolder()));
 
-        return this.minioClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
-                .method(Method.GET)
-                .bucket(mp.getBucketName())
-                .object(fileHeader.getFolder() + "/" + fileHeader.getFilename())
-                .expiry(1, TimeUnit.DAYS)
-                .build());
+        return minioService.getObjectUrl(
+                fileHeader.getFolder() + "/" + fileHeader.getFilename(), 1,
+                TimeUnit.DAYS);
     }
 
     @LogEvent
@@ -307,24 +290,12 @@ public class FileServiceImpl implements FileService {
 
         updateMetadata(fileHeader, newFileHeader);
 
-        this.minioClient.copyObject(CopyObjectArgs.builder()
-                .source(CopySource.builder()
-                        .bucket(mp.getBucketName())
-                        .object(fileHeader.getFolder() + "/" + fileHeader.getFilename())
-                        .build())
-                .bucket(mp.getBucketName())
-                .object(newFileHeader.getFolder() + "/" + newFileHeader.getFilename())
-                .build());
+        minioService.copyObject(fileHeader.getFolder() + "/" + fileHeader.getFilename(),
+                newFileHeader.getFolder() + "/" + newFileHeader.getFilename());
 
         if (fileHeader.getThumbnailName() != null) {
-            this.minioClient.copyObject(CopyObjectArgs.builder()
-                    .source(CopySource.builder()
-                            .bucket(mp.getBucketName())
-                            .object(fileHeader.getThumbnailName())
-                            .build())
-                    .bucket(mp.getBucketName())
-                    .object(newFileHeader.getThumbnailName())
-                    .build());
+            minioService.copyObject(fileHeader.getThumbnailName(),
+                    newFileHeader.getThumbnailName());
         }
 
         newFileHeader = fileRepository.save(newFileHeader);
@@ -371,13 +342,10 @@ public class FileServiceImpl implements FileService {
                 .orElseThrow(() -> new FileNotFoundException(
                         "update : " + file.getFilename() + " not found in " + file.getFolder())));
 
-        this.minioClient.setObjectTags(SetObjectTagsArgs.builder()
-                .bucket(mp.getBucketName())
-                .object(fileHeader.getFolder() + "/" + fileHeader.getFilename())
-                .tags(metadata.getKeywords()
-                        .stream()
-                        .collect(Collectors.toMap(k -> k, v -> "")))
-                .build());
+        minioService.setObjectTags(
+                fileHeader.getFolder() + "/" + fileHeader.getFilename(),
+                metadata.getKeywords());
+
         if (ap.isUseElasticsearch()) {
             FileHeaderElastic fileHeaderElastic = fileHeaderMapper.toElastic(fileHeader);
             if (fileHeader.getThumbnailName() != null) {
@@ -463,19 +431,8 @@ public class FileServiceImpl implements FileService {
      */
     private void uploadFileToMinio(InputStream is, FileHeaderDTO metadata, Collection<Keyword> keywords) throws
             MinioException, IOException, NoSuchAlgorithmException, InvalidKeyException {
-
-        Map<String, String> keywordsTags = new HashMap<>();
-        for (Keyword k : keywords) {
-            keywordsTags.put(k.getName(), "");
-        }
-
-        this.minioClient.putObject(PutObjectArgs.builder()
-                .bucket(mp.getBucketName())
-                .object(metadata.getFolder() + "/" + metadata.getFilename())
-                .tags(keywordsTags)
-                .stream(is, -1, 5_000_000_000L)
-                .contentType(metadata.getType())
-                .build());
+        minioService.putObject(metadata.getFolder() + "/" + metadata.getFilename(),
+                keywords.stream().map(Keyword::getName).toList(), is, metadata.getType());
     }
 
     /**
@@ -489,12 +446,9 @@ public class FileServiceImpl implements FileService {
         if (thumbnail != null) {
             InputStream thumbnailInputStream =
                     thumbnailService.getInputStreamFromBufferedImage(thumbnail, "png");
-            this.minioClient.putObject(PutObjectArgs.builder()
-                    .bucket(mp.getBucketName())
-                    .object("thumbnail/" + metadata.getFolder() + "/" + metadata.getFilename())
-                    .stream(thumbnailInputStream, -1, 5_000_000_000L)
-                    .contentType("image/png")
-                    .build());
+            minioService.putObject(
+                    "thumbnail/" + metadata.getFolder() + "/" + metadata.getFilename(),
+                    List.of(), thumbnailInputStream, "image/png");
         }
     }
 
