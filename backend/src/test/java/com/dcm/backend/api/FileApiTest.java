@@ -127,7 +127,7 @@ public class FileApiTest {
 
         List<FileHeaderDTO> page = List.of(fileHeader);
 
-        when(fileService.getFiles(any(FileFilterDTO.class))).thenReturn(page);
+        when(fileService.list(any(FileFilterDTO.class))).thenReturn(page);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/file/files")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -201,7 +201,7 @@ public class FileApiTest {
     @Test
     public void testGetKeywords() throws Exception {
         List<String> keywords = List.of("keyword1", "keyword2");
-        when(keywordService.getKeywords()).thenReturn(keywords);
+        when(keywordService.getAll()).thenReturn(keywords);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/file/keywords"))
                 .andExpect(status().isOk())

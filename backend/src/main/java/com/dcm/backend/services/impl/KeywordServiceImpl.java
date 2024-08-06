@@ -33,7 +33,7 @@ public class KeywordServiceImpl implements KeywordService {
         return k.get();
     }
 
-    public List<String> getKeywords() {
+    public List<String> getAll() {
         return keywordRepository.findAll()
                 .stream()
                 .map(Keyword::getName)

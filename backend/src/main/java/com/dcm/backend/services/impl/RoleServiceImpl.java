@@ -34,7 +34,7 @@ public class RoleServiceImpl implements RoleService {
     private PermissionMapper permissionMapper;
 
     @Override
-    public Long countRoles() {
+    public Long count() {
         return keycloak.realm(keycloakProperties.getRealm())
                 .groups()
                 .count()
@@ -42,7 +42,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Collection<RoleDTO> getRoles(int firstResult, int maxResults, RoleDTO filter) {
+    public Collection<RoleDTO> list(int firstResult, int maxResults, RoleDTO filter) {
         String query = "";
         if (filter.getName() != null) query = filter.getName();
 
@@ -56,13 +56,13 @@ public class RoleServiceImpl implements RoleService {
 
     @LogEvent(targetLogClass = RoleDTO.class)
     @Override
-    public void deleteRole(String id) {
+    public void delete(String id) {
         keycloak.realm(keycloakProperties.getRealm()).groups().group(id).remove();
     }
 
     @LogEvent(targetLogClass = RoleDTO.class)
     @Override
-    public void updateRole(RoleDTO roleDTO) {
+    public void update(RoleDTO roleDTO) {
         GroupRepresentation groupRepresentation = getGroupRepresentation(roleDTO.getId());
         updateGroupRepresentation(groupRepresentation, roleDTO);
         updateGroupRoles(groupRepresentation, roleDTO);
@@ -71,7 +71,7 @@ public class RoleServiceImpl implements RoleService {
 
     @LogEvent(targetLogClass = RoleDTO.class)
     @Override
-    public void createRole(RoleDTO roleDTO) {
+    public void create(RoleDTO roleDTO) {
         GroupRepresentation groupRepresentation =
                 roleMapper.toGroupRepresentation(roleDTO);
         keycloak.realm(keycloakProperties.getRealm()).groups().add(groupRepresentation);
@@ -114,7 +114,7 @@ public class RoleServiceImpl implements RoleService {
     public Collection<String> getActiveRoles() {
         return keycloak.realm(keycloakProperties.getRealm())
                 .groups()
-                .groups("", 0, Math.toIntExact(this.countRoles()), false)
+                .groups("", 0, Math.toIntExact(this.count()), false)
                 .stream()
                 .filter(this::isGroupActive)
                 .map(GroupRepresentation::getName)
@@ -122,7 +122,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public boolean validateRole(String name) {
+    public boolean validate(String name) {
         return keycloak.realm(keycloakProperties.getRealm())
                 .groups()
                 .groups(name, true, 0, 1, true)

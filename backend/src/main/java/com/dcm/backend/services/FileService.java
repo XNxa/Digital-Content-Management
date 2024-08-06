@@ -44,7 +44,7 @@ public interface FileService {
      * @param filter Filter to apply
      * @return Page of files
      */
-    List<FileHeaderDTO> getFiles(FileFilterDTO filter);
+    List<FileHeaderDTO> list(FileFilterDTO filter);
 
     /**
      * Deletes a file from the Minio server

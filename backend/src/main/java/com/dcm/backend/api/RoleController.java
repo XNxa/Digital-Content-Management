@@ -22,7 +22,7 @@ public class RoleController {
     @GetMapping("/count")
     @PreAuthorize("hasRole('" + Permissions.ROLE_CONSULT + "')")
     public long countRoles() {
-        return roleService.countRoles();
+        return roleService.count();
     }
 
     @PostMapping("/roles")
@@ -30,7 +30,7 @@ public class RoleController {
     public Collection<RoleDTO> listRoles(@RequestParam(value = "firstResult", defaultValue = "0", required = false) int firstResult,
                                          @RequestParam(value = "maxResults", defaultValue = "5", required = false) int maxResults,
                                          @RequestBody RoleDTO filter) {
-        return roleService.getRoles(firstResult, maxResults, filter);
+        return roleService.list(firstResult, maxResults, filter);
     }
 
     @GetMapping("/actives")
@@ -47,19 +47,19 @@ public class RoleController {
     @PreAuthorize("hasRole('" + Permissions.ROLE_DELETE + "')")
     @DeleteMapping("/delete")
     public void deleteRole(@RequestParam("id") String id) {
-        roleService.deleteRole(id);
+        roleService.delete(id);
     }
 
     @PreAuthorize("hasRole('" + Permissions.ROLE_MODIFY + "')")
     @PutMapping("/update")
     public void updateRole(@RequestBody @Valid RoleDTO role) {
-        roleService.updateRole(role);
+        roleService.update(role);
     }
 
     @PreAuthorize("hasRole('" + Permissions.ROLE_ADD + "')")
     @PostMapping("/create")
     public void createRole(@RequestBody @Valid RoleDTO role) {
-        roleService.createRole(role);
+        roleService.create(role);
     }
 
     @GetMapping("/permissions")
@@ -70,7 +70,7 @@ public class RoleController {
     @GetMapping("/validate")
     @PreAuthorize("hasRole('" + Permissions.ROLE_CONSULT + "')")
     public boolean validateRole(@RequestParam("name") String name) {
-        return roleService.validateRole(name);
+        return roleService.validate(name);
     }
 
     @GetMapping("deactivatable")

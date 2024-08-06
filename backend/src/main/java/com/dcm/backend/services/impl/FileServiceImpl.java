@@ -96,7 +96,7 @@ public class FileServiceImpl implements FileService {
         BufferedImage thumbnail = generateThumbnail(is1, metadata.getType());
         uploadFileToMinio(is2, metadata, keywordCollection);
         uploadThumbnailToMinio(thumbnail, metadata);
-        FileHeader after = saveFileMetadata(metadata, thumbnail, keywordCollection);
+        saveFileMetadata(metadata, thumbnail, keywordCollection);
 
         is1.close();
         is2.close();
@@ -169,9 +169,8 @@ public class FileServiceImpl implements FileService {
         return result;
     }
 
-    @LogEvent
     @Override
-    public List<FileHeaderDTO> getFiles(FileFilterDTO filter) {
+    public List<FileHeaderDTO> list(FileFilterDTO filter) {
         Pageable pageRequest = PageRequest.of(filter.getPage(), filter.getSize());
         if (ap.isUseElasticsearch()) {
 

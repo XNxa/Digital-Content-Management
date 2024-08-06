@@ -12,7 +12,7 @@ public interface RoleService {
      *
      * @return the number of roles
      */
-    Long countRoles();
+    Long count();
 
     /**
      * List roles
@@ -22,28 +22,28 @@ public interface RoleService {
      * @param filter      the filter
      * @return the roles
      */
-    Collection<RoleDTO> getRoles(int firstResult, int maxResults, RoleDTO filter);
+    Collection<RoleDTO> list(int firstResult, int maxResults, RoleDTO filter);
 
     /**
      * Delete a role
      *
      * @param id keycloak id of the role
      */
-    void deleteRole(String id);
+    void delete(String id);
 
     /**
      * Update a role
      *
      * @param roleDTO the role
      */
-    void updateRole(RoleDTO roleDTO);
+    void update(RoleDTO roleDTO);
 
     /**
      * Create a role
      *
      * @param roleDTO the role
      */
-    void createRole(RoleDTO roleDTO);
+    void create(RoleDTO roleDTO);
 
     /**
      * Get all permissions
@@ -73,7 +73,7 @@ public interface RoleService {
      * @param name the future name of the role
      * @return true if the name is valid, false otherwise
      */
-    boolean validateRole(String name);
+    boolean validate(String name);
 
     /**
      * Check if a role is currently used by a user

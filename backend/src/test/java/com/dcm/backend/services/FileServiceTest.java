@@ -185,7 +185,7 @@ public class FileServiceTest {
         when(fileRepository.findAll(any(Specification.class),
                 any(Pageable.class))).thenReturn(page);
 
-        List<FileHeaderDTO> result = fileService.getFiles(filter);
+        List<FileHeaderDTO> result = fileService.list(filter);
 
         assertNotNull(result);
         assertEquals(10, result.size());

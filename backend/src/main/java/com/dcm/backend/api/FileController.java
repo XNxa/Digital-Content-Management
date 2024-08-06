@@ -5,7 +5,6 @@ import com.dcm.backend.dto.FileHeaderDTO;
 import com.dcm.backend.dto.FilenameDTO;
 import com.dcm.backend.services.FileService;
 import com.dcm.backend.services.KeywordService;
-import com.dcm.backend.utils.mappers.FileHeaderMapper;
 import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +31,6 @@ public class FileController {
     @Autowired
     private KeywordService ks;
 
-    @Autowired
-    private FileHeaderMapper fileHeaderMapper;
-
     @SneakyThrows
     @PostMapping("/upload")
     @PreAuthorize("hasRole(@util.buildPermission(#metadata, 'import'))")
@@ -51,7 +47,7 @@ public class FileController {
     @PostMapping("/files")
     @PreAuthorize("hasRole(@util.buildPermission(#filter, 'consult'))")
     public List<FileHeaderDTO> getFiles(@RequestBody @Valid FileFilterDTO filter) {
-        return fs.getFiles(filter);
+        return fs.list(filter);
     }
 
     @SneakyThrows
@@ -79,7 +75,7 @@ public class FileController {
 
     @GetMapping("/keywords")
     public List<String> getKeywords() {
-        return ks.getKeywords();
+        return ks.getAll();
     }
 
     @SneakyThrows

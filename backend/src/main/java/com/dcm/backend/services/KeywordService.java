@@ -19,7 +19,7 @@ public interface KeywordService {
      *
      * @return List of keywords
      */
-    List<String> getKeywords();
+    List<String> getAll();
 
     /**
      * Deletes all keywords that are not associated with any file
