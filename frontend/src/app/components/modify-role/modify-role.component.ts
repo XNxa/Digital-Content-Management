@@ -18,6 +18,7 @@ import { Role } from '../../models/Role';
 import { PermissionDirective } from '../../shared/directives/permission.directive';
 import { Observable, of, map, catchError, lastValueFrom } from 'rxjs';
 import { SnackbarService } from '../../shared/components/snackbar/snackbar.service';
+import { ConfirmationDialogService } from '../../shared/components/confirmation-dialog/confirmation-dialog.service';
 
 @Component({
   selector: 'app-modify-role',
@@ -60,6 +61,7 @@ export class ModifyRoleComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private snackbar: SnackbarService,
+    private dialog: ConfirmationDialogService,
   ) {}
 
   ngOnInit(): void {
@@ -125,17 +127,28 @@ export class ModifyRoleComponent implements OnInit {
   }
 
   deleteRole() {
-    this.api.isDeactivatable(this.role.id!).subscribe((isDeactivatable) => {
-      if (isDeactivatable) {
-        this.api.deleteRole(this.role.id!).subscribe(() => {
-          this.router.navigate(['app','role']);
-        });
-      } else {
-        this.snackbar.show(
-          'This role cannot be deleted, it is being used by some users',
-        );
-      }
-    });
+    this.dialog
+      .openConfirmationDialog(
+        'Confirmer la suppression',
+        'Voulez-vous vraiment supprimer ce rôle ?',
+      )
+      .then((confirmation) => {
+        if (confirmation) {
+          this.api
+            .isDeactivatable(this.role.id!)
+            .subscribe((isDeactivatable) => {
+              if (isDeactivatable) {
+                this.api.deleteRole(this.role.id!).subscribe(() => {
+                  this.router.navigate(['app', 'role']);
+                });
+              } else {
+                this.snackbar.show(
+                  'This role cannot be deleted, it is being used by some users',
+                );
+              }
+            });
+        }
+      });
   }
 
   roleNameValidator(): AsyncValidatorFn {

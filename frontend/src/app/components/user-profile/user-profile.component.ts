@@ -18,6 +18,7 @@ import { RoleApiService } from '../../services/role-api.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PermissionDirective } from '../../shared/directives/permission.directive';
 import { Observable, catchError, map, of } from 'rxjs';
+import { ConfirmationDialogService } from '../../shared/components/confirmation-dialog/confirmation-dialog.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -77,6 +78,7 @@ export class UserProfileComponent {
     private roleapi: RoleApiService,
     private route: ActivatedRoute,
     private router: Router,
+    private confirmationDialog: ConfirmationDialogService
   ) {}
 
   ngOnInit(): void {
@@ -128,9 +130,16 @@ export class UserProfileComponent {
   }
 
   deleteUser() {
-    this.userapi.deleteUser(this.user.id!).subscribe(() => {
-      this.router.navigate(['app', '/user']);
-    });
+    this.confirmationDialog.openConfirmationDialog(
+      'Confirmer la suppression',
+      'Voulez-vous vraiment supprimer cet utilisateur ?'
+    ).then((confirmation) => {
+      if (confirmation) {
+        this.userapi.deleteUser(this.user.id!).subscribe(() => {
+          this.router.navigate(['app', '/user']);
+        });
+      }
+    })
   }
 
   modify() {

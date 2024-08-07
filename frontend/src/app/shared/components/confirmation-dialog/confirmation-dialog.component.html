@@ -1,0 +1,12 @@
+<div class="background" (click)="cancel()">
+  <div class="confirmation-dialog" (click)="$event.stopPropagation()">
+    <div class="dialog-content">
+      <h2>{{title}}</h2>
+      <p>{{text}}</p>
+      <div class="actions">
+        <app-icon-text-button title="Non" [icon]="'close'" color="white" (click)="cancel()"></app-icon-text-button>
+        <app-icon-text-button title="Oui" [icon]="'check'" (click)="confirm()"></app-icon-text-button>
+      </div>
+    </div>
+  </div>
+</div>

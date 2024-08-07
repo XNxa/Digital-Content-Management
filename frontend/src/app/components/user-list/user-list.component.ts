@@ -15,6 +15,7 @@ import { PermissionDirective } from '../../shared/directives/permission.directiv
 import { SelectComponent } from '../../shared/components/form/select/select.component';
 import { RoleApiService } from '../../services/role-api.service';
 import { lastValueFrom } from 'rxjs';
+import { ConfirmationDialogService } from '../../shared/components/confirmation-dialog/confirmation-dialog.service';
 
 @Component({
   selector: 'app-user-list',
@@ -62,6 +63,7 @@ export class UserListComponent implements OnInit {
     private api: UserApiService,
     private roleapi: RoleApiService,
     private router: Router,
+    private confirmationDialog: ConfirmationDialogService
   ) {}
 
   ngOnInit(): void {
@@ -98,18 +100,25 @@ export class UserListComponent implements OnInit {
   }
 
   deleteUsers() {
-    Promise.all(
-      Array.from(this.selectedUsers).map((id) => lastValueFrom(this.api.deleteUser(this.users[id].id!))),
-    ).then(() => {
-      this.refreshUserList();
-      this.selectedUsers.clear();
-      this.api.getFunctions().subscribe((functions: string[]) => {
-        this.functions = functions;
-      });
-      this.roleapi.getActiveRoles().subscribe((roles) => {
-        this.roles = roles;
-      });
-    });
+    this.confirmationDialog.openConfirmationDialog(
+      'Confirmer la suppression',
+      'Voulez-vous vraiment supprimer ' + (this.selectedUsers.size > 1 ? 'ces utilisateurs ?' : 'cet utilisateur ?')
+    ).then((confirmation)=> {
+      if (confirmation) {
+        Promise.all(
+          Array.from(this.selectedUsers).map((id) => lastValueFrom(this.api.deleteUser(this.users[id].id!))),
+        ).then(() => {
+          this.refreshUserList();
+          this.selectedUsers.clear();
+          this.api.getFunctions().subscribe((functions: string[]) => {
+            this.functions = functions;
+          });
+          this.roleapi.getActiveRoles().subscribe((roles) => {
+            this.roles = roles;
+          });
+        });
+      }
+    })
   }
 
   onPageChange($event: number) {

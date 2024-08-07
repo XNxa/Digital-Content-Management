@@ -48,7 +48,10 @@ export class SidebarComponent {
     return permissions.some((p) => this.auth.isUserInRole(p));
   }, this).filter((node, _, list) => {
     if (node.name == 'Gestion') {
-      return list.findIndex(n => n.name == 'Utilisateurs') != -1 || list.findIndex(n => n.name == 'Rôles') != -1
+      return (
+        list.findIndex((n) => n.name == 'Utilisateurs') != -1 ||
+        list.findIndex((n) => n.name == 'Rôles') != -1
+      );
     } else {
       return true;
     }
@@ -79,14 +82,10 @@ export class SidebarComponent {
     });
 
     this.router.events.subscribe(() => {
-      if (!this.router.url.startsWith('/app/file') && !this.router.url.startsWith('/app/profile')) {
-        this.dataSource.forEach((n) => (n.isSelected = false));
-        const node = this.findNodeForUrl(this.router.url);
-        if (node) {
-          node.isSelected = true;
-        } else {
-          console.error('No node found for url :', this.router.url);
-        }
+      this.dataSource.forEach((n) => (n.isSelected = false));
+      const node = this.findNodeForUrl(this.router.url);
+      if (node) {
+        node.isSelected = true;
       }
     });
 

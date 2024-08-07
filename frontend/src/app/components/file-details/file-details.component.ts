@@ -14,6 +14,7 @@ import { getNameFromPath } from '../../models/Tabs';
 import { PermissionDirective } from '../../shared/directives/permission.directive';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FileListService } from '../../services/file-list.service';
+import { ConfirmationDialogService } from '../../shared/components/confirmation-dialog/confirmation-dialog.service';
 
 @Component({
   selector: 'app-file-details',
@@ -58,6 +59,7 @@ export class FileDetailsComponent implements OnInit, OnDestroy {
     private snackbar: SnackbarService,
     private route: ActivatedRoute,
     private router: Router,
+    private confirmationDialog: ConfirmationDialogService
   ) {}
 
   ngOnInit(): void {
@@ -133,10 +135,17 @@ export class FileDetailsComponent implements OnInit, OnDestroy {
   }
 
   onDelete(): void {
-    this.api.delete(this.file.folder, this.file.filename).subscribe(() => {
-      this.fileList.remove(this.file.id);
-      this.onPrevious();
-    });
+    this.confirmationDialog.openConfirmationDialog(
+      'Confirmer la suppression',
+      'Voulez-vous vraiment supprimer ce fichier ?',
+    ).then((confirmation) => {
+      if (confirmation) {
+        this.api.delete(this.file.folder, this.file.filename).subscribe(() => {
+          this.fileList.remove(this.file.id);
+          this.onPrevious();
+        });
+      }
+    })
   }
 
   onClose(): void {

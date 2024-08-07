@@ -19,6 +19,7 @@ import { FormControl } from '@angular/forms';
 import { PermissionDirective } from '../../shared/directives/permission.directive';
 import { DateInputComponent } from '../../shared/components/form/date-input/date-input.component';
 import { FileListService } from '../../services/file-list.service';
+import { ConfirmationDialogService } from '../../shared/components/confirmation-dialog/confirmation-dialog.service';
 
 @Component({
   selector: 'app-file-list',
@@ -118,6 +119,7 @@ export class FileListComponent implements OnInit {
     private fileService: FileListService,
     private route: ActivatedRoute,
     private router: Router,
+    private confirmationDialog: ConfirmationDialogService
   ) {}
 
   ngOnInit(): void {
@@ -207,36 +209,43 @@ export class FileListComponent implements OnInit {
   }
 
   onDeleteClicked() {
-    const deletePromises = [...this.selectedFiles].map((index) => {
-      const filename = this.files[index].filename;
-      return lastValueFrom(
-        this.api.delete(this.folder + '/' + this.typeFolder, filename),
-      );
-    });
-
-    Promise.all(deletePromises).then(() => {
-      this.files = this.files.filter(
-        (_, index) => !this.selectedFiles.has(index),
-      );
-      this.unselect();
-      this.api
-        .getNumberOfElement(
-          this.folder + '/' + this.typeFolder,
-          this.filenameSearched.value ?? '',
-          this.keywordsSearched.value || undefined,
-          (this.statusSearched.value || []).map((s) => Status.fromString(s)),
-          this.versionSearched.value ?? undefined,
-          this.typeSearched.value || undefined,
-          this.dateSearched.value?.[0],
-          this.dateSearched.value?.[1],
-        )
-        .subscribe((n) => {
-          this.numberOfElements = n;
+    this.confirmationDialog.openConfirmationDialog(
+      'Confirmer la suppression',
+      'Voulez-vous vraiment supprimer ' + ((this.selectedFiles.size > 1) ? 'ces fichiers ?' : 'ce fichier ?'),
+    ).then((confirmation) => {
+      if (confirmation) {
+        const deletePromises = [...this.selectedFiles].map((index) => {
+          const filename = this.files[index].filename;
+          return lastValueFrom(
+            this.api.delete(this.folder + '/' + this.typeFolder, filename),
+          );
         });
-      this.api.getKeywords().subscribe((keywords) => {
-        this.keywords = keywords;
-      });
-    });
+    
+        Promise.all(deletePromises).then(() => {
+          this.files = this.files.filter(
+            (_, index) => !this.selectedFiles.has(index),
+          );
+          this.unselect();
+          this.api
+            .getNumberOfElement(
+              this.folder + '/' + this.typeFolder,
+              this.filenameSearched.value ?? '',
+              this.keywordsSearched.value || undefined,
+              (this.statusSearched.value || []).map((s) => Status.fromString(s)),
+              this.versionSearched.value ?? undefined,
+              this.typeSearched.value || undefined,
+              this.dateSearched.value?.[0],
+              this.dateSearched.value?.[1],
+            )
+            .subscribe((n) => {
+              this.numberOfElements = n;
+            });
+          this.api.getKeywords().subscribe((keywords) => {
+            this.keywords = keywords;
+          });
+        });
+      }
+    })
   }
 
   onDuplicate(): void {

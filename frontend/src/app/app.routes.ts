@@ -40,7 +40,7 @@ export const routes: Routes = [
         data: { roles: ['role_consult'] },
       },
       {
-        path: 'role/add',
+        path: 'roles/add',
         //component: NewRoleComponent,
         loadComponent: () => import('./components/new-role/new-role.component').then(m => m.NewRoleComponent),
         canActivate: [AuthGuard],
