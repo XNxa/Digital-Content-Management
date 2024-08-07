@@ -1,5 +1,6 @@
 package com.dcm.backend.dto;
 
+import com.dcm.backend.annotations.LogIgnore;
 import com.dcm.backend.utils.ErrorMessages;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -38,6 +39,7 @@ public class UserDTO {
     @NotBlank(message = ErrorMessages.REQUIERED_FIELD_MISSING_CODE)
     private String statut;
 
+    @LogIgnore
     @Size(max = 255, message = ErrorMessages.EXCEED_MAX_SIZE_CODE)
     @NotBlank(message = ErrorMessages.REQUIERED_FIELD_MISSING_CODE)
     private String password;

@@ -6,13 +6,17 @@ import com.dcm.backend.repositories.FileRepository;
 import com.dcm.backend.repositories.LogRepository;
 import com.dcm.backend.utils.mappers.FileHeaderMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+
+import com.dcm.backend.utils.Logger;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -64,14 +68,15 @@ public class LogEventAspect {
         }
 
         if (isAnyParameterTypeAssignable) {
-            beforeSpiedObject = Arrays.stream(joinPoint.getArgs())
+            afterSpiedObject = Arrays.stream(joinPoint.getArgs())
                     .filter(arg -> arg.getClass().equals(targetLogClass))
                     .findFirst()
                     .get();
         }
+    
+        log.setBefore(Logger.toString(beforeSpiedObject));
+        log.setAfter(Logger.toString(afterSpiedObject));
 
-        log.setBefore(beforeSpiedObject == null ? "null" : beforeSpiedObject.toString());
-        log.setAfter(afterSpiedObject == null ? "null" : afterSpiedObject.toString());
         beforeSpiedObject = null;
         afterSpiedObject = null;
 
@@ -107,5 +112,10 @@ public class LogEventAspect {
         return jp.proceed();
     }
 
-
+    @AfterReturning(value = "execution(* com.dcm.backend.services.impl.UserServiceImpl.delete(." +
+            ".) || execution(* com.dcm.backend.services.impl.RoleServiceImpl.delete(..)" )
+    public void logDelete(JoinPoint jp) {
+        assert jp.getArgs().length == 1;
+        beforeSpiedObject = "Deleted object with id=" + jp.getArgs()[0];
+    }
 }
