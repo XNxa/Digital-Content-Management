@@ -45,15 +45,15 @@ public class InitKeycloak {
             {"Images", "Vidéos", "Pictos", "Documents"};
     private static final String[] OTHER_ROLES =
             {"user_consult", "user_add", "user_modify", "user_delete", "role_consult",
-                    "role_add", "role_modify", "role_delete"};
+                    "role_add", "role_modify", "role_delete", "logs_consult"};
     private static final String[] DISPLAY_OTHER_ROLES =
             {"Consulter les utilisateurs", "Ajouter un nouvel utilisateur",
                     "Modifier le profil de l'utilisateur", "Supprimer un utilisateur",
                     "Consulter les rôles", "Ajouter un nouveau rôle", "Modifier un rôle",
-                    "Supprimer un rôle"};
+                    "Supprimer un rôle", "Consulter les logs"};
     private static final String[] FOLDERS_OTHER_ROLES =
             {"Utilisateurs", "Utilisateurs", "Utilisateurs", "Utilisateurs", "Rôles",
-                    "Rôles", "Rôles", "Rôles"};
+                    "Rôles", "Rôles", "Rôles", "Logs"};
 
     public static void main(String[] args) {
 

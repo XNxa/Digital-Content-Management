@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 @TypeAlias("Event")
 public class Log {
     @Id
-    private Long id;
+    private String id;
 
     @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second)
     private LocalDateTime date;

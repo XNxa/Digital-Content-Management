@@ -12,4 +12,6 @@ public class Permissions {
     public final static String USER_DELETE = "user_delete";
     public final static String USER_CONSULT = "user_consult";
 
+    public final static String LOGS_CONSULT = "logs_consult";
+
 }

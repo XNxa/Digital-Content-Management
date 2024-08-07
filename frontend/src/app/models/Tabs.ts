@@ -122,6 +122,13 @@ export const TREE: Node[] = [
     logo: 'roles',
     level: 0,
   },
+  {
+    expandable: false,
+    name: 'Logs',
+    path: 'logs',
+    logo: 'roles',
+    level: 0
+  }
 ];
 
 export function getRoutesForTabs(): Route[] {

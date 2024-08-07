@@ -331,15 +331,7 @@ public class FileServiceImpl implements FileService {
         fileHeader.setStatus(metadata.getStatus());
         fileHeader.setKeywords(getKeywords(metadata));
 
-        System.out.println(fileRepository.findById(fileHeader.getId())
-                .orElseThrow(() -> new FileNotFoundException(
-                        "update : " + file.getFilename() + " not found in " + file.getFolder())));
-
         fileHeader = fileRepository.save(fileHeader);
-
-        System.out.println(fileRepository.findById(fileHeader.getId())
-                .orElseThrow(() -> new FileNotFoundException(
-                        "update : " + file.getFilename() + " not found in " + file.getFolder())));
 
         minioService.setObjectTags(
                 fileHeader.getFolder() + "/" + fileHeader.getFilename(),

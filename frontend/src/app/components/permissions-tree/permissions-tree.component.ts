@@ -184,7 +184,7 @@ export class PermissionsTreeComponent implements OnInit, OnChanges {
   }
 
   getFolderClass(node: PermissionNode): string {
-    return 'folder' + (!node.expanded && node.name == 'Rôles' ? ' last' : '');
+    return 'folder' + (!node.expanded && node.name == 'Logs' ? ' last' : '');
   }
 
   setAll(value: boolean): void {

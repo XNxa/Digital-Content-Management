@@ -3,7 +3,6 @@ import { HomeComponent } from './components/home/home.component';
 import { getRoutesForTabs } from './models/Tabs';
 import { AuthGuard } from './auth.guard';
 import { HomePageComponent } from './components/home-page/home-page.component';
-import { UserProfileComponent } from './components/user-profile/user-profile.component';
 
 export const routes: Routes = [
   {
@@ -62,11 +61,15 @@ export const routes: Routes = [
       },
       {
         path: 'profile/:id',
-        //loadComponent: () => import('./components/user-profile/user-profile.component').then(m => m.UserProfileComponent),
-        component: UserProfileComponent,
+        loadComponent: () => import('./components/user-profile/user-profile.component').then(m => m.UserProfileComponent),
+        //component: UserProfileComponent,
         canActivate: [AuthGuard],
       },
       ...getRoutesForTabs(),
+      {
+        path: 'logs',
+        loadComponent: () => import('./components/log-list/log-list.component').then(m => m.LogListComponent),
+      }
     ],
   },
   {

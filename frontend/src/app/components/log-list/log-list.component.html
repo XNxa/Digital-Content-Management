@@ -1,0 +1,14 @@
+<h1>Historique des logs</h1>
+
+<app-table
+  [columns]="[
+    { header: 'Date', field: 'date' },
+    { header: 'User', field: 'user' },
+    { header: 'Action', field: 'action' },
+  ]"
+  [data]="this.logs"
+></app-table>
+
+<div class="footer">
+    <app-page-selector [totalItems]="totalLogs" [page]="page" [itemsPerPage]="itemPerPage" (pageChange)="changePage($event)"></app-page-selector>
+</div>
