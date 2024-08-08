@@ -1,5 +1,5 @@
 import { Directive, ElementRef, Input } from '@angular/core';
-import { KeycloakService } from 'keycloak-angular';
+import { AuthService } from '../../services/auth.service';
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
@@ -8,7 +8,7 @@ import { KeycloakService } from 'keycloak-angular';
 })
 export class PermissionDirective {
   constructor(
-    private keycloak: KeycloakService,
+    private keycloak: AuthService,
     private elementRef: ElementRef,
   ) {}
 

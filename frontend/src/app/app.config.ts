@@ -12,11 +12,13 @@ import {
   withInterceptorsFromDi,
 } from '@angular/common/http';
 
-import { KeycloakBearerInterceptor, KeycloakService } from 'keycloak-angular';
+import { KeycloakService } from 'keycloak-angular';
 import { environment } from '../environments/environment.development';
 import { ErrorHandlerInterceptor } from './core/error-handler.interceptor';
+import { AuthService } from './services/auth.service';
+import { AuthBearerInterceptor } from './core/auth-bearer.interceptor';
 
-export const initializeKeycloak = (keycloak: KeycloakService) => async () =>
+export const initializeKeycloak = (keycloak: AuthService) => async () =>
   keycloak.init({
     config: {
       url: environment.keycloak.url,
@@ -42,16 +44,21 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptorsFromDi()),
     provideKeycloak(),
     {
+      provide: AuthService,
+      deps: [KeycloakService]
+    },
+    {
       provide: APP_INITIALIZER,
       useFactory: initializeKeycloak,
       multi: true,
-      deps: [KeycloakService],
+      deps: [AuthService],
     },
     // Provider for Keycloak Bearer Interceptor
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: KeycloakBearerInterceptor,
+      useClass: AuthBearerInterceptor,
       multi: true,
+      deps: [AuthService]
     },
     {
       provide: HTTP_INTERCEPTORS,

@@ -9,4 +9,16 @@ public interface LogService {
     Collection<LogDTO> list(int first, int numberOfElements);
 
     long count();
+
+    /**
+     * Logs a user log in.
+     *
+     * @param ip the ip address of the user
+     */
+    void logLogIn(String ip);
+
+    /**
+     * Logs a user log out.
+     */
+    void logLogOut();
 }

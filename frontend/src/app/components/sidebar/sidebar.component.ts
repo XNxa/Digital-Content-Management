@@ -3,10 +3,10 @@ import { CdkTreeModule, FlatTreeControl } from '@angular/cdk/tree';
 import { UserCardFooterComponent } from '../../shared/components/user-card-footer/user-card-footer.component';
 import { TREE, Node, getRouteForNode } from '../../models/Tabs';
 import { Router } from '@angular/router';
-import { KeycloakService } from 'keycloak-angular';
 import { UserApiService } from '../../services/user-api.service';
 import { User, UserFilter } from '../../models/User';
 import { PermissionDirective } from '../../shared/directives/permission.directive';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -61,7 +61,7 @@ export class SidebarComponent {
 
   constructor(
     private router: Router,
-    private auth: KeycloakService,
+    private auth: AuthService,
     private userapi: UserApiService,
   ) {}
 

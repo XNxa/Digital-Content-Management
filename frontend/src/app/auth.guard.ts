@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Router, UrlTree } from '@angular/router';
-import { KeycloakAuthGuard, KeycloakService } from 'keycloak-angular';
+import {
+  ActivatedRouteSnapshot,
+  Router,
+  UrlTree,
+} from '@angular/router';
+import { KeycloakAuthGuard } from 'keycloak-angular';
+import { AuthService } from './services/auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -8,7 +13,7 @@ import { KeycloakAuthGuard, KeycloakService } from 'keycloak-angular';
 export class AuthGuard extends KeycloakAuthGuard {
   constructor(
     protected override router: Router,
-    protected override keycloakAngular: KeycloakService,
+    protected override keycloakAngular: AuthService,
   ) {
     super(router, keycloakAngular);
   }
@@ -18,7 +23,9 @@ export class AuthGuard extends KeycloakAuthGuard {
   ): Promise<boolean | UrlTree> {
     return new Promise((resolve) => {
       if (!this.authenticated) {
-        this.keycloakAngular.login();
+        this.keycloakAngular.login({
+          redirectUri: window.location.origin + this.router.url
+        });
         return;
       }
 

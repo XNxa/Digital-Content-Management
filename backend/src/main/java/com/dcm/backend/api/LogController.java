@@ -3,6 +3,7 @@ package com.dcm.backend.api;
 import com.dcm.backend.dto.LogDTO;
 import com.dcm.backend.services.LogService;
 import com.dcm.backend.utils.Permissions;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -30,6 +31,16 @@ public class LogController {
     @GetMapping("/list")
     public Collection<LogDTO> getLogs(int first, int numberOfElements) {
         return logService.list(first, numberOfElements);
+    }
+
+    @GetMapping("/connected")
+    public void userLogIn(HttpServletRequest req) {
+        logService.logLogIn(req.getRemoteAddr());
+    }
+
+    @GetMapping("/disconnected")
+    public void userLogOut() {
+        logService.logLogOut();
     }
 
 }

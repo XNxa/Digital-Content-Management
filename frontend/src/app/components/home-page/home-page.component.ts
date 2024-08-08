@@ -5,12 +5,12 @@ import { FilesStateComponent } from './files-state/files-state.component';
 import { FileApiService } from '../../services/file-api.service';
 import { SearchBarComponent } from '../../shared/components/search-bar/search-bar.component';
 import { User, UserFilter } from '../../models/User';
-import { KeycloakService } from 'keycloak-angular';
 import { UserApiService } from '../../services/user-api.service';
 import { environment } from '../../../environments/environment.development';
 import { FileHeader } from '../../models/FileHeader';
 import { FileListService } from '../../services/file-list.service';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-home-page',
@@ -28,7 +28,7 @@ export class HomePageComponent {
   currentUser!: User;
   constructor(
     private api: FileApiService,
-    private auth: KeycloakService,
+    private auth: AuthService,
     private userapi: UserApiService,
     private fileList: FileListService,
     private router: Router,

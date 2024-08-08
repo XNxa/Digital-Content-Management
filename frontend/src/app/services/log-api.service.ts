@@ -23,4 +23,12 @@ export class LogService {
     };
     return this.httpClient.get<Log[]>(`${this.API}/list`, { params });
   }
+
+  public logLogin(): Observable<void> {
+    return this.httpClient.get<void>(`${this.API}/connected`);
+  }
+
+  public logLogout(): Observable<void> {
+    return this.httpClient.get<void>(`${this.API}/disconnected`);
+  }
 }

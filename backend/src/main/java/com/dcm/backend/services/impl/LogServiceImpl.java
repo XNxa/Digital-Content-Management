@@ -1,6 +1,7 @@
 package com.dcm.backend.services.impl;
 
 import com.dcm.backend.dto.LogDTO;
+import com.dcm.backend.entities.Log;
 import com.dcm.backend.repositories.LogRepository;
 import com.dcm.backend.services.LogService;
 import com.dcm.backend.utils.mappers.LogMapper;
@@ -8,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 @Service
@@ -31,6 +34,24 @@ public class LogServiceImpl implements LogService {
     @Override
     public long count() {
         return logRepository.count().block();
+    }
+
+    @Override
+    public void logLogIn(String ip) {
+        Log log = new Log();
+        log.setDate(LocalDateTime.now());
+        log.setUser(SecurityContextHolder.getContext().getAuthentication().getName());
+        log.setAction("User logged in with ip : " + ip);
+        logRepository.save(log).subscribe();
+    }
+
+    @Override
+    public void logLogOut() {
+        Log log = new Log();
+        log.setDate(LocalDateTime.now());
+        log.setUser(SecurityContextHolder.getContext().getAuthentication().getName());
+        log.setAction("User logged out");
+        logRepository.save(log).subscribe();
     }
 
 }
