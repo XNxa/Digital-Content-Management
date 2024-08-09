@@ -126,7 +126,7 @@ export const TREE: Node[] = [
     expandable: false,
     name: 'Logs',
     path: 'logs',
-    logo: 'roles',
+    logo: 'restore',
     level: 0
   }
 ];

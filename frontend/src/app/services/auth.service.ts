@@ -15,6 +15,8 @@ export class AuthService extends KeycloakService {
         this.keycloakEvents$.subscribe((event) => {
             if (event.type == KeycloakEventType.OnAuthSuccess) {
                 this.logService.logLogin().subscribe();
+            } else if (event.type == KeycloakEventType.OnTokenExpired) {
+                super.updateToken(20);
             }
             return;
         })

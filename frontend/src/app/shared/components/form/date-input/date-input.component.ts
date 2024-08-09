@@ -26,8 +26,10 @@ export class DateInputComponent {
       this.value.setValue([this._startDate, this._endDate]);
       this.valueChange.emit(this.value);
     } else {
-      this.value.setValue(null);
-      this.valueChange.emit(this.value);
+      if (this.value.value != null) {
+        this.value.setValue(null);
+        this.valueChange.emit(this.value);
+      }
     }
   }
 
@@ -41,8 +43,10 @@ export class DateInputComponent {
       this.value.setValue([this._startDate, this._endDate]);
       this.valueChange.emit(this.value);
     } else {
-      this.value.setValue(null);
-      this.valueChange.emit(this.value);
+      if (this.value.value != null) {
+        this.value.setValue(null);
+        this.valueChange.emit(this.value);
+      }
     }
   }
 

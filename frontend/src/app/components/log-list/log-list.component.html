@@ -1,5 +1,18 @@
 <h1>Historique des logs</h1>
 
+<div class="search">
+  <app-input
+    class="search-element"
+    label="Recherche"
+    placeholder="Rechercher dans les logs"
+    [border]="false"
+    [(value)]="search"
+  ></app-input>
+  <app-date-input class="search-element" [(value)]="dateRange"></app-date-input>
+</div>
+
+<h2>Liste des logs</h2>
+
 <app-table
   [columns]="[
     { header: 'Date', field: 'date' },
@@ -7,8 +20,35 @@
     { header: 'Action', field: 'action' },
   ]"
   [data]="this.logs"
+  (rowClicked)="showDetails($event)"
 ></app-table>
 
 <div class="footer">
-    <app-page-selector [totalItems]="totalLogs" [page]="page" [itemsPerPage]="itemPerPage" (pageChange)="changePage($event)"></app-page-selector>
+  <app-page-selector
+    [totalItems]="totalLogs"
+    [page]="page"
+    [itemsPerPage]="itemPerPage"
+    (pageChange)="changePage($event)"
+  ></app-page-selector>
 </div>
+
+@if (logDetailed) {
+  <div class="cover" (click)="closeDetails()">
+    <div class="details" (click)="$event.stopPropagation()">
+      <h3>Details :</h3>
+      <p class="line"><img src="icons/details/calendar.svg"/>{{ logDetailed.date }}</p>
+      <p class="line"><img src="icons/sidebar/gray/users.svg"/>{{ logDetailed.user }}</p>
+      <p class="line"><img src="icons/sidebar/gray/roles.svg"/>{{ logDetailed.action }}</p>
+      @if (logDetailed.before || logDetailed.after) {
+        <div class="objects">
+          @if (logDetailed.before) {
+            <p>{{ logDetailed.before }}</p>
+          }
+          @if (logDetailed.after) {
+            <p>{{ logDetailed.after }}</p>
+          }
+        </div>
+      }
+    </div>
+  </div>
+}

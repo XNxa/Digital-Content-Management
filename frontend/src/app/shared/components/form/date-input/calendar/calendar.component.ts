@@ -158,8 +158,10 @@ export class CalendarComponent implements OnInit {
       this.selectedStartDate = date;
       this.selectedEndDate = null;
     }
-    this.selectedStartDateChange.emit(this.selectedStartDate);
-    this.selectedEndDateChange.emit(this.selectedEndDate);
+    if (this.selectedStartDate && this.selectedEndDate) {
+      this.selectedStartDateChange.emit(this.selectedStartDate);
+      this.selectedEndDateChange.emit(this.selectedEndDate);
+    }
   }
 
   isSelected(date: Date): string {

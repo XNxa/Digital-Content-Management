@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment.development';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Log } from '../models/Log';
+import { dateToString } from '../utils/date-util';
+import { PaginatedResponse } from '../models/PaginatedResponse';
 
 @Injectable({
   providedIn: 'root',
@@ -12,16 +14,27 @@ export class LogService {
 
   constructor(private httpClient: HttpClient) {}
 
-  public count(): Observable<number> {
-    return this.httpClient.get<number>(`${this.API}/count`);
-  }
-
-  public listLogs(first: number, size: number): Observable<Log[]> {
-    const params = {
-      first: first.toString(),
-      numberOfElements: size.toString(),
-    };
-    return this.httpClient.get<Log[]>(`${this.API}/list`, { params });
+  public listLogs(
+    first: number,
+    size: number,
+    searchQuery?: string,
+    dateFrom?: Date,
+    dateTo?: Date,
+  ): Observable<PaginatedResponse<Log>> {
+    let params = new HttpParams()
+    .set('page', first)
+    .set('size', size)
+    if (searchQuery) {
+      params = params.set('search', searchQuery);
+    }
+    if (dateFrom) {
+      params = params.set('dateFrom', dateToString(dateFrom)!);
+    }
+    if (dateTo) {
+      params = params.set('dateTo', dateToString(dateTo)!);
+    }
+  
+    return this.httpClient.get<PaginatedResponse<Log>>(`${this.API}/list`, { params });
   }
 
   public logLogin(): Observable<void> {
