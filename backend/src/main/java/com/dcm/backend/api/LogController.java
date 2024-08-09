@@ -1,17 +1,15 @@
 package com.dcm.backend.api;
 
 import com.dcm.backend.dto.LogDTO;
+import com.dcm.backend.dto.LogFilterDTO;
 import com.dcm.backend.services.LogService;
+import com.dcm.backend.utils.PaginatedResponse;
 import com.dcm.backend.utils.Permissions;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Collection;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/log")
@@ -22,15 +20,9 @@ public class LogController {
     LogService logService;
 
     @PreAuthorize("hasRole('" + Permissions.LOGS_CONSULT + "')")
-    @GetMapping("/count")
-    public long getLogs() {
-        return logService.count();
-    }
-
-    @PreAuthorize("hasRole('" + Permissions.LOGS_CONSULT + "')")
     @GetMapping("/list")
-    public Collection<LogDTO> getLogs(int first, int numberOfElements) {
-        return logService.list(first, numberOfElements);
+    public PaginatedResponse<LogDTO> getLogs(@Valid @ModelAttribute LogFilterDTO filterDTO) {
+        return logService.list(filterDTO);
     }
 
     @GetMapping("/connected")

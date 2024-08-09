@@ -3,6 +3,7 @@ package com.dcm.backend.utils;
 import com.dcm.backend.annotations.LogIgnore;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InaccessibleObjectException;
 
 public class Logger {
 
@@ -24,15 +25,19 @@ public class Logger {
         Field[] fields = object.getClass().getDeclaredFields();
         for (Field field : fields) {
             if (!field.isAnnotationPresent(LogIgnore.class)) {
-                field.setAccessible(true);
                 try {
-                    res.append(field.getName()).append("=").append(field.get(object)).append(", ");
-                } catch (IllegalAccessException e) {
-                    continue;
+                    field.setAccessible(true);
+                    res.append(field.getName())
+                            .append("=")
+                            .append(field.get(object))
+                            .append(", ");
+                } catch (IllegalAccessException | InaccessibleObjectException ignored) {
                 }
             }
         }
-        res.delete(res.length() - 2, res.length()).append(")");
+        res.delete(res.length() - 2, res.length()).
+
+                append(")");
         return res.toString();
     }
 

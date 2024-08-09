@@ -26,10 +26,10 @@ public class Log {
     @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second)
     private LocalDateTime date;
 
-    @Field(type = FieldType.Keyword)
+    @Field(type = FieldType.Match_Only_Text)
     private String user;
 
-    @Field(type = FieldType.Keyword)
+    @Field(type = FieldType.Match_Only_Text)
     private String action;
 
     @Field(type = FieldType.Match_Only_Text)

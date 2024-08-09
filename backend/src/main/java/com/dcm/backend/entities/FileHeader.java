@@ -1,5 +1,6 @@
 package com.dcm.backend.entities;
 
+import com.dcm.backend.annotations.LogIgnore;
 import com.dcm.backend.enumeration.Status;
 import jakarta.persistence.*;
 import lombok.*;
@@ -8,13 +9,15 @@ import java.time.LocalDate;
 import java.util.Collection;
 
 @Entity
-@Data
 @Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class FileHeader {
 
     @Id
+    @LogIgnore
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
@@ -22,6 +25,7 @@ public class FileHeader {
 
     private String filename;
 
+    @LogIgnore
     private String thumbnailName;
 
     private String description;
