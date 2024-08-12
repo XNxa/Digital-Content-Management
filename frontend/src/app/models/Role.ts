@@ -3,5 +3,6 @@ export interface Role {
   name: string;
   description: string;
   state: boolean;
+  printableState?: 'Actif' | 'Inactif';
   permissions: string[];
 }

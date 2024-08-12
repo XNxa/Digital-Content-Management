@@ -57,7 +57,11 @@ export class RoleListComponent implements OnInit {
         name: this.valueIfPresent(this.searchRoleName.value),
       } as Role)
       .subscribe((roles) => {
-        this.roles = roles;
+        this.roles = roles.filter((r) =>
+          this.toState(this.selectedStatut.value) != null
+            ? r.state == this.toState(this.selectedStatut.value)
+            : true,
+        );
       });
   }
 

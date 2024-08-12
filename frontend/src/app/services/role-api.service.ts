@@ -3,7 +3,7 @@ import { environment } from '../../environments/environment.development';
 import { HttpClient } from '@angular/common/http';
 import { Role } from '../models/Role';
 import { Permission } from '../models/Permission';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -18,12 +18,21 @@ export class RoleApiService {
     maxResults: number,
     filter: Role,
   ): Observable<Role[]> {
-    return this.http.post<Role[]>(`${this.API}/roles`, filter, {
-      params: {
-        firstResult: firstResult.toString(),
-        maxResults: maxResults.toString(),
-      },
-    });
+    return this.http
+      .post<Role[]>(`${this.API}/roles`, filter, {
+        params: {
+          firstResult: firstResult.toString(),
+          maxResults: maxResults.toString(),
+        },
+      })
+      .pipe(
+        map((roles) =>
+          roles.map((role) => {
+            role.printableState = role.state ? 'Actif' : 'Inactif';
+            return role;
+          }),
+        ),
+      );
   }
 
   public getRole(id: string): Observable<Role> {
