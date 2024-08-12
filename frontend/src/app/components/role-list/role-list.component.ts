@@ -34,7 +34,7 @@ export class RoleListComponent implements OnInit {
   itemsPerPage = 5;
   numberOfElements!: number;
   currentPage = 1;
-  statutOptions = ['', 'Actif', 'Inactif'];
+  statutOptions = ['Actif', 'Inactif'];
   selectedStatut = new FormControl('');
   searchRoleName = new FormControl('');
 

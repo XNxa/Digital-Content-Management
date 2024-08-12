@@ -42,3 +42,18 @@ span {
   font-weight: normal;
   font-size: small;
 }
+
+.placeholder {
+  color: #757575;
+  font-size: 13.33px;
+  font-weight: 200;
+  user-select: none;
+  text-wrap: nowrap;
+}
+
+.normal {
+  color: var(--text-color);
+  appearance: none;
+  outline: none;
+  padding: 10px;
+}

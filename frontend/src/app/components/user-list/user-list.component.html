@@ -34,6 +34,7 @@
       class="search-element"
       label="Statut"
       [border]="false"
+      placeholder="Sélectionnez un statut"
       [options]="['Actif', 'Inactif']"
       [(value)]="statutSearched"
       (changed)="refreshUserList()"
@@ -51,6 +52,7 @@
       <app-select
         class="search-element"
         label="Fonction"
+        placeholder="Sélectionnez une fonction"
         [border]="false"
         [options]="functions"
         [(value)]="functionSearched"
@@ -67,6 +69,7 @@
       <app-select
         class="search-element"
         label="Role"
+        placeholder="Sélectionnez un rôle"
         [border]="false"
         [options]="roles"
         [(value)]="roleSearched"

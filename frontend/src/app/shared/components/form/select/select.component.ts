@@ -22,15 +22,12 @@ export class SelectComponent implements OnChanges {
   @Input() options!: string[];
   @Input() border = true;
   @Input() disabled = false;
+  @Input() placeholder = '';
   @Input() value!: FormControl<string | null>;
   @Output() valueChange: EventEmitter<FormControl<string | null>> =
     new EventEmitter<FormControl<string | null>>();
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (this.options && !this.options.includes('')) {
-      this.options.unshift('');
-    }
-
     if (changes['disabled']) {
       if (!this.disabled) {
         this.value.setValue(null);

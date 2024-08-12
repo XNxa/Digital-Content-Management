@@ -11,13 +11,14 @@
     />
   } @else {
     <select
-      [class]="border ? 'input-border' : 'no-border'"
+      [class]="(border ? 'input-border' : 'no-border') + (this.value.value == '' ? ' placeholder' : '') "
       [formControl]="value"
       (click)="onInput()"
       [attr.aria-label]="label"
     >
+      <option value="" selected class="placeholder">{{placeholder}}</option>
       @for (item of options; track $index) {
-        <option>{{ item }}</option>
+        <option class="normal">{{ item }}</option>
       }
     </select>
   }
