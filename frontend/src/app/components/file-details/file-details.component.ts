@@ -59,7 +59,7 @@ export class FileDetailsComponent implements OnInit, OnDestroy {
     private snackbar: SnackbarService,
     private route: ActivatedRoute,
     private router: Router,
-    private confirmationDialog: ConfirmationDialogService
+    private confirmationDialog: ConfirmationDialogService,
   ) {}
 
   ngOnInit(): void {
@@ -135,17 +135,21 @@ export class FileDetailsComponent implements OnInit, OnDestroy {
   }
 
   onDelete(): void {
-    this.confirmationDialog.openConfirmationDialog(
-      'Confirmer la suppression',
-      'Voulez-vous vraiment supprimer ce fichier ?',
-    ).then((confirmation) => {
-      if (confirmation) {
-        this.api.delete(this.file.folder, this.file.filename).subscribe(() => {
-          this.fileList.remove(this.file.id);
-          this.onPrevious();
-        });
-      }
-    })
+    this.confirmationDialog
+      .openConfirmationDialog(
+        'Confirmer la suppression',
+        'Voulez-vous vraiment supprimer ce fichier ?',
+      )
+      .then((confirmation) => {
+        if (confirmation) {
+          this.api
+            .delete(this.file.folder, this.file.filename)
+            .subscribe(() => {
+              this.fileList.remove(this.file.id);
+              this.onPrevious();
+            });
+        }
+      });
   }
 
   onClose(): void {
@@ -153,9 +157,12 @@ export class FileDetailsComponent implements OnInit, OnDestroy {
   }
 
   onPrevious() {
-    this.router.navigateByUrl(
-      'app/file/' + this.fileList.previous(this.file.id),
-    );
+    const id = this.fileList.previous(this.file.id);
+    if (id != null) {
+      this.router.navigateByUrl('app/file/' + id);
+    } else {
+      this.router.navigateByUrl('app/' + this.file.folder);
+    }
   }
 
   onNext() {

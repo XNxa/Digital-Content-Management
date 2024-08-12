@@ -117,11 +117,11 @@ export class FileListService {
     return files[(index + 1) % files.length].id;
   }
 
-  previous(id: string): string {
+  previous(id: string): string | null {
     const files = this.filesSubject.getValue();
     const index = files.findIndex((f) => f.id == id);
     if (index == -1) {
-      return files[0].id;
+      return (files.length == 0) ? null : files[0].id
     }
     return files[(index - 1 + files.length) % files.length].id;
   }
