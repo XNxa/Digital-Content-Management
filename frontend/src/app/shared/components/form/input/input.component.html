@@ -30,4 +30,13 @@
     }
   </div>
   <app-error-message [form]="value"></app-error-message>
+  @if (proposals && proposals.length > 0) {
+    <ul class="suggestions">
+      @for (suggestion of proposals; track $index) {
+        <li (mousedown)="selectSuggestion(suggestion)">
+          {{ suggestion }}
+        </li>
+      }
+    </ul>
+  }
 </div>

@@ -80,6 +80,8 @@ export class AddUserDialogComponent implements OnInit {
 
   roleOptions: string[] = [];
 
+  functions: string[] | undefined;
+
   constructor(
     private roleapi: RoleApiService,
     private userapi: UserApiService,
@@ -106,6 +108,9 @@ export class AddUserDialogComponent implements OnInit {
     this.roleapi.getActiveRoles().subscribe((roles) => {
       this.roleOptions = roles;
     });
+    this.userapi.getFunctions().subscribe((f) => {
+      this.functions = f;
+    })
   }
 
   passwordsMatchValidator(): ValidatorFn {
