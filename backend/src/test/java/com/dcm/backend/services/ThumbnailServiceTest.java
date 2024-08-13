@@ -1,8 +1,15 @@
 package com.dcm.backend.services;
 
+import com.dcm.backend.services.impl.ThumbnailServiceImpl;
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestComponent;
+import org.springframework.test.context.ContextConfiguration;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -14,11 +21,12 @@ import java.io.InputStream;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-@SpringBootTest
+@TestComponent
+@ExtendWith(MockitoExtension.class)
 public class ThumbnailServiceTest {
 
-    @Autowired
-    private ThumbnailService thumbnailService;
+    @InjectMocks
+    private ThumbnailServiceImpl thumbnailService;
 
     @Test
     public void testGenerateImageThumbnailJpg() throws Exception {

@@ -1,5 +1,8 @@
 package com.dcm.backend.config;
 
+import org.keycloak.admin.client.Keycloak;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.User;
@@ -20,5 +23,11 @@ public class TestSecurityConfig {
         manager.createUser(User.withUserDetails(user).build());
 
         return manager;
+    }
+
+    @Bean
+    public Keycloak keycloak() {
+        // return a mock
+        return Mockito.mock(Keycloak.class);
     }
 }

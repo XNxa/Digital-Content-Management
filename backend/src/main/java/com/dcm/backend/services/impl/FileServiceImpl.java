@@ -54,7 +54,7 @@ public class FileServiceImpl implements FileService {
     private ApplicationProperties ap;
 
     @Autowired
-    MinioService minioService;
+    private MinioService minioService;
 
     @Autowired
     private FileRepository fileRepository;
@@ -331,11 +331,11 @@ public class FileServiceImpl implements FileService {
         fileHeader.setStatus(metadata.getStatus());
         fileHeader.setKeywords(getKeywords(metadata));
 
-        fileHeader = fileRepository.save(fileHeader);
-
         minioService.setObjectTags(
                 fileHeader.getFolder() + "/" + fileHeader.getFilename(),
                 metadata.getKeywords());
+
+        fileHeader = fileRepository.save(fileHeader);
 
         if (ap.isUseElasticsearch()) {
             FileHeaderElastic fileHeaderElastic = fileHeaderMapper.toElastic(fileHeader);

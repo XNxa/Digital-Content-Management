@@ -16,3 +16,9 @@ minio:
   accessKey: admin
   secretKey: password
   bucketName: test
+
+application:
+  keycloak-username: admin
+  keycloak-password: admin
+  elasticsearch-host: localhost:9200
+  use-elasticsearch: false
