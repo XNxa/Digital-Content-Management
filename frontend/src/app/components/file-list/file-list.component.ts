@@ -202,10 +202,8 @@ export class FileListComponent implements OnInit {
       this.selectedFiles.delete(index);
     } else {
       this.selectedFiles.add(index);
-      if (this.selectedFiles.size == this.files.length) {
-        this.buttonMultiSelect = 'Full';
-      }
     }
+    this.buttonMultiSelect = (this.selectedFiles.size == this.files.length) ? 'Full' : 'Empty';
   }
 
   onDeleteClicked() {
