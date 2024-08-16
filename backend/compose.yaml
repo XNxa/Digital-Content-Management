@@ -35,12 +35,17 @@ services:
       KC_HOSTNAME: localhost
       KC_HOSTNAME_STRICT: false
       KC_HOSTNAME_STRICT_HTTPS: false
-
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres/mydatabase
+      KC_DB_USERNAME: myuser
+      KC_DB_PASSWORD: secret
     ports:
       - 8080:8080
     command: start-dev
     volumes:
       - ./themes/dcm:/opt/keycloak/themes/dcm
+    depends_on:
+      - postgres
     deploy:
       resources: # During dev only
         limits: 
