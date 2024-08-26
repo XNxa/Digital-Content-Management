@@ -107,12 +107,11 @@ export class FileListService {
     };
   }
 
-  next(id: string): string {
+  next(id: string): string | null {
     const files = this.filesSubject.getValue();
     const index = files.findIndex((f) => f.id == id);
-    console.log(files.length)
     if (index == -1) {
-      return files[0].id;
+      return (files.length == 0) ? null : files[0].id
     }
     return files[(index + 1) % files.length].id;
   }

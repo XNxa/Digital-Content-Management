@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { Status } from '../../../enums/status';
 
 @Component({
@@ -7,9 +7,10 @@ import { Status } from '../../../enums/status';
   imports: [],
   templateUrl: './status-chip.component.html',
   styleUrl: './status-chip.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StatusChipComponent {
-  @Input() status: Status = Status.ARCHIVE;
+  @Input({ transform: toStatus }) status: Status = Status.ARCHIVE;
   @Input() size: 'small' | 'large' = 'small';
 
   getClass(status: Status): string {
@@ -18,5 +19,13 @@ export class StatusChipComponent {
 
   getLabel(status: Status): string {
     return Status.printableString(status);
+  }
+}
+
+function toStatus(value : Status | string): Status {
+  if (typeof value === 'string') {
+    return Status.fromString(value);
+  } else {
+    return value;
   }
 }
