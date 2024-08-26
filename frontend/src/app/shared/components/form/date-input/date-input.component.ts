@@ -64,22 +64,13 @@ export class DateInputComponent {
 
   printDates(startDate: Date | null, endDate: Date | null): string {
     if (!startDate || !endDate) {
-      return '00/00/0000 - 00/00/0000';
+      return 'Du ... au ...';
+    }
+    if (startDate === endDate) {
+      return `Le ${startDate.getDate().toString()}/${startDate.getMonth().toString()}/${startDate.getFullYear().toString()}`
     }
 
-    return (
-      startDate.getDate().toString() +
-      '/' +
-      startDate.getMonth().toString() +
-      '/' +
-      startDate.getFullYear().toString() +
-      ' - ' +
-      endDate.getDate().toString() +
-      '/' +
-      endDate.getMonth().toString() +
-      '/' +
-      endDate.getFullYear().toString()
-    );
+    return `Du ${startDate.getDate().toString()}/${startDate.getMonth().toString()}/${startDate.getFullYear().toString()} au ${endDate.getDate().toString()}/${endDate.getMonth().toString()}/${endDate.getFullYear().toString()}`;
   }
 
   keyPress($event: KeyboardEvent) {
