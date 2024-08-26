@@ -210,6 +210,21 @@ export class FileApiService {
         }),
       );
   }
+
+  public searchFolder(query: string, folder: string): Observable<FileHeader[]> {
+    const params = new HttpParams().set('query', query).set('folder', folder);
+    return this.httpClient
+      .get<FileHeader[]>(`${this.API}/search-folder`, { params })
+      .pipe(
+        map((files: FileHeader[]) => {
+          return files.map((file: FileHeader) => {
+            file.printableSize = convertSizeToPrintable(file.size);
+            if (file.thumbnail) file.thumbnail = thumbnailToUrl(file.thumbnail);
+            return file;
+          });
+        }),
+      );
+  }
 }
 
 function thumbnailToUrl(base64Str: string): string {

@@ -146,6 +146,15 @@ public interface FileService {
     List<FileHeaderDTO> search(String query);
 
     /**
+     * Searches for files
+     *
+     * @param query Query to search
+     * @param folder Folder to search
+     * @return List of files
+     */
+    List<FileHeaderDTO> search(String query, String folder);
+
+    /**
      * Retrieves the metadata of a file
      *
      * @param id Id of the file

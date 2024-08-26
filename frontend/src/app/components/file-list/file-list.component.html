@@ -1,11 +1,17 @@
 <div class="header">
   <h1>{{ this.displayableFolder }} / {{ this.displayableTypeFolder }}</h1>
-  <app-icon-text-button
-    [permission]="[folder + '_' + typeFolder + '_' + 'import']"
-    title="Importer un fichier"
-    icon="upload"
-    (click)="isDialogOpen = true"
-  ></app-icon-text-button>
+  <div class="left-header">
+    <app-search-bar
+      [searchMethod]="search"
+      (itemSelected)="goToFile($event)"
+    ></app-search-bar>
+    <app-icon-text-button
+      [permission]="[folder + '_' + typeFolder + '_' + 'import']"
+      title="Importer un fichier"
+      icon="upload"
+      (click)="isDialogOpen = true"
+    ></app-icon-text-button>
+  </div>
 </div>
 
 @if (isDialogOpen) {

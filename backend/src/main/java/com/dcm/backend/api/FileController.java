@@ -126,5 +126,11 @@ public class FileController {
     public List<FileHeaderDTO> search(@RequestParam String query) {
         return fs.search(query);
     }
+
+    @GetMapping("/search-folder")
+    public List<FileHeaderDTO> search(@RequestParam String query,
+                                      @RequestParam String folder) {
+        return fs.search(query, folder);
+    }
 }
 

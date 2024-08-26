@@ -16,6 +16,9 @@ import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 
 @Repository
 public class CustomFileElasticRepositoryImpl implements CustomFileElasticRepository {
@@ -37,31 +40,48 @@ public class CustomFileElasticRepositoryImpl implements CustomFileElasticReposit
 
     @Override
     public Flux<SearchHit<FileHeaderElastic>> searchByQuery(String query,
-                                                            Pageable pageable) {
+                                                            Optional<String> folder, Pageable pageable) {
+
         NativeQuery nativeQuery = NativeQuery.builder()
-                .withQuery(q -> q.bool(b -> b.should(sh -> sh.multiMatch(
-                                m -> m.fields("filename^2", "keywords", "folder", "type",
-                                                "version", "description", "status")
-                                        .query(query)
-                                        .type(TextQueryType.PhrasePrefix)))
-                        .should(sh -> sh.multiMatch(
-                                m -> m.fields("filename^2", "keywords", "folder", "type",
-                                                "version", "description", "status")
-                                        .query(query)
-                                        .fuzziness("AUTO")
-                                        .type(TextQueryType.BestFields)))
-                        .should(sh -> sh.multiMatch(
-                                m -> m.fields("filename.phonetic", "keywords.phonetic",
-                                                "folder.phonetic", "description.phonetic",
-                                                "status.phonetic")
-                                        .query(query)
-                                        .type(TextQueryType.PhrasePrefix)))
-                        .should(sh -> sh.multiMatch(
-                                m -> m.fields("filename.phonetic", "keywords.phonetic",
-                                                "folder.phonetic", "description.phonetic",
-                                                "status.phonetic")
-                                        .query(query)
-                                        .type(TextQueryType.BestFields)))))
+                .withQuery(q -> q.bool(b ->
+                        {
+                            var stmt = b.should(sh -> sh.multiMatch(
+                                            m -> m.fields("filename^2", "keywords", "folder", "type",
+                                                            "version", "description", "status")
+                                                    .query(query)
+                                                    .type(TextQueryType.PhrasePrefix)))
+                                    .should(sh -> sh.multiMatch(
+                                            m -> m.fields("filename^2", "keywords", "folder",
+                                                            "type",
+                                                            "version", "description", "status")
+                                                    .query(query)
+                                                    .fuzziness("AUTO")
+                                                    .type(TextQueryType.BestFields)))
+                                    .should(sh -> sh.multiMatch(
+                                            m -> m.fields("filename.phonetic",
+                                                            "keywords.phonetic",
+                                                            "folder.phonetic", "description.phonetic",
+                                                            "status.phonetic")
+                                                    .query(query)
+                                                    .type(TextQueryType.PhrasePrefix)))
+                                    .should(sh -> sh.multiMatch(
+                                            m -> m.fields("filename.phonetic",
+                                                            "keywords.phonetic",
+                                                            "folder.phonetic", "description.phonetic",
+                                                            "status.phonetic")
+                                                    .query(query)
+                                                    .type(TextQueryType.BestFields)));
+                            if (folder.isPresent()) {
+                                stmt =
+                                        stmt.must(m -> m.termsSet(ts -> ts.terms(
+                                                        Arrays.asList(folder.get().split("/")))
+                                                .field("folder")
+                                                .minimumShouldMatchScript(
+                                                        s -> s.inline(i -> i.source("2")))));
+                            }
+                            return stmt;
+                        }
+                ))
                 .build();
 
         return elasticsearch.search(nativeQuery, FileHeaderElastic.class);

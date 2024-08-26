@@ -130,7 +130,25 @@ public class FileServiceImpl implements FileService {
         Pageable pageRequest = PageRequest.of(0, 10);
         if (ap.isUseElasticsearch()) {
             Flux<SearchHit<FileHeaderElastic>> flux =
-                    fileElasticRepository.searchByQuery(query, pageRequest);
+                    fileElasticRepository.searchByQuery(query, Optional.empty(), pageRequest);
+            return flux.collectList()
+                    .block()
+                    .stream()
+                    .map(SearchHit::getContent)
+                    .map(fileHeaderMapper::toDto)
+                    .toList();
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public List<FileHeaderDTO> search(String query, String folder) {
+        Pageable pageRequest = PageRequest.of(0, 10);
+        if (ap.isUseElasticsearch()) {
+            Flux<SearchHit<FileHeaderElastic>> flux =
+                    fileElasticRepository.searchByQuery(query, Optional.of(folder),
+                            pageRequest);
             return flux.collectList()
                     .block()
                     .stream()
