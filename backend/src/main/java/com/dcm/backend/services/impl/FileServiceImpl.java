@@ -11,17 +11,12 @@ import com.dcm.backend.entities.Keyword;
 import com.dcm.backend.enumeration.Folders;
 import com.dcm.backend.enumeration.Status;
 import com.dcm.backend.enumeration.Subfolders;
-import com.dcm.backend.exceptions.FileAlreadyPresentException;
-import com.dcm.backend.exceptions.FileNotFoundException;
-import com.dcm.backend.exceptions.IncoherentStateException;
-import com.dcm.backend.exceptions.NoThumbnailException;
+import com.dcm.backend.exceptions.*;
 import com.dcm.backend.repositories.FileElasticRepository;
 import com.dcm.backend.repositories.FileRepository;
 import com.dcm.backend.repositories.specifications.FileFilterSpecification;
-import com.dcm.backend.services.FileService;
-import com.dcm.backend.services.KeywordService;
-import com.dcm.backend.services.MinioService;
-import com.dcm.backend.services.ThumbnailService;
+import com.dcm.backend.services.*;
+import com.dcm.backend.utils.Couple;
 import com.dcm.backend.utils.mappers.FileHeaderMapper;
 import io.minio.errors.*;
 import jakarta.persistence.EntityManager;
@@ -44,7 +39,6 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -73,6 +67,9 @@ public class FileServiceImpl implements FileService {
 
     @Autowired
     private FileHeaderMapper fileHeaderMapper;
+
+    @Autowired
+    private LinkService linkService;
 
     @LogEvent
     @Override
@@ -123,6 +120,17 @@ public class FileServiceImpl implements FileService {
         return fileHeaderMapper.toDto(fileRepository.findById(id)
                 .orElseThrow(() -> new FileNotFoundException(
                         "getFileHeader : " + id + " not found")));
+    }
+
+    @Override
+    public Couple<InputStreamResource, MediaType> accessLink(String uuid) throws
+            BrokenLinkException,
+            ServerException, InsufficientDataException, ErrorResponseException,
+            IOException, NoSuchAlgorithmException, InvalidKeyException,
+            InvalidResponseException, XmlParserException, InternalException {
+        FileHeader f = linkService.access(uuid);
+        return new Couple(new InputStreamResource(minioService.getObject(f.getFolder() +
+                "/" + f.getFilename())), MediaType.parseMediaType(f.getType()));
     }
 
     @Override
@@ -282,16 +290,13 @@ public class FileServiceImpl implements FileService {
 
     @LogEvent
     @Override
-    public String getLink(FilenameDTO file) throws MinioException, IOException,
-            NoSuchAlgorithmException, InvalidKeyException, FileNotFoundException {
+    public String getLink(FilenameDTO file) throws FileNotFoundException {
         FileHeader fileHeader = fileRepository.findByFolderAndFilename(file.getFolder(),
                         file.getFilename())
                 .orElseThrow(() -> new FileNotFoundException(
                         "getLink : " + file.getFilename() + " not found in " + file.getFolder()));
 
-        return minioService.getObjectUrl(
-                fileHeader.getFolder() + "/" + fileHeader.getFilename(), 1,
-                TimeUnit.DAYS);
+        return linkService.generateLink(fileHeader);
     }
 
     @LogEvent

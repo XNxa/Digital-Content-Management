@@ -3,9 +3,11 @@ package com.dcm.backend.services;
 import com.dcm.backend.dto.FileFilterDTO;
 import com.dcm.backend.dto.FileHeaderDTO;
 import com.dcm.backend.dto.FilenameDTO;
+import com.dcm.backend.exceptions.BrokenLinkException;
 import com.dcm.backend.exceptions.FileAlreadyPresentException;
 import com.dcm.backend.exceptions.FileNotFoundException;
 import com.dcm.backend.exceptions.NoThumbnailException;
+import com.dcm.backend.utils.Couple;
 import io.minio.errors.*;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
@@ -161,5 +163,17 @@ public interface FileService {
      * @return Metadata of the file
      */
     FileHeaderDTO getFileHeader(int id) throws FileNotFoundException;
+
+    /**
+     * Access a file by its link
+     *
+     * @param uuid the uuid link to access the file
+     * @return the file header
+     */
+    Couple<InputStreamResource, MediaType> accessLink(String uuid) throws
+            BrokenLinkException,
+            ServerException, InsufficientDataException, ErrorResponseException,
+            IOException, NoSuchAlgorithmException, InvalidKeyException,
+            InvalidResponseException, XmlParserException, InternalException;
 }
 
