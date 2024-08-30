@@ -17,10 +17,30 @@ Project Stack :
 
 ## Usage
 
+> These instructions are for a developpment environment.
+
+### Backend
+
+First, start the docker containers:
 ```bash
 docker-compose up
 ```
 
+For the first time lauching the backend, you should configure keycloak using:
+```bash
+java com.dcm.backend.init.InitKeycloak
+```
+
+Finnaly, start spring :
+```bash
+mvn spring-boot:run
+```
+
+### Frontend
+
+```bash
+ng serve
+```
 
 ## Gallery
 
