@@ -1,6 +1,14 @@
+DCM - **Digital Content Management** is a web application designed to manage and share digital content.
+
 ## Features
 
-TODO
+- Import files into predefined folders.
+- Add descriptions, tag files with keywords, and set file statuses.
+- View images, videos, and the contents of zip files.
+- Filter files based on any field.
+-	Perform searches with a powerful phonetic and fuzzy search bar.
+-	Share files via temporary links.
+-	Manage users and create fine-grained roles directly within the app.
 
 ## Architecture
 
